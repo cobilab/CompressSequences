@@ -3,23 +3,20 @@
 genomesPath="../genomes"
 
 # alternativa manual
-FaFiles=(
-    # "$genomesPath//Pseudobrama_simoni.genome.fa" # 886.11MB
-    # "$genomesPath/Rhodeus_ocellatus.genome.fa" # 860.71MB
-    # "$genomesPath/TME204.HiFi_HiC.haplotig1.fa" # CASSAVA, 727.09MB
-    # "$genomesPath/TME204.HiFi_HiC.haplotig2.fa" # 673.62MB
+faFiles=(
+    # "Pseudobrama_simoni.genome.fa" # 886.11MB
+    # "Rhodeus_ocellatus.genome.fa" # 860.71MB
+    # "TME204.HiFi_HiC.haplotig1.fa" # CASSAVA, 727.09MB
+    # "TME204.HiFi_HiC.haplotig2.fa" # 673.62MB
     
-    # "$genomesPath/MFCexample.fa" # 3.5MB
-    # "$genomesPath/phyml_tree.fa" # 2.36MB	
+    # "MFCexample.fa" # 3.5MB
+    # "phyml_tree.fa" # 2.36MB	
     
-    "$genomesPath/EscherichiaPhageLambda.fa" # 49.2KB
-    "$genomesPath/mt_genome_CM029732.fa" # 15.06KB
-    "$genomesPath/zika.fa" # 11.0KB
-    "$genomesPath/herpes.fa" # 2.7KB
+    "EscherichiaPhageLambda.fa" # 49.2KB
+    "mt_genome_CM029732.fa" # 15.06KB
+    "zika.fa" # 11.0KB
+    "herpes.fa" # 2.7KB
 )
-
-# alternativa automatica
-# faFiles=( $(ls $genomesPath | egrep "*.fa$") )
 
 urls=(
 #     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102191/Pseudobrama_simoni.genome.fa" # 886.11MB
@@ -34,7 +31,7 @@ urls=(
 printf "downloading...\n" # downloads fasta files only if they're missing in directory
 for url in "${urls[@]}"; do
     faFile=$(echo $url | rev | cut -d'/' -f1 | rev) # gets filename by spliting in "/" and getting the last element
-    if [ ! -f "$genomesPath/$faFile" ]; then 
+    if [[ ! -f "$genomesPath/$faFile" ]]; then 
         wget -c $url -P "$genomesPath/"
 
         faFiles+=($faFile) # alternativa manual
@@ -46,16 +43,15 @@ for url in "${urls[@]}"; do
     fi
 done
 
-# atualizar lista de ficheiros fasta, na alternativa automatica
+# alternativa automatica
 # faFiles=( $(ls $genomesPath | egrep "*.fa$") )
 
 printf "\npreprocessing...\n" # preprocesses each fasta file into its respective seq files
-for faFile in "${faFiles[@]}"; do
-    seqFile=$(echo $faFile | sed 's/fa/seq/g') # replaces "fa" with "seq" in the string
-
-    if [ ! -f "$genomesPath/$seqFile" ]; then 
-        echo "$seqFile has been created"
+for faFile in "${faFiles[@]}"; do 
+    seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
+    if [[ -f $genomesPath/$seqFile ]]; then   
         cat "$genomesPath/$faFile" | grep -v ">" | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
+        echo "$seqFile has been created"
     else
         echo "$seqFile already exists"
     fi
