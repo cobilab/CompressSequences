@@ -1,0 +1,15 @@
+# Ignore everything
+scripts/*
+genomes/*
+
+# Except for these
+!scripts/*.sh
+
+!genomes/phyml_tree.fa
+!genomes/EscherichiaPhageLambda.fa
+!genomes/herpes.fa
+!genomes/MFCexample.fa
+!genomes/zika.fa
+
+# "except except" for these
+scripts/JARVIS2.sh
