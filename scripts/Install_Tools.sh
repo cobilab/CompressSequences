@@ -69,4 +69,9 @@ cp paq8l ../
 cd ../
 rm -fr tmp_paq8l/
 #
-# ------------------------------------------------------------------------------
+# NAF ------------------------------------------------------------------------
+#
+conda install -y -c bioconda naf
+# sudo apt install git gcc make diffutils perl
+# git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
+# cd naf && make && make test && sudo make install
