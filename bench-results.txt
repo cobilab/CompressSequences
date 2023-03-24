@@ -36,9 +36,7 @@ cmp: ../genomes/MFCexample.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00381088	0	0.0033226	0	22
 cmp: ../genomes/MFCexample.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00386047	0	0.00330353	0	23
-ls: cannot access 'tmp-x.fa.naf': No such file or directory
-cmp: tmp-x.fa.unnaf: No such file or directory
-NAF-22		0	0.000995636	0	0.00087738	0	24
+NAF-22  582440  0.0333333       3.17224 0       0.00370026      0       24
 LZMA-9	602647	0.0166667	0.022625	0	0.00431442	0	25
 BZIP2-9	634946	0	0.00720978	0	0.00450516	0	26
 BSC-m03	576774	0.0333333	0.0398903	0.0166667	0.034153	0	27
@@ -73,7 +71,9 @@ JARVIS2-bin     414973  0.183333        0.798927        0.166667        0.79887 
 JARVIS2-bin     413171  0.133333        0.85104 0.15    0.850761        0       16
 JARVIS2-bin     413523  0.15    0.798809        0.133333        0.798729        0       16
 JARVIS2-bin     392878  0.133333        0.436928        0.133333        0.436855        0       16
+NAF-22  544582  0.0333333       3.17217 0       0.00364304      0       24
 (incompleto)
+
 
 EscherichiaPhageLambda.seq 
 PROGRAM	C_BYTES	C_TIME (m)	C_MEM (GB)	D_TIME (m)	D_MEM (GB)	DIFF	RUN
@@ -113,9 +113,7 @@ cmp: ../genomes/EscherichiaPhageLambda.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00386047	0	0.00334549	0	22
 cmp: ../genomes/EscherichiaPhageLambda.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00394821	0	0.00320435	0	23
-ls: cannot access 'tmp-x.fa.naf': No such file or directory
-cmp: tmp-x.fa.unnaf: No such file or directory
-NAF-22		0	0.000862122	0	0.000968933	0	24
+NAF-22  12254   0.0166667       3.16938 0       0.0015564       0       24
 LZMA-9	13424	0	0.00315475	0	0.00215912	0	25
 BZIP2-9	13249	0	0.00166321	0	0.00149536	0	26
 BSC-m03	12156	0	0.00508499	0	0.00478745	0	27
@@ -163,9 +161,7 @@ cmp: ../genomes/mt_genome_CM029732.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00395584	0	0.00333405	0	22
 cmp: ../genomes/mt_genome_CM029732.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00392532	0	0.00330734	0	23
-ls: cannot access 'tmp-x.fa.naf': No such file or directory
-cmp: tmp-x.fa.unnaf: No such file or directory
-NAF-22		0	0.000907898	0	0.000984192	0	24
+NAF-22  3691    0.0166667       3.16925 0       0.00152206      0       24
 LZMA-9	4304	0	0.00289536	0	0.00209045	0	25
 BZIP2-9	4151	0	0.00170517	0	0.00153351	0	26
 BSC-m03	3716	0	0.00437164	0	0.00422287	0	27
@@ -213,9 +209,7 @@ cmp: ../genomes/zika.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00385284	0	0.00333023	0	22
 cmp: ../genomes/zika.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00387192	0	0.00327301	0	23
-ls: cannot access 'tmp-x.fa.naf': No such file or directory
-cmp: tmp-x.fa.unnaf: No such file or directory
-NAF-22		0	0.00100708	0	0.000919342	0	24
+NAF-22  2779    0.0166667       3.16919 0       0.0014534       0       24
 LZMA-9	3195	0	0.00280762	0	0.00215149	0	25
 BZIP2-9	2995	0	0.00159454	0	0.00152969	0	26
 BSC-m03	2758	0	0.0044136	0	0.00433731	0	27
@@ -263,9 +257,7 @@ cmp: ../genomes/herpes.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.0039444	0	0.0032692	0	22
 cmp: ../genomes/herpes.seq.tar.out: No such file or directory
 JARVIS2-sh	10240	0	0.00385284	0	0.0033226	0	23
-ls: cannot access 'tmp-x.fa.naf': No such file or directory
-cmp: tmp-x.fa.unnaf: No such file or directory
-NAF-22		0	0.00101089	0	0.00100327	0	24
+NAF-22  695     0.0166667       3.16924 0       0.00143814      0       24
 LZMA-9	817	0	0.00262451	0	0.00209808	0	25
 BZIP2-9	749	0	0.00148392	0	0.00141144	0	26
 BSC-m03	684	0	0.00436401	0	0.00418854	0	27
