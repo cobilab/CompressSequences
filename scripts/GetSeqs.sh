@@ -44,12 +44,12 @@ for url in "${urls[@]}"; do
 done
 
 # alternativa automatica
-# faFiles=( $(ls $genomesPath | egrep "*.fa$") )
+faFiles=( $(ls $genomesPath | egrep "*.fa$") )
 
 printf "\npreprocessing...\n" # preprocesses each fasta file into its respective seq files
 for faFile in "${faFiles[@]}"; do 
     seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
-    if [[ -f $genomesPath/$seqFile ]]; then   
+    if [[ ! -f $genomesPath/$seqFile ]]; then   
         cat "$genomesPath/$faFile" | grep -v ">" | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
         echo "$seqFile has been created"
     else
