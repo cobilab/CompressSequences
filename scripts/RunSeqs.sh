@@ -390,42 +390,77 @@ function RUN_DMcompress() {
 #
 # ==============================================================================
 #
-# function RUN_MBGC() {
-#   # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
-#   # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
-#   #
-#   FILE="$1";
-#   C_COMMAND="$2";
-#   D_COMMAND="$3";
-#   NAME="$4";
-#   #
-#   echo ">x" > $FILE.orig;
-#   cat $FILE >> $FILE.orig;
-#   printf "\n" >> $FILE.orig;
-#   #
-#   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE.orig $FILE.orig.mbgc 1> c_stdout.txt 2> c_tmp_report.txt;
-#   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-#   #
-#   BYTES=`ls -la $FILE.orig.mbgc | awk '{ print $5 }'`;
-#   #
-#   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.orig.mbgc mbgc_out 1> d_stdout.txt 2> d_tmp_report.txt
-#   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
-#   #
-#   cmp $FILE.orig $FILE.orig.mbgc.d > cmp.txt;
-#   #
-#   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
-#   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
-#   D_TIME=`cat d_time_mem.txt | awk '{ print $1}'`;
-#   D_MEME=`cat d_time_mem.txt | awk '{ print $2}'`;
-#   VERIFY="0";
-#   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
-#   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
-#   #
-#   printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n";
-#   #
-#   # rm -f $FILE.orig $FILE.mbgc $FILE.d c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
-#   #
-# }
+function RUN_MBGC() {
+  #
+  FILE="$1";
+  C_COMMAND="$2";
+  D_COMMAND="$3";
+  NAME="$4";
+  #
+  faFile=$(echo $FILE | sed 's/seq/fa/g')
+  mbgcFile=$(echo $FILE | sed 's/seq/mbgc/g')
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $faFile $mbgcFile 1> c_stdout.txt 2> c_tmp_report.txt;
+  cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
+  #
+  BYTES=`ls -la $mbgcFile | awk '{ print $5 }'`;
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $mbgcFile ../genomes/mbgc_out 1> d_stdout.txt 2> d_tmp_report.txt
+  cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
+  #
+  cmp $faFile ../genomes/mbgc_out/$faFile > cmp.txt; # differences may be expected due to lack of EOLs
+  #
+  C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
+  C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
+  D_TIME=`cat d_time_mem.txt | awk '{ print $1}'`;
+  D_MEME=`cat d_time_mem.txt | awk '{ print $2}'`;
+  VERIFY="0";
+  CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
+  if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
+  #
+  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n";
+  #
+  rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
+  #
+}
+#
+# ==============================================================================
+# 
+function RUN_AGC() {
+  # ./agc create ref.fa in1.fa in2.fa > col.agc
+  #
+  FILE="$1";
+  C_COMMAND="$2";
+  D_COMMAND="$3";
+  NAME="$4";
+  #
+  echo ">x" > $FILE.orig;
+  cat $FILE >> $FILE.orig;
+  printf "\n" >> $FILE.orig;
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE.orig $FILE.orig.mbgc 1> c_stdout.txt 2> c_tmp_report.txt;
+  cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
+  #
+  BYTES=`ls -la $FILE.orig.mbgc | awk '{ print $5 }'`;
+  # 
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $(echo $FILE | sed 's/seq/mbgc/g') mbgc_out 1> d_stdout.txt 2> d_tmp_report.txt
+  cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
+  #
+  cmp $FILE.orig $FILE.orig.mbgc.d > cmp.txt;
+  #
+  C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
+  C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
+  D_TIME=`cat d_time_mem.txt | awk '{ print $1}'`;
+  D_MEME=`cat d_time_mem.txt | awk '{ print $2}'`;
+  VERIFY="0";
+  CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
+  if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
+  #
+  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n";
+  #
+  rm -f $FILE.orig $FILE.mbgc $FILE.d c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
+  #
+}
 #
 # ==============================================================================
 #
@@ -436,13 +471,13 @@ FILES=(
     # "CASSAVA.seq" # CASSAVA, 727.09MB
     # "TME204.HiFi_HiC.haplotig2.seq" # 673.62MB
     
-    # "MFCexample.seq" # 3.5MB
-    # "phyml_tree.seq" # 2.36MB	
+    "MFCexample.seq" # 3.5MB
+    "phyml_tree.seq" # 2.36MB	
     
-    # "EscherichiaPhageLambda.seq" # 49.2KB
-    # "mt_genome_CM029732.seq" # 15.06KB
+    "EscherichiaPhageLambda.seq" # 49.2KB
+    "mt_genome_CM029732.seq" # 15.06KB
     "zika.seq" # 11.0KB
-    # "herpes.seq" # 2.7KB
+    "herpes.seq" # 2.7KB
 )
 
 # alternativa automatica
@@ -454,7 +489,7 @@ for FILE in "${FILES[@]}"; do
     #
     printf "$FILE \nPROGRAM\tC_BYTES\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n";
     #
-    FILE=$"../genomes/$FILE"
+    FILE="../genomes/$FILE"
     #
     # ------------------------------------------------------------------------------
     #
@@ -506,10 +541,11 @@ for FILE in "${FILES[@]}"; do
     # RUN_MFC "$FILE" "./MFCompressC -v -2 -p 1 -t 1 " "./MFCompressD " "MFC-2" "31"
     # RUN_MFC "$FILE" "./MFCompressC -v -3 -p 1 -t 1 " "./MFCompressD " "MFC-3" "32"
     #
-    RUN_DMcompress "$FILE" "DMcompress/DMcompressC " "DMcompress/DMcompressD " "DMcompress" "3"
+    # RUN_DMcompress "$FILE" "DMcompress/DMcompressC " "DMcompress/DMcompressD " "DMcompress" "3"
     #
     # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
     # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
+    RUN_MBGC "$FILE" "mbgc -i " "mbgc -d " "MBGC" "1"
     # RUN_MBGC "$FILE" "mbgc -c -i" "mbgc -d " "MBGC" "1"
     # #
     # #
