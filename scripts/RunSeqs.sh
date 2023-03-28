@@ -397,18 +397,24 @@ function RUN_MBGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  faFile=$(echo $FILE | sed 's/seq/fa/g')
-  mbgcFile=$(echo $FILE | sed 's/seq/mbgc/g')
+  mbgcFileOrig=$FILE.mbgc
+  mbgcFileC=$FILE.mbgc.c # $(echo $FILE | sed 's/seq/mbgc/g')
+  mbgcPathD=../genomes/mbgc_out
+  mbgcFileD=$mbgcPathD/$mbgcFileOrig
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $faFile $mbgcFile 1> c_stdout.txt 2> c_tmp_report.txt;
+  echo ">x" > $mbgcFileOrig;
+  cat $FILE >> $mbgcFileOrig;
+  printf "\n" >> $mbgcFileOrig;
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $mbgcFileOrig $mbgcFileC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $mbgcFile | awk '{ print $5 }'`;
+  BYTES=`ls -la $mbgcFileC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $mbgcFile ../genomes/mbgc_out 1> d_stdout.txt 2> d_tmp_report.txt
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $mbgcFileC $mbgcPathD 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $faFile ../genomes/mbgc_out/$faFile > cmp.txt; # differences may be expected due to lack of EOLs
+  cmp $mbgcFileOrig $mbgcPathD/$mbgcFileOrig > cmp.txt; # differences may be expected due to lack of EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -420,7 +426,7 @@ function RUN_MBGC() {
   #
   printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n";
   #
-  rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
+  rm -f cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
 }
 #
@@ -545,7 +551,10 @@ for FILE in "${FILES[@]}"; do
     #
     # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
     # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
+    RUN_MBGC "$FILE" "mbgc -c 0 -i " "mbgc -d " "MBGC" "1"
     RUN_MBGC "$FILE" "mbgc -i " "mbgc -d " "MBGC" "1"
+    RUN_MBGC "$FILE" "mbgc -c 2 -i " "mbgc -d " "MBGC" "1"
+    RUN_MBGC "$FILE" "mbgc -c 3 -i " "mbgc -d " "MBGC" "1"
     # RUN_MBGC "$FILE" "mbgc -c -i" "mbgc -d " "MBGC" "1"
     # #
     # #
