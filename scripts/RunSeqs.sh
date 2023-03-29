@@ -421,7 +421,7 @@ function RUN_MBGC() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $mbgcFileC $mbgcPathD 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $mbgcFileOrig $mbgcFileD > cmp.txt; # may differ due to EOL
+  cmp $mbgcFileOrig $mbgcFileD > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -452,26 +452,23 @@ function RUN_AGC() {
   agcFileOrig=$FILE.agc
   agcFileC=$FILE.agc.c
   agcPathD=$dirname/genomes
-  agcFileD=$agcPathD/$basename.agc
-  echo "agcFileOrig: $agcFileOrig"
-  echo "agcFileC: $agcFileC"
-  echo "agcFileD: $agcFileD"
+  agcFileD=$agcPathD/$basename.fa
   #
   echo ">x" > $agcFileOrig;
   cat $FILE >> $agcFileOrig;
   printf "\n" >> $agcFileOrig;
   #
-  # agc create ../genomes/zika.seq.agc > ../genomes/zika.seq.agc.c
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $agcFileOrig > $agcFileC 1> c_stdout.txt 2> c_tmp_report.txt;
+  # agc create ../genomes/zika.seq.agc -o ../genomes/zika.seq.agc.c
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $agcFileOrig -o $agcFileC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $agcFileC | awk '{ print $5 }'`;
   #
   # agc getcol ../genomes/zika.fa.agc > zika.fa.agc
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $agcFileC > $agcFileD 1> d_stdout.txt 2> d_tmp_report.txt
+  /bin/time -f "TIME\t%e\tMEM\t%M" agc getcol -o $agcPathD $agcFileC 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $agcFileOrig $agcFileD > cmp.txt; # may differ due to EOL
+  cmp $agcFileOrig $agcFileD > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -499,10 +496,10 @@ FILES=(
     # "MFCexample.seq" # 3.5MB
     # "phyml_tree.seq" # 2.36MB	
     
-    # "EscherichiaPhageLambda.seq" # 49.2KB
-    # "mt_genome_CM029732.seq" # 15.06KB
+    "EscherichiaPhageLambda.seq" # 49.2KB
+    "mt_genome_CM029732.seq" # 15.06KB
     "zika.seq" # 11.0KB
-    # "herpes.seq" # 2.7KB
+    "herpes.seq" # 2.7KB
 )
 
 # alternativa automatica
@@ -513,8 +510,9 @@ for FILE in "${FILES[@]}"; do
     # ==============================================================================
     #
     FILE="../genomes/$FILE"
+    basename=$(basename $FILE)
     #
-    printf "$FILE \nPROGRAM\tC_BYTES\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n";
+    printf "$basename \nPROGRAM\tC_BYTES\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n";
     #
     # ------------------------------------------------------------------------------
     #
@@ -556,7 +554,7 @@ for FILE in "${FILES[@]}"; do
     # RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "31" # " --block 150MB --threads 6 --dna "
     # RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "32" # " --block 100MB --threads 8 --dna "
     # # #
-    # RUN_NAF "$FILE" "ennaf --strict --temp-dir tmp/ --dna --level 22 " "unnaf " "NAF-22" "33"
+    RUN_NAF "$FILE" "ennaf --strict --temp-dir tmp/ --dna --level 22 " "unnaf " "NAF-22" "33"
     # RUN_LZMA "$FILE" "lzma -9 -f -k " "lzma -f -k -d " "LZMA-9" "34"
     # RUN_BZIP2 "$FILE" "bzip2 -9 -f -k " "bzip2 -f -k -d " "BZIP2-9" "35"
     # RUN_BSC "$FILE" " -b800000000 " "./bsc-m03 " "BSC-m03" "36"
@@ -577,7 +575,7 @@ for FILE in "${FILES[@]}"; do
     # #
     # ./agc create ref.fa in1.fa in2.fa > col.agc
     # agc getcol [options] <in.agc> > <out.fa>
-    # RUN_AGC "$FILE" "agc create " "agc getcol " "AGC" "47"
+    RUN_AGC "$FILE" "agc create " "agc getcol " "AGC" "47"
     # #
     # # ==============================================================================
     # #
