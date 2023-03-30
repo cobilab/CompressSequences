@@ -1,6 +1,6 @@
 #!/bin/bash
 
-genomesPath="../genomes"
+genomesPath="." # "../genomes"
 
 # alternativa manual
 faFiles=(
