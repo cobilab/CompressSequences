@@ -397,23 +397,27 @@ function RUN_MBGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  echo ">x" > zika.fna;
-  cat $FILE >> zika.fna;
-  printf "\n" >> zika.fna;
+  orig_file=$FILE.fna;
+  cfile=$FILE.mbgc;
+  dfile=out/$FILE.fna;
+  #
+  echo ">x" > $orig_file;
+  cat $FILE >> $orig_file;
+  printf "\n" >> $orig_file;
   #
   # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
   # exemplo: ./mbgc -i GCA_lm_concat.fna archive2.mbgc
-  /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -i zika.fna zika.mbgc 1> c_stdout.txt 2> c_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -i $orig_file $cfile 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la zika.mbgc | awk '{ print $5 }'`;
+  BYTES=`ls -la $cfile | awk '{ print $5 }'`;
   #
   # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
   # exemplo: ./mbgc -d archive2.mbgc out
-  { /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -d zika.mbgc out; } 2>>d_tmp_report.txt
+  { /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -d $cfile out; } 2>>d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp zika.fna out/zika.fna > cmp.txt;
+  cmp $orig_file $dfile > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
