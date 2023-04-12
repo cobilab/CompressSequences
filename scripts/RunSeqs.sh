@@ -397,27 +397,23 @@ function RUN_MBGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  orig_file=$FILE.fna;
-  cfile=$FILE.mbgc;
-  dfile=out/$FILE.fna;
-  #
-  echo ">x" > $orig_file;
-  cat $FILE >> $orig_file;
-  printf "\n" >> $orig_file;
+  mbgcFileOrig=$(echo $FILE | sed 's/seq/fa/g').clean;
+  mbgcFileC=$(echo $FILE | sed 's/seq/agc/g');
+  mbgcFileD=out/$(echo $FILE | sed 's/seq/fa/g').clean;
   #
   # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
   # exemplo: ./mbgc -i GCA_lm_concat.fna archive2.mbgc
-  /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -i $orig_file $cfile 1> c_stdout.txt 2> c_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -i $mbgcFileOrig $mbgcFileC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $cfile | awk '{ print $5 }'`;
+  BYTES=`ls -la $mbgcFileC | awk '{ print $5 }'`;
   #
   # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
   # exemplo: ./mbgc -d archive2.mbgc out
-  { /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -d $cfile out; } 2>>d_tmp_report.txt
+  { /bin/time -f "TIME\t%e\tMEM\t%M" ./mbgc -d $mbgcFileC out; } 2>>d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $orig_file $dfile > cmp.txt;
+  cmp $mbgcFileOrig $mbgcFileD > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -558,10 +554,10 @@ for FILE in "${FILES[@]}"; do
     # # #
     # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
     # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
-    # RUN_MBGC "$FILE" "./mbgc -c 0 -i " "./mbgc -d " "MBGC" "43"
-    # RUN_MBGC "$FILE" "./mbgc -i " "./mbgc -d " "MBGC" "44"
-    # RUN_MBGC "$FILE" "./mbgc -c 2 -i " "./mbgc -d " "MBGC" "45"
-    # RUN_MBGC "$FILE" "./mbgc -c 3 -i " "./mbgc -d " "MBGC" "46"
+    RUN_MBGC "$FILE" "./mbgc -c 0 -i " "./mbgc -d " "MBGC" "43"
+    RUN_MBGC "$FILE" "./mbgc -i " "./mbgc -d " "MBGC" "44"
+    RUN_MBGC "$FILE" "./mbgc -c 2 -i " "mbgc -d " "MBGC" "45"
+    RUN_MBGC "$FILE" "./mbgc -c 3 -i " "mbgc -d " "MBGC" "46"
     # # #
     # ./agc create ref.fa in1.fa in2.fa > col.agc
     # agc getcol [options] <in.agc> > <out.fa>
