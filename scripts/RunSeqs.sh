@@ -384,7 +384,7 @@ function RUN_DMcompress() {
   #
   printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n";
   #
-  rm -f $FILE.orig $FILE.mfc $FILE.d c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
+  rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
 }
 #
@@ -398,7 +398,7 @@ function RUN_MBGC() {
   NAME="$4";
   #
   mbgcFileOrig=$(echo $FILE | sed 's/seq/fa/g').clean;
-  mbgcFileC=$(echo $FILE | sed 's/seq/agc/g');
+  mbgcFileC=$(echo $FILE | sed 's/seq/mbgc/g');
   mbgcFileD=out/$(echo $FILE | sed 's/seq/fa/g').clean;
   #
   # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
@@ -451,7 +451,7 @@ function RUN_AGC() {
   # agc getcol ../genomes/zika.fa.agc > zika.fa.agc
   { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $agcFileC > $agcFileD; } 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
-  #
+  # 
   cmp $agcFileOrig $agcFileD > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
@@ -550,7 +550,7 @@ for FILE in "${FILES[@]}"; do
     # # RUN_MFC "$FILE" "./MFCompressC -v -1 -p 1 -t 1 " "./MFCompressD " "MFC-1" "39"
     # # RUN_MFC "$FILE" "./MFCompressC -v -2 -p 1 -t 1 " "./MFCompressD " "MFC-2" "40"
     # # RUN_MFC "$FILE" "./MFCompressC -v -3 -p 1 -t 1 " "./MFCompressD " "MFC-3" "41"
-    # RUN_DMcompress "$FILE" "./DMcompressC " "./DMcompressD " "DMcompress" "42"
+    RUN_DMcompress "$FILE" "./DMcompressC " "./DMcompressD " "DMcompress" "42"
     # # #
     # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
     # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]

@@ -51,7 +51,7 @@ printf "\npreprocessing...\n" # preprocesses each fasta file into its respective
 for faFile in "${faFiles[@]}"; do 
 
     # preprocess .fa files, whether they were already preprocessed or not
-    ./gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x > $faFile.clean
+    ./gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > $faFile.clean
     
     seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
     if [[ ! -f $genomesPath/$seqFile ]]; then   
