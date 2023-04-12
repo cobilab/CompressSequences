@@ -31,6 +31,7 @@ urls=(
 printf "downloading...\n" # downloads fasta files only if they're missing in directory
 for url in "${urls[@]}"; do
     faFile=$(echo $url | rev | cut -d'/' -f1 | rev) # gets filename by spliting in "/" and getting the last element
+
     if [[ ! -f "$genomesPath/$faFile" ]]; then 
         wget -c $url -P "$genomesPath/"
 
@@ -48,6 +49,10 @@ faFiles=( $(ls $genomesPath | egrep "*.fa$") )
 
 printf "\npreprocessing...\n" # preprocesses each fasta file into its respective seq files
 for faFile in "${faFiles[@]}"; do 
+
+    # preprocess .fa files, whether they were already preprocessed or not
+    ./gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x > $faFile.clean
+    
     seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
     if [[ ! -f $genomesPath/$seqFile ]]; then   
         cat "$genomesPath/$faFile" | grep -v ">" | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars

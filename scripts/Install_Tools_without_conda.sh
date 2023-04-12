@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# GTO ------------------------------------------------------------------------
+#
 # BSC --------------------------------------------------------------------------
 #
 rm -fr v0.2.1.tar.gz bsc-m03-0.2.1
@@ -93,14 +95,14 @@ git clone https://github.com/rongjiewang/DMcompress.git
 mv DMcompress/DMcompressC .
 mv DMcompress/DMcompressD .
 rm -fr DMcompress
-#
-# AGC ------------------------------------------------------------------------
-#
+# #
+# # AGC ------------------------------------------------------------------------
+# #
 git clone https://github.com/refresh-bio/agc
 cd agc && make
-#
-# MBGC ------------------------------------------------------------------------
-#
+# #
+# # MBGC ------------------------------------------------------------------------
+# #
 git clone https://github.com/kowallus/mbgc.git
 cd mbgc
 mkdir build

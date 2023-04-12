@@ -442,27 +442,18 @@ function RUN_AGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  dirname=$(dirname $FILE)
-  basename=$(basename $FILE)
-  #
-  agcFileOrig=mbgcFileOrig=$(echo $FILE | sed 's/seq/fna/g');
-  agcFileC=mbgcFileOrig=$(echo $FILE | sed 's/seq/agc/g');
-  agcFileD=$FILE.agc.d
-  #
-  echo ">x" > $agcFileOrig;
-  cat $FILE >> $agcFileOrig;
-  printf "\n" >> $agcFileOrig;
+  agcFileOrig=$(echo $FILE | sed 's/seq/fa/g').clean;
+  agcFileC=$(echo $FILE | sed 's/seq/agc/g');
+  agcFileD=$(echo $FILE | sed 's/seq/agc/g').out;
   #
   # agc create ../genomes/zika.seq.agc -o ../genomes/zika.seq.agc.c
-  # /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $agcFileOrig -o $agcFileC 1> c_stdout.txt 2> c_tmp_report.txt;
   { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $agcFileOrig > $agcFileC; } 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $agcFileC | awk '{ print $5 }'`;
   #
   # agc getcol ../genomes/zika.fa.agc > zika.fa.agc
-  # /bin/time -f "TIME\t%e\tMEM\t%M" agc getcol -o $agcPathD $agcFileC 1> d_stdout.txt 2> d_tmp_report.txt
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $agcFileC > $agcFileD; } 1> c_stdout.txt 2> c_tmp_report.txt;
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $agcFileC > $agcFileD; } 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
   cmp $agcFileOrig $agcFileD > cmp.txt; # may differ due to EOLs
@@ -485,18 +476,20 @@ function RUN_AGC() {
 #
 # alternativa manual
 FILES=(
+    # genoma humano 
+
     # "Pseudobrama_simoni.genome.seq" # 886.11MB
     # "Rhodeus_ocellatus.genome.seq" # 860.71MB
     # "CASSAVA.seq" # CASSAVA, 727.09MB
     # "TME204.HiFi_HiC.haplotig2.seq" # 673.62MB
     
-    # "MFCexample.seq" # 3.5MB
-    # "phyml_tree.seq" # 2.36MB	
+    "MFCexample.seq" # 3.5MB
+    "phyml_tree.seq" # 2.36MB	
     
-    # "EscherichiaPhageLambda.seq" # 49.2KB
-    # "mt_genome_CM029732.seq" # 15.06KB
+    "EscherichiaPhageLambda.seq" # 49.2KB
+    "mt_genome_CM029732.seq" # 15.06KB
     "zika.seq" # 11.0KB
-    # "herpes.seq" # 2.7KB
+    "herpes.seq" # 2.7KB
 )
 
 # alternativa automatica
@@ -505,7 +498,6 @@ FILES=(
 for FILE in "${FILES[@]}"; do
     #
     # ==============================================================================
-    #
     #
     printf "$FILE \nPROGRAM\tC_BYTES\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n";
     #
@@ -566,14 +558,14 @@ for FILE in "${FILES[@]}"; do
     # # #
     # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
     # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
-    # RUN_MBGC "$FILE" "./mbgc -c 0 -i " "mbgc -d " "MBGC" "43"
-    # RUN_MBGC "$FILE" "mbgc -i " "mbgc -d " "MBGC" "44"
-    # RUN_MBGC "$FILE" "mbgc -c 2 -i " "mbgc -d " "MBGC" "45"
-    RUN_MBGC "$FILE" "mbgc -c 3 -i " "mbgc -d " "MBGC" "46"
+    # RUN_MBGC "$FILE" "./mbgc -c 0 -i " "./mbgc -d " "MBGC" "43"
+    # RUN_MBGC "$FILE" "./mbgc -i " "./mbgc -d " "MBGC" "44"
+    # RUN_MBGC "$FILE" "./mbgc -c 2 -i " "./mbgc -d " "MBGC" "45"
+    # RUN_MBGC "$FILE" "./mbgc -c 3 -i " "./mbgc -d " "MBGC" "46"
     # # #
     # ./agc create ref.fa in1.fa in2.fa > col.agc
     # agc getcol [options] <in.agc> > <out.fa>
-    # RUN_AGC "$FILE" "agc create " "agc getcol " "AGC" "47"
+    RUN_AGC "$FILE" "./agc create " "./agc getcol " "AGC" "47"
     # #
     # # ==============================================================================
     # #
