@@ -464,26 +464,76 @@ function RUN_AGC() {
   #
   printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n";
   #
-  rm -f cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
+  rm -f cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt;
   #
 }
 #
 # ==============================================================================
 #
+function RUN_PAQ8() {
+  #
+  # Data compression:
+  # time ./paq8l -8 HS.seq 1> report_c_stdout.txt 2> report_c_stderr.txt
+
+  # # Data decompression:
+  # time ./paq8l -d HS.seq.paq8l Hs.seq.de 1> report_d_stdout.txt 2> report_d_stderr.txt;
+  # #
+  # # Lossless validation:
+  # cmp HS.seq.de HS.seq > cmp.txt;
+  #
+  #
+  FILE="$1";
+  C_COMMAND="$2";
+  D_COMMAND="$3";
+  NAME="$4";
+  # ./paq8l -8 HS.seq
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE \
+  |& grep "TIME" \
+  |& tr '.' ',' \
+  |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
+  BYTES=`ls -la $FILE.paq8l | awk '{ print $5 }'`;
+  # ./paq8l -d HS.seq.paq8l Hs.seq.de
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.paq8l paq8l_out ./paq8l_out/$FILE \
+  |& grep "TIME" \
+  |& tr '.' ',' \
+  |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
+  #
+  cmp $FILE ./paq8l_out/$FILE > cmp.txt
+  #
+  C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
+  C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
+  D_TIME=`cat d_time_mem.txt | awk '{ print $1}'`;
+  D_MEME=`cat d_time_mem.txt | awk '{ print $2}'`;
+  VERIFY="0";
+  CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
+  if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
+  #
+  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n";
+}
+#
+# ==============================================================================
+#
+# function RUN_CMIX() {
+
+# }
+#
+# ==============================================================================
+#
 # alternativa manual
 FILES=(
-    # genoma humano 
+    # "chm13v2.0.fa.gz" # genoma humano, ~3GB
+    # "GRCh38_latest_genomic.fna.gz" # genoma humano, ~3GB
 
     # "Pseudobrama_simoni.genome.seq" # 886.11MB
     # "Rhodeus_ocellatus.genome.seq" # 860.71MB
     # "CASSAVA.seq" # CASSAVA, 727.09MB
     # "TME204.HiFi_HiC.haplotig2.seq" # 673.62MB
     
-    "MFCexample.seq" # 3.5MB
-    "phyml_tree.seq" # 2.36MB	
+    # "MFCexample.seq" # 3.5MB
+    # "phyml_tree.seq" # 2.36MB	
     
-    "EscherichiaPhageLambda.seq" # 49.2KB
-    "mt_genome_CM029732.seq" # 15.06KB
+    # "EscherichiaPhageLambda.seq" # 49.2KB
+    # "mt_genome_CM029732.seq" # 15.06KB
     "zika.seq" # 11.0KB
     "herpes.seq" # 2.7KB
 )
@@ -550,18 +600,20 @@ for FILE in "${FILES[@]}"; do
     # # RUN_MFC "$FILE" "./MFCompressC -v -1 -p 1 -t 1 " "./MFCompressD " "MFC-1" "39"
     # # RUN_MFC "$FILE" "./MFCompressC -v -2 -p 1 -t 1 " "./MFCompressD " "MFC-2" "40"
     # # RUN_MFC "$FILE" "./MFCompressC -v -3 -p 1 -t 1 " "./MFCompressD " "MFC-3" "41"
-    RUN_DMcompress "$FILE" "./DMcompressC " "./DMcompressD " "DMcompress" "42"
+    # RUN_DMcompress "$FILE" "./DMcompressC " "./DMcompressD " "DMcompress" "42"
     # # #
     # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
     # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
-    RUN_MBGC "$FILE" "./mbgc -c 0 -i " "./mbgc -d " "MBGC" "43"
-    RUN_MBGC "$FILE" "./mbgc -i " "./mbgc -d " "MBGC" "44"
-    RUN_MBGC "$FILE" "./mbgc -c 2 -i " "mbgc -d " "MBGC" "45"
-    RUN_MBGC "$FILE" "./mbgc -c 3 -i " "mbgc -d " "MBGC" "46"
+    # RUN_MBGC "$FILE" "./mbgc -c 0 -i " "./mbgc -d " "MBGC" "43"
+    # RUN_MBGC "$FILE" "./mbgc -i " "./mbgc -d " "MBGC" "44"
+    # RUN_MBGC "$FILE" "./mbgc -c 2 -i " "mbgc -d " "MBGC" "45"
+    # RUN_MBGC "$FILE" "./mbgc -c 3 -i " "mbgc -d " "MBGC" "46"
     # # #
     # ./agc create ref.fa in1.fa in2.fa > col.agc
     # agc getcol [options] <in.agc> > <out.fa>
-    RUN_AGC "$FILE" "./agc create " "./agc getcol " "AGC" "47"
+    # RUN_AGC "$FILE" "./agc create " "./agc getcol " "AGC" "47"
+    # #
+    RUN_PAQ8 "$FILE" "./paq8l -8 " "./paq8l -d " "PAQ8L" "48"
     # #
     # # ==============================================================================
     # #
