@@ -2,7 +2,9 @@
 #
 # GTO ------------------------------------------------------------------------
 #
-conda install -c cobilab gto --yes
+git clone https://github.com/bioinformatics-ua/gto.git
+cd gto/src/
+make
 #
 # BSC --------------------------------------------------------------------------
 #
@@ -31,25 +33,37 @@ unzip -o JARVIS2-bin-64-Linux.zip
 cp JARVIS2-bin-64-Linux/extra/* .
 cp JARVIS2-bin-64-Linux/JARVIS2.sh .
 cp JARVIS2-bin-64-Linux/JARVIS2 .
+rm -rf JARVIS2-bin-64-Linux.zip JARVIS2-bin-64-Linux/
 #
 # JARVIS1 ----------------------------------------------------------------------
 #
-conda install -y -c bioconda jarvis
+git clone https://github.com/pratas/jarvis.git
+cd jarvis/src/
+make
+cp JARVIS ../../
+cd ../../
+rm -fr jarvis
 #
 # GeCo3 ------------------------------------------------------------------------
 #
-conda install -y -c bioconda geco3
+git clone https://github.com/cobilab/geco3.git
+cd geco3/src/
+make
+cp GeCo3 ../../
+cp GeDe3 ../../
+cd ../../
+rm -fr geco3
 #
 # GeCo2 ------------------------------------------------------------------------
 #
-conda install -y -c bioconda geco2
-#git clone https://github.com/pratas/geco2.git
-#cd geco2/src/
-#cmake .
-#make
-#cp GeCo2 ..
-#cp GeDe2 ..
-#cd ../../
+git clone https://github.com/pratas/geco2.git
+cd geco2/src/
+cmake .
+make
+cp GeCo2 ../../
+cp GeDe2 ../../
+cd ../../
+rm -fr geco2
 #
 # NNCP -------------------------------------------------------------------------
 #
@@ -75,23 +89,30 @@ rm -fr tmp_paq8l/
 #
 # NAF ------------------------------------------------------------------------
 #
-conda install -y -c bioconda naf
-# sudo apt install git gcc make diffutils perl
-# git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
-# cd naf && make && make test && sudo make install
+sudo apt install git gcc make diffutils perl
+git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
+cd naf && make && make test && sudo make install
 #
-# AGC ------------------------------------------------------------------------
+# DMcompress ------------------------------------------------------------------------
 #
-conda install -c bioconda agc
-# git clone https://github.com/refresh-bio/agc
-# cd agc && make
-#
-# MBGC ------------------------------------------------------------------------
-#
-conda install -c bioconda mbgc 
-# git clone https://github.com/kowallus/mbgc.git
-# cd mbgc
-# mkdir build
-# cd build
-# cmake ..
-# make mbgc
+git clone https://github.com/rongjiewang/DMcompress.git
+mv DMcompress/DMcompressC .
+mv DMcompress/DMcompressD .
+rm -fr DMcompress
+# #
+# # AGC ------------------------------------------------------------------------
+# #
+git clone https://github.com/refresh-bio/agc
+cd agc && make
+# #
+# # MBGC ------------------------------------------------------------------------
+# #
+git clone https://github.com/kowallus/mbgc.git
+cd mbgc
+mkdir build
+cd build
+cmake ..
+make mbgc
+mv ../../mbgc ../../mbgc_dir # rename mbgc directory to move mbgc executable to scripts
+mv mbgc ../..
+cd ../..
