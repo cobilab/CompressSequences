@@ -19,8 +19,6 @@ faFiles=(
 )
 
 urls=(
-#     "https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz" # human reference genome # ~3GB
-
 #     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102191/Pseudobrama_simoni.genome.fa" # 886.11MB
 #     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102192/Rhodeus_ocellatus.genome.fa" # 860.71MB
 #     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102193/00_Assembly_Fasta/haplotigs/TME204.HiFi_HiC.haplotig1.fa" # CASSAVA, 727.09MB
@@ -53,7 +51,7 @@ printf "\npreprocessing...\n" # preprocesses each fasta file into its respective
 for faFile in "${faFiles[@]}"; do 
 
     # preprocess .fa files, whether they were already preprocessed or not
-    gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > $faFile.clean
+    ./gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > $faFile.clean
     
     seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
     if [[ ! -f $genomesPath/$seqFile ]]; then   
