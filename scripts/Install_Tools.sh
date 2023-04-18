@@ -111,3 +111,12 @@ cd ..
 mv cmix cmix_dir
 mv cmix_dir/cmix .
 mv cmix_dir/enwik9-preproc .
+#
+# MEMRGC ------------------------------------------------------------------------
+#
+git clone https://github.com/yuansliu/memrgc.git
+mv memrgc memrgc_dir
+cd memrgc_dir
+make
+cd ..
+mv memrgc_dir/memrgc .
