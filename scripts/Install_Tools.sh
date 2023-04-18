@@ -95,3 +95,19 @@ conda install -c bioconda mbgc
 # cd build
 # cmake ..
 # make mbgc
+#
+# PAQ8l ------------------------------------------------------------------------
+#
+conda install -c bioconda seqtk -y
+#
+# CMIX ------------------------------------------------------------------------
+#
+git clone https://github.com/byronknoll/cmix.git
+cd cmix
+sudo apt update
+sudo apt install clang
+make 
+cd ..
+mv cmix cmix_dir
+mv cmix_dir/cmix .
+mv cmix_dir/enwik9-preproc .

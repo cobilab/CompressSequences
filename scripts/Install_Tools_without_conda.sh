@@ -116,3 +116,23 @@ make mbgc
 mv ../../mbgc ../../mbgc_dir # rename mbgc directory to move mbgc executable to scripts
 mv mbgc ../..
 cd ../..
+#
+# PAQ8l ------------------------------------------------------------------------
+#
+rm -fr paq8l.zip
+wget http://mattmahoney.net/dc/paq8l.zip
+unzip paq8l.zip
+g++ paq8l.cpp -O2 -DUNIX -DNOASM -s -o paq8l
+#
+# CMIX ------------------------------------------------------------------------
+#
+git clone https://github.com/byronknoll/cmix.git
+cd cmix
+sudo apt update
+sudo apt install clang
+make 
+cd ..
+mv cmix cmix_dir
+mv cmix_dir/cmix .
+mv cmix_dir/enwik9-preproc .
+

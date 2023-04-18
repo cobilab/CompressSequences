@@ -513,9 +513,9 @@ function RUN_PAQ8() {
 #
 # ==============================================================================
 #
-# function RUN_CMIX() {
-
-# }
+function RUN_CMIX() {
+  printf "";
+}
 #
 # ==============================================================================
 #
@@ -534,7 +534,7 @@ FILES=(
     
     # "EscherichiaPhageLambda.seq" # 49.2KB
     # "mt_genome_CM029732.seq" # 15.06KB
-    "zika.seq" # 11.0KB
+    # "zika.seq" # 11.0KB
     "herpes.seq" # 2.7KB
 )
 
