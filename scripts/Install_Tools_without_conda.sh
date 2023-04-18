@@ -119,10 +119,14 @@ cd ../..
 #
 # PAQ8l ------------------------------------------------------------------------
 #
-rm -fr paq8l.zip
+mkdir paq8l_dir
+cd paq8l_dir
 wget http://mattmahoney.net/dc/paq8l.zip
 unzip paq8l.zip
 g++ paq8l.cpp -O2 -DUNIX -DNOASM -s -o paq8l
+rm -fr paq8l.zip
+cd ..
+mv paq8l_dir/paq8l .
 #
 # CMIX ------------------------------------------------------------------------
 #
@@ -135,4 +139,3 @@ cd ..
 mv cmix cmix_dir
 mv cmix_dir/cmix .
 mv cmix_dir/enwik9-preproc .
-

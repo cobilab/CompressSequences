@@ -533,8 +533,8 @@ FILES=(
     # "phyml_tree.seq" # 2.36MB	
     
     # "EscherichiaPhageLambda.seq" # 49.2KB
-    # "mt_genome_CM029732.seq" # 15.06KB
-    # "zika.seq" # 11.0KB
+    "mt_genome_CM029732.seq" # 15.06KB
+    "zika.seq" # 11.0KB
     "herpes.seq" # 2.7KB
 )
 
