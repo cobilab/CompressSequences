@@ -2,7 +2,6 @@
 
 genomesPath="." # "../genomes"
 
-# alternativa manual
 faFiles=(
     # "Pseudobrama_simoni.genome.fa" # 886.11MB
     # "Rhodeus_ocellatus.genome.fa" # 860.71MB
@@ -38,8 +37,6 @@ for url in "${urls[@]}"; do
     if [[ ! -f "$genomesPath/$faFile" ]]; then 
         wget -c $url -P "$genomesPath/"
 
-        faFiles+=($faFile) # alternativa manual
-
         # se outros ficheiros do mesmo genoma já existirem apesar de .fa ter sido criado depois, remove-los para atualizar .seq
         find "$genomesPath/" -name "$faFile.*" ! -name "*.fa" -type f -delete
     else 
@@ -47,17 +44,16 @@ for url in "${urls[@]}"; do
     fi
 done
 
-# alternativa automatica
 faFiles=( $(ls $genomesPath | egrep "*.fa$") )
 
 printf "\npreprocessing...\n" # preprocesses each fasta file into its respective seq files
 for faFile in "${faFiles[@]}"; do 
 
-    # preprocess .fa files, whether they were already preprocessed or not
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-        gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${$faFile%.*}_clean.fa
+        # preprocess .fa files, whether they were already preprocessed or not
+        gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
     else
-        ./gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${$faFile%.*}_clean.fa
+        ./gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
     fi
 
     seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
