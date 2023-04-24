@@ -43,13 +43,6 @@ conda install -y -c bioconda geco3
 # GeCo2 ------------------------------------------------------------------------
 #
 conda install -y -c bioconda geco2
-#git clone https://github.com/pratas/geco2.git
-#cd geco2/src/
-#cmake .
-#make
-#cp GeCo2 ..
-#cp GeDe2 ..
-#cd ../../
 #
 # NNCP -------------------------------------------------------------------------
 #
@@ -76,25 +69,14 @@ rm -fr tmp_paq8l/
 # NAF ------------------------------------------------------------------------
 #
 conda install -y -c bioconda naf
-# sudo apt install git gcc make diffutils perl
-# git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
-# cd naf && make && make test && sudo make install
 #
 # AGC ------------------------------------------------------------------------
 #
 conda install -c bioconda agc
-# git clone https://github.com/refresh-bio/agc
-# cd agc && make
 #
 # MBGC ------------------------------------------------------------------------
 #
 conda install -c bioconda mbgc 
-# git clone https://github.com/kowallus/mbgc.git
-# cd mbgc
-# mkdir build
-# cd build
-# cmake ..
-# make mbgc
 #
 # PAQ8l ------------------------------------------------------------------------
 #

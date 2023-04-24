@@ -92,6 +92,9 @@ rm -fr tmp_paq8l/
 sudo apt install git gcc make diffutils perl
 git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
 cd naf && make && make test && sudo make install
+mv ennaf/ennaf ../
+mv unnaf/unnaf ../
+cd ../
 #
 # DMcompress ------------------------------------------------------------------------
 #
@@ -104,6 +107,9 @@ rm -fr DMcompress
 # #
 git clone https://github.com/refresh-bio/agc
 cd agc && make
+mv ../agc ../agc_dir
+mv agc_dir/agc .
+cd ../
 # #
 # # MBGC ------------------------------------------------------------------------
 # #
