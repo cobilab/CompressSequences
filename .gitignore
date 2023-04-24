@@ -1,5 +1,6 @@
-# Ignore everything
+# Ignore these
 scripts/*
+bench-results.tex
 
 # Except for these
 !scripts/*.sh
