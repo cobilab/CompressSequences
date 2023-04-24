@@ -620,7 +620,7 @@ for FILE in "${FILES[@]}"; do
       RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
       RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
       RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
-      RUN_GECO2 "$FILE" "./GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "./GeDe2 -v " "GeCo2" "5" "$((run+=1))"
+      RUN_GECO2 "$FILE" "./GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
     fi
     # #
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
