@@ -54,8 +54,12 @@ printf "\npreprocessing...\n" # preprocesses each fasta file into its respective
 for faFile in "${faFiles[@]}"; do 
 
     # preprocess .fa files, whether they were already preprocessed or not
-    gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > $faFile.clean
-    
+    if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
+        gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${$faFile%.*}_clean.fa
+    else
+        ./gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${$faFile%.*}_clean.fa
+    fi
+
     seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
     if [[ ! -f $genomesPath/$seqFile ]]; then   
         cat "$genomesPath/$faFile" | grep -v ">" | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
