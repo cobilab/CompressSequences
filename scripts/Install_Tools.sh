@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
+function INSTALL_WITH_CONDA() {
     #
     # GTO ------------------------------------------------------------------------
     #
@@ -33,13 +33,16 @@ if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
     # PAQ8l ------------------------------------------------------------------------
     #
     conda install -c bioconda seqtk -y
-else
+}
+#
+function INSTALL_WITHOUT_CONDA() {
     #
     # GTO ------------------------------------------------------------------------
     #
     git clone https://github.com/bioinformatics-ua/gto.git
     cd gto/src/
     make
+    cd ../../
     #
     # JARVIS1 ----------------------------------------------------------------------
     #
@@ -73,20 +76,22 @@ else
     #
     # NAF ------------------------------------------------------------------------
     #
-    sudo apt install git gcc make diffutils perl
+    sudo apt install git gcc make diffutils perl # asks manual password
     git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
     cd naf && make && make test && sudo make install
-    mv ennaf/ennaf ../
-    mv unnaf/unnaf ../
+    cp ennaf/ennaf ../
+    cp unnaf/unnaf ../
     cd ../
+    rm -fr naf
     #
     # AGC ------------------------------------------------------------------------
     #
     git clone https://github.com/refresh-bio/agc
     cd agc && make
-    mv ../agc ../agc_dir
-    mv agc_dir/agc .
-    cd ../
+    cd ..
+    mv agc agc_dir
+    cp agc_dir/agc .
+    rm -fr agc_dir
     #
     # MBGC ------------------------------------------------------------------------
     #
@@ -96,9 +101,10 @@ else
     cd build
     cmake ..
     make mbgc
-    mv ../../mbgc ../../mbgc_dir # rename mbgc directory to move mbgc executable to scripts
-    mv mbgc ../..
-    cd ../..
+    cd ../../
+    mv mbgc mbgc_dir # rename mbgc directory to move mbgc executable to scripts
+    cp mbgc_dir/build/mbgc .
+    rm -fr mbgc_dir
     #
     # PAQ8l ------------------------------------------------------------------------
     #
@@ -110,7 +116,18 @@ else
     rm -fr paq8l.zip
     cd ..
     mv paq8l_dir/paq8l .
+    rm -fr paq8l_dir
+}
+if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
+    INSTALL_WITH_CONDA;
+elif [[ "$*" == *"--install-with-both"* ||  "$*" == *"-iwb"* ]]; then
+    INSTALL_WITH_CONDA;
+    INSTALL_WITHOUT_CONDA;
+else
+    INSTALL_WITHOUT_CONDA;
 fi
+# 
+# The tools below cannot be installed with conda
 #
 # BSC --------------------------------------------------------------------------
 #
@@ -122,14 +139,16 @@ cmake .
 make
 cp bsc-m03 ..
 cd ..
+rm -fr bsc-m03-0.2.1/
 #
 # MFC --------------------------------------------------------------------------
 #
-rm MFCompress-linux64-1.01.tgz MFCompress-linux64-1.01/ -fr
+rm -fr MFCompress-linux64-1.01.tgz MFCompress-linux64-1.01/
 wget http://sweet.ua.pt/ap/software/mfcompress/MFCompress-linux64-1.01.tgz
 tar -xvzf MFCompress-linux64-1.01.tgz
 cp MFCompress-linux64-1.01/MFCompressC .
 cp MFCompress-linux64-1.01/MFCompressD .
+rm -fr MFCompress-linux64-1.01/ MFCompress-linux64-1.01.tgz
 #
 # JARVIS2 ----------------------------------------------------------------------
 #
@@ -139,6 +158,7 @@ unzip -o JARVIS2-bin-64-Linux.zip
 cp JARVIS2-bin-64-Linux/extra/* .
 cp JARVIS2-bin-64-Linux/JARVIS2.sh .
 cp JARVIS2-bin-64-Linux/JARVIS2 .
+rm -fr JARVIS2-bin-64-Linux/ JARVIS2-bin-64-Linux.zip
 #
 # NNCP -------------------------------------------------------------------------
 #
@@ -149,30 +169,20 @@ cd nncp-2021-06-01/
 make
 cp nncp ../
 cd ..
-#
-# PAQ8L ------------------------------------------------------------------------
-#
-mkdir -p tmp_paq8l
-cd tmp_paq8l/
-rm -fr paq8l.zip
-wget http://mattmahoney.net/dc/paq8l.zip
-unzip paq8l.zip
-g++ paq8l.cpp -O2 -DUNIX -DNOASM -s -o paq8l
-cp paq8l ../
-cd ../
-rm -fr tmp_paq8l/
+rm -fr nncp-2021-06-01/ nncp-2021-06-01.tar.gz
 #
 # CMIX ------------------------------------------------------------------------
 #
 git clone https://github.com/byronknoll/cmix.git
 cd cmix
-sudo apt update
+sudo apt update # asks manual password
 sudo apt install clang
 make 
 cd ..
 mv cmix cmix_dir
-mv cmix_dir/cmix .
-mv cmix_dir/enwik9-preproc .
+cp cmix_dir/cmix .
+cp cmix_dir/enwik9-preproc .
+rm -fr cmix_dir
 #
 # MEMRGC ------------------------------------------------------------------------
 #
@@ -182,3 +192,11 @@ cd memrgc_dir
 make
 cd ..
 mv memrgc_dir/memrgc .
+rm -fr memrgc_dir/
+#
+# DMcompress ------------------------------------------------------------------------
+#
+git clone https://github.com/rongjiewang/DMcompress.git
+cp DMcompress/DMcompressC .
+cp DMcompress/DMcompressD .
+rm -fr DMcompress

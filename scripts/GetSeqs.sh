@@ -44,7 +44,7 @@ for url in "${urls[@]}"; do
     fi
 done
 
-faFiles=( $(ls $genomesPath | egrep "*.fa$") )
+faFiles=( $(ls $genomesPath | egrep -v "_clean" | egrep "*.fa$") )
 
 printf "\npreprocessing...\n" # preprocesses each fasta file into its respective seq files
 for faFile in "${faFiles[@]}"; do 
