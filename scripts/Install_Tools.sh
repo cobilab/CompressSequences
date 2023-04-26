@@ -4,7 +4,7 @@ function INSTALL_WITH_CONDA() {
     #
     # GTO ------------------------------------------------------------------------
     #
-    conda install -c cobilab gto --yes
+    conda install -y -c cobilab gto
     #
     # JARVIS1 ----------------------------------------------------------------------
     #
@@ -24,15 +24,11 @@ function INSTALL_WITH_CONDA() {
     #
     # AGC ------------------------------------------------------------------------
     #
-    conda install -c bioconda agc
+    conda install -y -c bioconda agc
     #
     # MBGC ------------------------------------------------------------------------
     #
-    conda install -c bioconda mbgc 
-    #
-    # PAQ8l ------------------------------------------------------------------------
-    #
-    conda install -c bioconda seqtk -y
+    conda install -y -c bioconda mbgc 
 }
 #
 function INSTALL_WITHOUT_CONDA() {
@@ -76,13 +72,13 @@ function INSTALL_WITHOUT_CONDA() {
     #
     # NAF ------------------------------------------------------------------------
     #
-    sudo apt install git gcc make diffutils perl # asks manual password
-    git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
-    cd naf && make && make test && sudo make install
-    cp ennaf/ennaf ../
-    cp unnaf/unnaf ../
-    cd ../
-    rm -fr naf
+    # sudo apt install git gcc make diffutils perl # asks manual password
+    # git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
+    # cd naf && make && make test && sudo make install
+    # cp ennaf/ennaf ../
+    # cp unnaf/unnaf ../
+    # cd ../
+    # rm -fr naf
     #
     # AGC ------------------------------------------------------------------------
     #
@@ -105,19 +101,8 @@ function INSTALL_WITHOUT_CONDA() {
     mv mbgc mbgc_dir # rename mbgc directory to move mbgc executable to scripts
     cp mbgc_dir/build/mbgc .
     rm -fr mbgc_dir
-    #
-    # PAQ8l ------------------------------------------------------------------------
-    #
-    mkdir paq8l_dir
-    cd paq8l_dir
-    wget http://mattmahoney.net/dc/paq8l.zip
-    unzip paq8l.zip
-    g++ paq8l.cpp -O2 -DUNIX -DNOASM -s -o paq8l
-    rm -fr paq8l.zip
-    cd ..
-    mv paq8l_dir/paq8l .
-    rm -fr paq8l_dir
 }
+#
 if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
     INSTALL_WITH_CONDA;
 elif [[ "$*" == *"--install-with-both"* ||  "$*" == *"-iwb"* ]]; then
@@ -173,16 +158,16 @@ rm -fr nncp-2021-06-01/ nncp-2021-06-01.tar.gz
 #
 # CMIX ------------------------------------------------------------------------
 #
-git clone https://github.com/byronknoll/cmix.git
-cd cmix
-sudo apt update # asks manual password
-sudo apt install clang
-make 
-cd ..
-mv cmix cmix_dir
-cp cmix_dir/cmix .
-cp cmix_dir/enwik9-preproc .
-rm -fr cmix_dir
+# git clone https://github.com/byronknoll/cmix.git
+# cd cmix
+# sudo apt update # asks manual password
+# sudo apt install clang
+# make 
+# cd ..
+# mv cmix cmix_dir
+# cp cmix_dir/cmix .
+# cp cmix_dir/enwik9-preproc .
+# rm -fr cmix_dir
 #
 # MEMRGC ------------------------------------------------------------------------
 #
@@ -200,3 +185,15 @@ git clone https://github.com/rongjiewang/DMcompress.git
 cp DMcompress/DMcompressC .
 cp DMcompress/DMcompressD .
 rm -fr DMcompress
+#
+# PAQ8l ------------------------------------------------------------------------
+#
+mkdir paq8l_dir
+cd paq8l_dir
+wget http://mattmahoney.net/dc/paq8l.zip
+unzip paq8l.zip
+g++ paq8l.cpp -O2 -DUNIX -DNOASM -s -o paq8l
+rm -fr paq8l.zip
+cd ..
+mv paq8l_dir/paq8l .
+rm -fr paq8l_dir
