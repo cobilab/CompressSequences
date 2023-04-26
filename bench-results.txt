@@ -1,267 +1,193 @@
-(not installed with conda)
+(sapiens, without conda)
+not working: memrgc, mbgc, agc, cmix, naf
 
-SEQUENCE	 PROGRAM	 C_BYTES	 C_TIME (m)	 C_MEM (GB)	 D_TIME (m)	 D_MEM (GB)	 DIFF	 RUN
-EscherichiaPhageLambda		GeCo2		12159		0		0		0		0.144421		0		1		 
-EscherichiaPhageLambda		GeCo2		11935		0		0		0		0.23436		0		2		 
-EscherichiaPhageLambda		GeCo2		11934		0		0		0		0.321995		0		3		 
-EscherichiaPhageLambda		GeCo2		11933		0		0		0.0833333		1.78337		0		4		 
-EscherichiaPhageLambda		GeCo2		12176		0		0		0.133333		3.36841		0		5		 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00159073		0		0.00172806		0		6	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00166321		0		0.00175476		0		7	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00165939		0		0.0017128		0		8	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00164795		0		0.00172806		0		9	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00169373		0		0.00170898		0		10	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.0016861		0		0.00170517		0		11	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00169373		0		0.0017128		0		12	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00160217		0		0.00175476		0		13	 
-EscherichiaPhageLambda		GeCo3		12176		0		0.00159836		0		0.00175858		0		14	 
-EscherichiaPhageLambda		JARVIS1		11982		0		0.144577		0		0.144531		0		15	 
-EscherichiaPhageLambda		JARVIS1		12146		0		0.144672		0		0.144627		0		16	 
-EscherichiaPhageLambda		JARVIS1		12249		0		0.148277		0		0.148232		0		17	 
-EscherichiaPhageLambda		JARVIS1		12184		0.0166667		0.712181		0.0166667		0.712128		0	18		 
-EscherichiaPhageLambda		JARVIS1		12138		0.0166667		0.627529		0.0166667		0.627537		0	19		 
-EscherichiaPhageLambda		JARVIS1		12008		0		0.143517		0		0.143383		0		20	 
-EscherichiaPhageLambda		JARVIS2-bin		12076		0		0.160736		0		0.160679		0		21		 
-EscherichiaPhageLambda		JARVIS2-bin		11876		0		0.160862		0		0.160816		0		22		 
-EscherichiaPhageLambda		JARVIS2-bin		11876		0		0.16095		0		0.160774		0		23	 
-EscherichiaPhageLambda		JARVIS2-bin		11876		0		0.160957		0		0.160835		0		24		 
-EscherichiaPhageLambda		JARVIS2-bin		11876		0		0.160904		0		0.160778		0		25		 
-EscherichiaPhageLambda		JARVIS2-bin		11928		0.0166667		0.393143		0.0166667		0.393074		0	26		 
-EscherichiaPhageLambda		JARVIS2-bin		11943		0.0166667		0.422958		0.0166667		0.422958		0	27		 
-EscherichiaPhageLambda		JARVIS2-bin		11895		0.0166667		0.392986		0.0166667		0.392979		0	28		 
-EscherichiaPhageLambda		JARVIS2-bin		11907		0		0.268379		0		0.268314		0		29		 
-EscherichiaPhageLambda		JARVIS2-bin		12024		0		0.160587		0		0.160568		0		30		 
-EscherichiaPhageLambda		JARVIS2-bin		12044		0.0166667		0.268211		0.0166667		0.26815		0	31		 
-EscherichiaPhageLambda		JARVIS2-bin		11967		0.0333333		0.511608		0.0333333		0.511482		0	32		 
-EscherichiaPhageLambda		JARVIS2-bin		12030		0		0.268375		0		0.268307		0		33		 
-EscherichiaPhageLambda		JARVIS2-sh		20480		0		0.267532		0		0.267406		0		34		 
-EscherichiaPhageLambda		JARVIS2-sh		20480		0.0166667		0.267994		0.0166667		0.267879		0	35		 
-EscherichiaPhageLambda		JARVIS2-sh		20480		0.0166667		0.268021		0.0166667		0.267902		0	36		 
-EscherichiaPhageLambda		JARVIS2-sh		20480		0		0.267475		0		0.267448		0		37		 
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-EscherichiaPhageLambda		NAF-22		12254		0.0666667		3.16941		0		0.00143814		0		38	 
-EscherichiaPhageLambda		LZMA-9		13424		0		0.00308228		0		0.00218582		0		39	 
-EscherichiaPhageLambda		BZIP2-9		13249		0		0.0019455		0		0.00175095		0		40	 
-EscherichiaPhageLambda		BSC-m03		12156		0		0.00514221		0		0.00485992		0		41	 
-EscherichiaPhageLambda		BSC-m03		12156		0		0.00514603		0		0.0049057		0		42	 
-EscherichiaPhageLambda		BSC-m03		12156		0		0.00520706		0		0.00485992		0		43	 
-EscherichiaPhageLambda		MFC-1		12266		0		0.235352		0		0.234306		0		44	 
-EscherichiaPhageLambda		MFC-2		12198		0		0.235878		0		0.234825		0		45	 
-EscherichiaPhageLambda		MFC-3		12286		0		0.45433		0		0.453224		0		46		 
-EscherichiaPhageLambda		DMcompress		12152		0		0.322849		0		0.321934		0		47		 
-ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda		MBGC				0		0.00362778		0		0.00365448		0		48	 
-ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda		MBGC				0		0.00363541		0		0.00363159		0		49	 
-ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda		MBGC				0		0.00363159		0		0.00364685		0		50	 
-ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda		MBGC				0		0.00366211		0		0.00362396		0		51	 
-cmp: EOF on EscherichiaPhageLambda_clean.fa.out which is empty
-EscherichiaPhageLambda		AGC		0		0		0.00385284		0		0.00378418		0		52	 
-EscherichiaPhageLambda		PAQ8L		11879		0.2		0.625275		0.2		0.625278		0		53	 
-ls: cannot access 'EscherichiaPhageLambda_clean.fa.memrgc': No such file or directory
-cmp: EscherichiaPhageLambda_clean.fa.memrgc.out: No such file or directory
-EscherichiaPhageLambda		MEMRGC				0		0.00106049		0		0.00105667		0		54	 
-mt_genome_CM029732		GeCo2		3805		0		0		0		0.0502243		0		55		 
-mt_genome_CM029732		GeCo2		3641		0		0		0		0.0883217		0		56		 
-mt_genome_CM029732		GeCo2		3641		0		0		0		0.105556		0		57		 
-mt_genome_CM029732		GeCo2		3641		0		0		0.0833333		1.7827		0		58		 
-mt_genome_CM029732		GeCo2		3822		0		0		0.133333		3.31867		0		5		 
-mt_genome_CM029732		GeCo3		3822		0		0.00159073		0		0.00172043		0		60	 
-mt_genome_CM029732		GeCo3		3822		0		0.00165939		0		0.00175858		0		61	 
-mt_genome_CM029732		GeCo3		3822		0		0.00164795		0		0.00175476		0		62	 
-mt_genome_CM029732		GeCo3		3822		0		0.00165558		0		0.0017128		0		63	 
-mt_genome_CM029732		GeCo3		3822		0		0.00163651		0		0.00172806		0		64	 
-mt_genome_CM029732		GeCo3		3822		0		0.00165939		0		0.00172043		0		65	 
-mt_genome_CM029732		GeCo3		3822		0		0.00165176		0		0.00173187		0		66	 
-mt_genome_CM029732		GeCo3		3822		0		0.00160217		0		0.00175858		0		67	 
-mt_genome_CM029732		GeCo3		3822		0		0.00159073		0		0.00170517		0		68	 
-mt_genome_CM029732		JARVIS1		3615		0		0.0678444		0		0.0678101		0		69	 
-mt_genome_CM029732		JARVIS1		3729		0		0.0678749		0		0.0677986		0		70	 
-mt_genome_CM029732		JARVIS1		3805		0		0.0709648		0		0.0710106		0		71	 
-mt_genome_CM029732		JARVIS1		3808		0		0.320404		0		0.320324		0		72	 
-mt_genome_CM029732		JARVIS1		3797		0		0.284565		0		0.284428		0		73	 
-mt_genome_CM029732		JARVIS1		3688		0		0.0669975		0		0.0669785		0		74	 
-mt_genome_CM029732		JARVIS2-bin		3604		0		0.0869255		0		0.0868454		0		75		 
-mt_genome_CM029732		JARVIS2-bin		3600		0		0.0870705		0		0.087059		0		76		 
-mt_genome_CM029732		JARVIS2-bin		3600		0		0.0871391		0		0.0870285		0		77		 
-mt_genome_CM029732		JARVIS2-bin		3600		0		0.0870895		0		0.0870705		0		78		 
-mt_genome_CM029732		JARVIS2-bin		3600		0		0.0870895		0		0.0870247		0		79		 
-mt_genome_CM029732		JARVIS2-bin		3620		0		0.173267		0		0.173313		0		80		 
-mt_genome_CM029732		JARVIS2-bin		3625		0		0.193287		0		0.193199		0		81		 
-mt_genome_CM029732		JARVIS2-bin		3624		0		0.173237		0		0.1731		0		82	 
-mt_genome_CM029732		JARVIS2-bin		3622		0		0.143906		0		0.143898		0		83		 
-mt_genome_CM029732		JARVIS2-bin		3602		0		0.0860367		0		0.0860291		0		84		 
-mt_genome_CM029732		JARVIS2-bin		3621		0		0.144024		0		0.143959		0		85		 
-mt_genome_CM029732		JARVIS2-bin		3642		0		0.216511		0		0.216446		0		86		 
-mt_genome_CM029732		JARVIS2-bin		3614		0		0.143967		0		0.143902		0		87		 
-mt_genome_CM029732		JARVIS2-sh		10240		0		0.143124		0		0.143063		0		88		 
-mt_genome_CM029732		JARVIS2-sh		10240		0		0.144272		0		0.14426		0		89	 
-mt_genome_CM029732		JARVIS2-sh		10240		0		0.144291		0		0.144226		0		90		 
-mt_genome_CM029732		JARVIS2-sh		10240		0		0.143124		0		0.14304		0		91	 
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-mt_genome_CM029732		NAF-22		3691		0.0666667		3.16934		0		0.00138855		0		92	 
-mt_genome_CM029732		LZMA-9		4304		0		0.0028038		0		0.00215149		0		93	 
-mt_genome_CM029732		BZIP2-9		4151		0		0.00183868		0		0.00167084		0		94	 
-mt_genome_CM029732		BSC-m03		3716		0		0.00452805		0		0.00439453		0		95	 
-mt_genome_CM029732		BSC-m03		3716		0		0.00458908		0		0.00436783		0		96	 
-mt_genome_CM029732		BSC-m03		3716		0		0.00452805		0		0.00439835		0		97	 
-mt_genome_CM029732		MFC-1		3886		0		0.0894051		0		0.0884132		0		98	 
-mt_genome_CM029732		MFC-2		3765		0		0.0898056		0		0.0888023		0		99	 
-mt_genome_CM029732		MFC-3		3818		0		0.158337		0		0.157291		0		100	 
-mt_genome_CM029732		DMcompress		3706		0		0.106686		0		0.105675		0		101		 
-ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732		MBGC				0		0.00358963		0		0.00363922		0		102	 
-ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732		MBGC				0		0.00368118		0		0.00363922		0		103	 
-ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732		MBGC				0		0.00358963		0		0.00362015		0		104	 
-ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732		MBGC				0		0.00363922		0		0.00362396		0		105	 
-cmp: EOF on mt_genome_CM029732_clean.fa.out which is empty
-mt_genome_CM029732		AGC		0		0		0.00378036		0		0.00378418		0		106	 
-mt_genome_CM029732		PAQ8L		3621		0.0666667		0.427341		0.0666667		0.427372		0	107		 
-ls: cannot access 'mt_genome_CM029732_clean.fa.memrgc': No such file or directory
-cmp: mt_genome_CM029732_clean.fa.memrgc.out: No such file or directory
-mt_genome_CM029732		MEMRGC				0		0.00105667		0		0.00105667		0		108	 
-zika		GeCo2		2731		0		0		0		0.039959		0		109		 
-zika		GeCo2		2684		0		0		0		0.0739708		0		110		 
-zika		GeCo2		2684		0		0		0		0.0813065		0		111		 
-zika		GeCo2		2684		0		0		0.0833333		1.78131		0		112		 
-zika		GeCo2		2748		0		0		0.133333		3.31274		0		5		 
-zika		GeCo3		2748		0		0.00159836		0		0.00172806		0		114		 
-zika		GeCo3		2748		0		0.00165939		0		0.00175858		0		115		 
-zika		GeCo3		2748		0		0.00165939		0		0.00173187		0		116		 
-zika		GeCo3		2748		0		0.00165939		0		0.00172806		0		117		 
-zika		GeCo3		2748		0		0.00165939		0		0.00171661		0		118		 
-zika		GeCo3		2748		0		0.00165176		0		0.00175858		0		119		 
-zika		GeCo3		2748		0		0.00168991		0		0.00171661		0		120		 
-zika		GeCo3		2748		0		0.00159836		0		0.00172806		0		121		 
-zika		GeCo3		2748		0		0.00159836		0		0.00173187		0		122		 
-zika		JARVIS1		2675		0		0.0603714		0		0.0603142		0		123		 
-zika		JARVIS1		2742		0		0.0604019		0		0.0603256		0		124		 
-zika		JARVIS1		2746		0		0.0619545		0		0.0619469		0		125		 
-zika		JARVIS1		2773		0		0.264431		0		0.264488		0		126		 
-zika		JARVIS1		2759		0		0.233494		0		0.233486		0		127		 
-zika		JARVIS1		2720		0		0.0601807		0		0.0600777		0		128		 
-zika		JARVIS2-bin		2740		0		0.0681419		0		0.0680771		0		129		 
-zika		JARVIS2-bin		2699		0		0.0682793		0		0.0682602		0		130		 
-zika		JARVIS2-bin		2699		0		0.0683022		0		0.0682335		0		131		 
-zika		JARVIS2-bin		2699		0		0.0683022		0		0.0682335		0		132		 
-zika		JARVIS2-bin		2699		0		0.0683022		0		0.0682335		0		133		 
-zika		JARVIS2-bin		2718		0		0.140232		0		0.140228		0		134		 
-zika		JARVIS2-bin		2731		0		0.159443		0		0.159374		0		135		 
-zika		JARVIS2-bin		2722		0		0.140186		0		0.140079		0		136		 
-zika		JARVIS2-bin		2719		0		0.122047		0		0.121937		0		137		 
-zika		JARVIS2-bin		2704		0		0.0683022		0		0.0681915		0		138		 
-zika		JARVIS2-bin		2735		0		0.121635		0		0.121628		0		139		 
-zika		JARVIS2-bin		2751		0		0.172916		0		0.172832		0		140		 
-zika		JARVIS2-bin		2730		0		0.121937		0		0.121979		0		141		 
-zika		JARVIS2-sh		10240		0		0.121658		0		0.121651		0		142		 
-zika		JARVIS2-sh		10240		0		0.121895		0		0.121834		0		143		 
-zika		JARVIS2-sh		10240		0		0.12188		0		0.121857		0		144		 
-zika		JARVIS2-sh		10240		0		0.121769		0		0.121704		0		145		 
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-zika		NAF-22		2779		0.0666667		3.16927		0		0.00141144		0		146		 
-zika		LZMA-9		3195		0		0.00276184		0		0.00214767		0		147		 
-zika		BZIP2-9		2995		0		0.00182343		0		0.00167084		0		148		 
-zika		BSC-m03		2758		0		0.00465012		0		0.00446701		0		149		 
-zika		BSC-m03		2758		0		0.00458908		0		0.00445938		0		150		 
-zika		BSC-m03		2758		0		0.0045929		0		0.0044632		0		151		 
-zika		MFC-1		2831		0		0.0752106		0		0.0741158		0		152		 
-zika		MFC-2		2843		0		0.075634		0		0.0745316		0		153		 
-zika		MFC-3		2895		0		0.13036		0		0.129314		0		154		 
-zika		DMcompress		2779		0		0.0823212		0		0.0813065		0		155		 
-ls: cannot access 'zika.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika		MBGC				0		0.00363922		0		0.00364304		0		156		 
-ls: cannot access 'zika.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika		MBGC				0		0.00363541		0		0.00369644		0		157		 
-ls: cannot access 'zika.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika		MBGC				0		0.00366211		0		0.00368881		0		158		 
-ls: cannot access 'zika.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika		MBGC				0		0.00366211		0		0.00362396		0		159		 
-cmp: EOF on zika_clean.fa.out which is empty
-zika		AGC		0		0		0.00385666		0		0.00376892		0		160		 
-zika		PAQ8L		2701		0.05		0.381538		0.05		0.381481		0		161		 
-ls: cannot access 'zika_clean.fa.memrgc': No such file or directory
-cmp: zika_clean.fa.memrgc.out: No such file or directory
-zika		MEMRGC				0		0.00105667		0		0.00105286		0		162		 
-herpes		GeCo2		664		0		0		0		0.0110588		0		163		 
-herpes		GeCo2		647		0		0		0		0.0193748		0		164		 
-herpes		GeCo2		647		0		0		0		0.020195		0		165		 
-herpes		GeCo2		647		0		0		0.0833333		1.76634		0		166		 
-herpes		GeCo2		674		0		0		0.133333		3.2747		0		5		 
-herpes		GeCo3		674		0		0.00160217		0		0.00172806		0		168		 
-herpes		GeCo3		674		0		0.00165176		0		0.00171661		0		169		 
-herpes		GeCo3		674		0		0.00165939		0		0.00175858		0		170		 
-herpes		GeCo3		674		0		0.00165558		0		0.00171661		0		171		 
-herpes		GeCo3		674		0		0.00164795		0		0.00170517		0		172		 
-herpes		GeCo3		674		0		0.00163269		0		0.00173187		0		173		 
-herpes		GeCo3		674		0		0.00165939		0		0.00170898		0		174		 
-herpes		GeCo3		674		0		0.00162888		0		0.00172806		0		175		 
-herpes		GeCo3		674		0		0.00158691		0		0.00172043		0		176		 
-herpes		JARVIS1		635		0		0.0182037		0		0.0181389		0		177		 
-herpes		JARVIS1		662		0		0.0181999		0		0.0182495		0		178		 
-herpes		JARVIS1		663		0		0.0188065		0		0.018856		0		179		 
-herpes		JARVIS1		695		0		0.0777626		0		0.0777588		0		180		 
-herpes		JARVIS1		688		0		0.0693817		0		0.0693855		0		181		 
-herpes		JARVIS1		661		0		0.0182457		0		0.018177		0		182		 
-herpes		JARVIS2-bin		640		0		0.0200806		0		0.0200729		0		183		 
-herpes		JARVIS2-bin		648		0		0.0202179		0		0.0202141		0		184		 
-herpes		JARVIS2-bin		648		0		0.0203438		0		0.0202332		0		185		 
-herpes		JARVIS2-bin		648		0		0.0202408		0		0.020237		0		186		 
-herpes		JARVIS2-bin		648		0		0.0203018		0		0.020237		0		187		 
-herpes		JARVIS2-bin		661		0		0.0375328		0		0.0375175		0		188		 
-herpes		JARVIS2-bin		668		0		0.0443916		0		0.0443001		0		189		 
-herpes		JARVIS2-bin		668		0		0.0373726		0		0.0373688		0		190		 
-herpes		JARVIS2-bin		668		0		0.0355682		0		0.0354996		0		191		 
-herpes		JARVIS2-bin		648		0		0.0204315		0		0.0202942		0		192		 
-herpes		JARVIS2-bin		670		0		0.0354767		0		0.0354691		0		193		 
-herpes		JARVIS2-bin		686		0		0.0496483		0		0.0495834		0		194		 
-herpes		JARVIS2-bin		671		0		0.0355453		0		0.03545		0		195		 
-herpes		JARVIS2-sh		10240		0		0.0353889		0		0.0353928		0		196		 
-herpes		JARVIS2-sh		10240		0		0.0354538		0		0.0353508		0		197		 
-herpes		JARVIS2-sh		10240		0		0.0354424		0		0.0353127		0		198		 
-herpes		JARVIS2-sh		10240		0		0.0353508		0		0.0353966		0		199		 
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-herpes		NAF-22		695		0.0666667		3.16936		0		0.00139999		0		200		 
-herpes		LZMA-9		817		0		0.00258636		0		0.00213242		0		201		 
-herpes		BZIP2-9		749		0		0.00160217		0		0.00167084		0		202		 
-herpes		BSC-m03		684		0		0.00444794		0		0.00433731		0		203		 
-herpes		BSC-m03		684		0		0.00444794		0		0.00431061		0		204		 
-herpes		BSC-m03		684		0		0.00444794		0		0.00429153		0		205		 
-herpes		MFC-1		749		0		0.0203896		0		0.0192833		0		206		 
-herpes		MFC-2		757		0		0.0208321		0		0.0197639		0		207		 
-herpes		MFC-3		798		0		0.032074		0		0.0310249		0		208		 
-herpes		DMcompress		749		0		0.0212173		0		0.0203171		0		209		 
-ls: cannot access 'herpes.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes		MBGC				0		0.00363159		0		0.00362015		0		210		 
-ls: cannot access 'herpes.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes		MBGC				0		0.00362015		0		0.00364304		0		211		 
-ls: cannot access 'herpes.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes		MBGC				0		0.00361633		0		0.00362778		0		212		 
-ls: cannot access 'herpes.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes		MBGC				0		0.00363922		0		0.00365448		0		213		 
-cmp: EOF on herpes_clean.fa.out which is empty
-herpes		AGC		0		0		0.00383377		0		0.00377274		0		214		 
-herpes		PAQ8L		651		0		0.181774		0		0.181763		0		215		 
-ls: cannot access 'herpes_clean.fa.memrgc': No such file or directory
-cmp: herpes_clean.fa.memrgc.out: No such file or directory
-herpes		MEMRGC				0		0.00105667		0		0.00105667		0		216		 
+SEQUENCE 	 PROGRAM 	 CBYTES 	 CTIME (m) 	 CMEM (GB) 	 DTIME (m) 	 DMEM (GB) 	 DIFF 	 RUN \\ \hline 
+
+EscherichiaPhageLambda	GeCo2	12159	0	0	0	0.14439	0	1
+EscherichiaPhageLambda	GeCo2	11935	0	0	0	0.234364	0	2
+EscherichiaPhageLambda	GeCo2	11934	0	0	0	0.321976	0	3
+EscherichiaPhageLambda	GeCo2	11933	0	0	0.0833333	1.78341	0	4
+EscherichiaPhageLambda	GeCo2	12176	0	0	0.133333	3.36844	0	5
+EscherichiaPhageLambda	GeCo3	12176	0	0.00159836	0	0.00170135	0	6
+EscherichiaPhageLambda	GeCo3	12176	0	0.00168991	0	0.00172806	0	7
+EscherichiaPhageLambda	GeCo3	12176	0	0.00168991	0	0.00172806	0	8
+EscherichiaPhageLambda	GeCo3	12176	0	0.00166321	0	0.00175476	0	9
+EscherichiaPhageLambda	GeCo3	12176	0	0.00165939	0	0.00172806	0	10
+EscherichiaPhageLambda	GeCo3	12176	0	0.00166321	0	0.00172806	0	11
+EscherichiaPhageLambda	GeCo3	12176	0	0.00163651	0	0.00172043	0	12
+EscherichiaPhageLambda	GeCo3	12176	0	0.00159073	0	0.00172806	0	13
+EscherichiaPhageLambda	GeCo3	12176	0	0.00160217	0	0.00170517	0	14
+EscherichiaPhageLambda	JARVIS1	11982	0	0.144577	0	0.144642	0	15
+EscherichiaPhageLambda	JARVIS1	12146	0	0.144672	0	0.144676	0	16
+EscherichiaPhageLambda	JARVIS1	12249	0	0.148258	0	0.148167	0	17
+EscherichiaPhageLambda	JARVIS1	12184	0.0166667	0.712124	0.0166667	0.712181	0	18
+EscherichiaPhageLambda	JARVIS1	12138	0.0166667	0.627575	0.0166667	0.627537	0	19
+EscherichiaPhageLambda	JARVIS1	12008	0	0.143494	0	0.143406	0	20
+EscherichiaPhageLambda	JARVIS2-bin	12076	0	0.16074	0	0.160667	0	21
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160881	0	0.160858	0	22
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160843	0	0.160778	0	23
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.1609	0	0.160835	0	24
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160946	0	0.160889	0	25
+EscherichiaPhageLambda	JARVIS2-bin	11928	0.0166667	0.393143	0.0166667	0.393078	0	26
+EscherichiaPhageLambda	JARVIS2-bin	11943	0.0166667	0.423069	0.0166667	0.422939	0	27
+EscherichiaPhageLambda	JARVIS2-bin	11895	0.0166667	0.393044	0.0166667	0.392921	0	28
+EscherichiaPhageLambda	JARVIS2-bin	11907	0	0.268318	0.0166667	0.268288	0	29
+EscherichiaPhageLambda	JARVIS2-bin	12024	0	0.160587	0	0.160458	0	30
+EscherichiaPhageLambda	JARVIS2-bin	12044	0.0166667	0.268196	0.0166667	0.2682	0	31
+EscherichiaPhageLambda	JARVIS2-bin	11967	0.0333333	0.511654	0.0333333	0.511589	0	32
+EscherichiaPhageLambda	JARVIS2-bin	12030	0	0.268372	0	0.268291	0	33
+EscherichiaPhageLambda	JARVIS2-sh	20480	0	0.267536	0	0.267464	0	34
+EscherichiaPhageLambda	JARVIS2-sh	20480	0.0166667	0.267944	0.0166667	0.267941	0	35
+EscherichiaPhageLambda	JARVIS2-sh	20480	0.0166667	0.267906	0.0166667	0.267952	0	36
+EscherichiaPhageLambda	JARVIS2-sh	20480	0	0.267586	0	0.267521	0	37
+EscherichiaPhageLambda	LZMA-9	13424	0	0.00308228	0	0.00218582	0	38
+EscherichiaPhageLambda	BZIP2-9	13249	0	0.00194168	0	0.00174713	0	39
+EscherichiaPhageLambda	BSC-m03	12156	0	0.00520706	0	0.00489426	0	40
+EscherichiaPhageLambda	BSC-m03	12156	0	0.00514984	0	0.00490189	0	41
+EscherichiaPhageLambda	BSC-m03	12156	0	0.00520706	0	0.00488663	0	42
+EscherichiaPhageLambda	MFC-1	12266	0	0.235462	0	0.234352	0	43
+EscherichiaPhageLambda	MFC-2	12198	0	0.235928	0	0.234879	0	44
+EscherichiaPhageLambda	MFC-3	12286	0	0.45433	0	0.453228	0	45
+EscherichiaPhageLambda	DMcompress	12152	0	0.322842	0	0.322002	0	46
+EscherichiaPhageLambda	PAQ8L	11879	0.2	0.625263	0.2	0.625286	0	47
+mt_genome_CM029732	GeCo2	3805	0	0	0	0.0502129	0	48
+mt_genome_CM029732	GeCo2	3641	0	0	0	0.0882645	0	49
+mt_genome_CM029732	GeCo2	3641	0	0	0	0.105549	0	50
+mt_genome_CM029732	GeCo2	3641	0	0	0.0833333	1.78263	0	51
+mt_genome_CM029732	GeCo2	3822	0	0	0.133333	3.3187	0	52
+mt_genome_CM029732	GeCo3	3822	0	0.00157547	0	0.00172806	0	53
+mt_genome_CM029732	GeCo3	3822	0	0.00165939	0	0.0017128	0	54
+mt_genome_CM029732	GeCo3	3822	0	0.00169373	0	0.00172806	0	55
+mt_genome_CM029732	GeCo3	3822	0	0.00166321	0	0.00169754	0	56
+mt_genome_CM029732	GeCo3	3822	0	0.00166321	0	0.00175858	0	57
+mt_genome_CM029732	GeCo3	3822	0	0.00165176	0	0.00171661	0	58
+mt_genome_CM029732	GeCo3	3822	0	0.00164032	0	0.0017128	0	59
+mt_genome_CM029732	GeCo3	3822	0	0.00159454	0	0.00172806	0	60
+mt_genome_CM029732	GeCo3	3822	0	0.00159836	0	0.00173187	0	61
+mt_genome_CM029732	JARVIS1	3615	0	0.0678444	0	0.0677643	0	62
+mt_genome_CM029732	JARVIS1	3729	0	0.0679207	0	0.0678596	0	63
+mt_genome_CM029732	JARVIS1	3805	0	0.0710258	0	0.0710602	0	64
+mt_genome_CM029732	JARVIS1	3808	0	0.320404	0	0.320366	0	65
+mt_genome_CM029732	JARVIS1	3797	0	0.284515	0	0.2845	0	66
+mt_genome_CM029732	JARVIS1	3688	0	0.0670547	0	0.0669823	0	67
+mt_genome_CM029732	JARVIS2-bin	3604	0	0.0869217	0	0.0868683	0	68
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870667	0	0.0869827	0	69
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870705	0	0.0870247	0	70
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870247	0	0.0870247	0	71
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870209	0	0.086956	0	72
+mt_genome_CM029732	JARVIS2-bin	3620	0	0.173328	0	0.173203	0	73
+mt_genome_CM029732	JARVIS2-bin	3625	0	0.193287	0	0.193272	0	74
+mt_genome_CM029732	JARVIS2-bin	3624	0	0.173237	0	0.173168	0	75
+mt_genome_CM029732	JARVIS2-bin	3622	0	0.143967	0	0.143898	0	76
+mt_genome_CM029732	JARVIS2-bin	3602	0	0.0859795	0	0.0859756	0	77
+mt_genome_CM029732	JARVIS2-bin	3621	0	0.14402	0	0.14397	0	78
+mt_genome_CM029732	JARVIS2-bin	3642	0	0.216496	0	0.216423	0	79
+mt_genome_CM029732	JARVIS2-bin	3614	0	0.143967	0	0.143898	0	80
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.143124	0	0.142998	0	81
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.144268	0	0.14426	0	82
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.14423	0	0.144226	0	83
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.143124	0	0.143059	0	84
+mt_genome_CM029732	LZMA-9	4304	0	0.0028038	0	0.00214767	0	85
+mt_genome_CM029732	BZIP2-9	4151	0	0.00183868	0	0.00167084	0	86
+mt_genome_CM029732	BSC-m03	3716	0	0.00458908	0	0.00438309	0	87
+mt_genome_CM029732	BSC-m03	3716	0	0.00452805	0	0.00437546	0	88
+mt_genome_CM029732	BSC-m03	3716	0	0.00458908	0	0.00439453	0	89
+mt_genome_CM029732	MFC-1	3886	0	0.0894089	0	0.0883026	0	90
+mt_genome_CM029732	MFC-2	3765	0	0.0899162	0	0.0888176	0	91
+mt_genome_CM029732	MFC-3	3818	0	0.15834	0	0.157272	0	92
+mt_genome_CM029732	DMcompress	3706	0	0.106678	0	0.105675	0	93
+mt_genome_CM029732	PAQ8L	3621	0.0666667	0.42738	0.0666667	0.427357	0	94
+zika	GeCo2	2731	0	0	0	0.0398903	0	95
+zika	GeCo2	2684	0	0	0	0.0739861	0	96
+zika	GeCo2	2684	0	0	0	0.0812912	0	97
+zika	GeCo2	2684	0	0	0.0833333	1.78124	0	98
+zika	GeCo2	2748	0	0	0.133333	3.31277	0	99
+zika	GeCo3	2748	0	0.00160217	0	0.00170517	0	100
+zika	GeCo3	2748	0	0.00168991	0	0.00170135	0	101
+zika	GeCo3	2748	0	0.00165939	0	0.00172806	0	102
+zika	GeCo3	2748	0	0.00164032	0	0.00170898	0	103
+zika	GeCo3	2748	0	0.00168991	0	0.00173187	0	104
+zika	GeCo3	2748	0	0.00164413	0	0.00170517	0	105
+zika	GeCo3	2748	0	0.00168991	0	0.00171661	0	106
+zika	GeCo3	2748	0	0.00159836	0	0.00173187	0	107
+zika	GeCo3	2748	0	0.00159073	0	0.00171661	0	108
+zika	JARVIS1	2675	0	0.0603714	0	0.0602913	0	109
+zika	JARVIS1	2742	0	0.0603371	0	0.0602837	0	110
+zika	JARVIS1	2746	0	0.0619087	0	0.0619507	0	111
+zika	JARVIS1	2773	0	0.264454	0	0.264442	0	112
+zika	JARVIS1	2759	0	0.233498	0	0.233482	0	113
+zika	JARVIS1	2720	0	0.0601807	0	0.0601044	0	114
+zika	JARVIS2-bin	2740	0	0.0681419	0	0.0680161	0	115
+zika	JARVIS2-bin	2699	0	0.0682182	0	0.0682068	0	116
+zika	JARVIS2-bin	2699	0	0.0683022	0	0.0682373	0	117
+zika	JARVIS2-bin	2699	0	0.0682983	0	0.0681763	0	118
+zika	JARVIS2-bin	2699	0	0.0682449	0	0.0682373	0	119
+zika	JARVIS2-bin	2718	0	0.140293	0	0.140282	0	120
+zika	JARVIS2-bin	2731	0	0.159443	0	0.159447	0	121
+zika	JARVIS2-bin	2722	0	0.140259	0	0.140141	0	122
+zika	JARVIS2-bin	2719	0	0.121941	0	0.121986	0	123
+zika	JARVIS2-bin	2704	0	0.0682564	0	0.0681915	0	124
+zika	JARVIS2-bin	2735	0	0.121696	0	0.121628	0	125
+zika	JARVIS2-bin	2751	0	0.172916	0	0.172852	0	126
+zika	JARVIS2-bin	2730	0	0.121937	0	0.121929	0	127
+zika	JARVIS2-sh	10240	0	0.121696	0	0.12159	0	128
+zika	JARVIS2-sh	10240	0	0.121967	0	0.121899	0	129
+zika	JARVIS2-sh	10240	0	0.121819	0	0.121811	0	130
+zika	JARVIS2-sh	10240	0	0.121716	0	0.121696	0	131
+zika	LZMA-9	3195	0	0.00276566	0	0.00214386	0	132
+zika	BZIP2-9	2995	0	0.00182343	0	0.00167084	0	133
+zika	BSC-m03	2758	0	0.00465393	0	0.00441742	0	134
+zika	BSC-m03	2758	0	0.0045929	0	0.00447845	0	135
+zika	BSC-m03	2758	0	0.0045929	0	0.00442505	0	136
+zika	MFC-1	2831	0	0.0751648	0	0.0741158	0	137
+zika	MFC-2	2843	0	0.0756226	0	0.0745544	0	138
+zika	MFC-3	2895	0	0.130314	0	0.129261	0	139
+zika	DMcompress	2779	0	0.082325	0	0.0813446	0	140
+zika	PAQ8L	2701	0.05	0.381519	0.05	0.381496	0	141
+herpes	GeCo2	664	0	0	0	0.0110931	0	142
+herpes	GeCo2	647	0	0	0	0.0191765	0	143
+herpes	GeCo2	647	0	0	0	0.0202255	0	144
+herpes	GeCo2	647	0	0	0.0833333	1.76637	0	145
+herpes	GeCo2	674	0	0	0.133333	3.27468	0	146
+herpes	GeCo3	674	0	0.00160217	0	0.00173187	0	147
+herpes	GeCo3	674	0	0.00165176	0	0.00173187	0	148
+herpes	GeCo3	674	0	0.00163269	0	0.00170517	0	149
+herpes	GeCo3	674	0	0.00165176	0	0.00173187	0	150
+herpes	GeCo3	674	0	0.00166321	0	0.0017128	0	151
+herpes	GeCo3	674	0	0.00164032	0	0.00172043	0	152
+herpes	GeCo3	674	0	0.00161362	0	0.00172043	0	153
+herpes	GeCo3	674	0	0.00159836	0	0.00173187	0	154
+herpes	GeCo3	674	0	0.00160217	0	0.00170517	0	155
+herpes	JARVIS1	635	0	0.0181808	0	0.0181732	0	156
+herpes	JARVIS1	662	0	0.0181351	0	0.0181961	0	157
+herpes	JARVIS1	663	0	0.0187492	0	0.0188065	0	158
+herpes	JARVIS1	695	0	0.0777626	0	0.0776939	0	159
+herpes	JARVIS1	688	0	0.0693893	0	0.0693817	0	160
+herpes	JARVIS1	661	0	0.0182915	0	0.0181732	0	161
+herpes	JARVIS2-bin	640	0	0.0201187	0	0.0200539	0	162
+herpes	JARVIS2-bin	648	0	0.0202789	0	0.0201492	0	163
+herpes	JARVIS2-bin	648	0	0.0203018	0	0.0202789	0	164
+herpes	JARVIS2-bin	648	0	0.0202751	0	0.0201721	0	165
+herpes	JARVIS2-bin	648	0	0.0202827	0	0.0202332	0	166
+herpes	JARVIS2-bin	661	0	0.0375328	0	0.0375137	0	167
+herpes	JARVIS2-bin	668	0	0.0444336	0	0.044323	0	168
+herpes	JARVIS2-bin	668	0	0.0374336	0	0.0373497	0	169
+herpes	JARVIS2-bin	668	0	0.0355072	0	0.0354843	0	170
+herpes	JARVIS2-bin	648	0	0.0204353	0	0.0203705	0	171
+herpes	JARVIS2-bin	670	0	0.0355339	0	0.0354691	0	172
+herpes	JARVIS2-bin	686	0	0.0496483	0	0.049633	0	173
+herpes	JARVIS2-bin	671	0	0.0355644	0	0.0354919	0	174
+herpes	JARVIS2-sh	10240	0	0.0353889	0	0.0353928	0	175
+herpes	JARVIS2-sh	10240	0	0.0354805	0	0.0353508	0	176
+herpes	JARVIS2-sh	10240	0	0.0354881	0	0.0353775	0	177
+herpes	JARVIS2-sh	10240	0	0.0353508	0	0.0353432	0	178
+herpes	LZMA-9	817	0	0.00258636	0	0.00213242	0	179
+herpes	BZIP2-9	749	0	0.00160217	0	0.00167084	0	180
+herpes	BSC-m03	684	0	0.00444794	0	0.00433731	0	181
+herpes	BSC-m03	684	0	0.00444794	0	0.00428009	0	182
+herpes	BSC-m03	684	0	0.00450516	0	0.00428772	0	183
+herpes	MFC-1	749	0	0.0203896	0	0.0192833	0	184
+herpes	MFC-2	757	0	0.0208244	0	0.0198441	0	185
+herpes	MFC-3	798	0	0.0320473	0	0.0310707	0	186
+herpes	DMcompress	749	0	0.0213165	0	0.0203209	0	187
+herpes	PAQ8L	651	0	0.181774	0	0.181797	0	188
