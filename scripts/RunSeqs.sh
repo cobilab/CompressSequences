@@ -46,11 +46,7 @@ function RUN_GECO2 {
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
-  |& trE" "./GeCo2 -v -tm 13:1:0:0:0.7/0:0:0" "./GeDe2 -v " "GeCo2" "1"
-    RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "./GeDe2 -v " "GeCo2" "2"
-    RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "./GeDe2 -v " "GeCo2" "3"
-    RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "./GeDe2 -v " "GeCo2" "4"
-    RUN_GECO2 "$FILE '.' ',' \
+  |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   BYTES=`ls -la $IN_FILE.co | awk '{ print $5 }'`;
   #
@@ -59,7 +55,7 @@ function RUN_GECO2 {
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $IN_FILE.de $IN_FILE > cmp.txt
+  cmp $IN_FILE.de $IN_FILE > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -71,7 +67,6 @@ function RUN_GECO2 {
   #
   printf "${FILE%.*}$space$NAME$space$BYTES$space$C_TIME$space$C_MEME$space$D_TIME$space$D_MEME$space$CMP_SIZE$space$5$EOL";
   #
-  rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   }
 #
 # ==============================================================================
@@ -153,13 +148,13 @@ function RUN_JARVIS2_SH {
   D_COMMAND="$3";
   NAME="$4";
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" ./JARVIS2.sh --level " $C_COMMAND " $6 --input $IN_FILE \
+  /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}JARVIS2.sh --level " $C_COMMAND " $6 --input $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   BYTES=`ls -la $IN_FILE.tar | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" ./JARVIS2.sh $D_COMMAND $IN_FILE.tar \
+  /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}JARVIS2.sh $D_COMMAND $IN_FILE.tar \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -299,7 +294,7 @@ function RUN_BSC {
   #
   cp $FILE $FILE.orig
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" ./bsc-m03 e $FILE.orig $FILE.bsc $C_COMMAND 1> c_stdout.txt 2> c_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}bsc-m03 e $FILE.orig $FILE.bsc $C_COMMAND 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $FILE.bsc | awk '{ print $5 }'`;
@@ -449,21 +444,21 @@ function RUN_AGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  agcFileOrig=${FILE%.*}_clean.fa;
-  agcFileC=$(echo $FILE | sed 's/seq/agc/g');
-  agcFileD=${FILE%.*}_clean.fa.out;
+  FileOrig=${FILE%.*}_clean.fa;
+  FileC=$(echo $FILE | sed 's/seq/agc/g');
+  FileD=${FILE%.*}_clean.fa.out;
   #
-  # agc create ../genomes/zika.seq.agc -o ../genomes/zika.seq.agc.c
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $agcFileOrig > $agcFileC; } 1> c_stdout.txt 2> c_tmp_report.txt;
+  # agc create .${bin_path}genomes/zika.seq.agc -o .${bin_path}genomes/zika.seq.agc.c
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FileOrig > $FileC; } 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $agcFileC | awk '{ print $5 }'`;
+  BYTES=`ls -la $FileC | awk '{ print $5 }'`;
   #
-  # agc getcol ../genomes/zika.fa.agc > zika.fa.agc
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $agcFileC > $agcFileD; } 1> c_stdout.txt 2> d_tmp_report.txt;
+  # agc getcol .${bin_path}genomes/zika.fa.agc > zika.fa.agc
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FileC > $FileD; } 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
-  cmp $agcFileOrig $agcFileD > cmp.txt; # may differ due to EOLs
+  cmp $FileOrig $FileD > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -484,10 +479,10 @@ function RUN_AGC() {
 function RUN_PAQ8() {
   #
   # Data compression:
-  # time ./paq8l -8 HS.seq 1> report_c_stdout.txt 2> report_c_stderr.txt
+  # time ${bin_path}paq8l -8 HS.seq 1> report_c_stdout.txt 2> report_c_stderr.txt
 
   # # Data decompression:
-  # time ./paq8l -d HS.seq.paq8l Hs.seq.de 1> report_d_stdout.txt 2> report_d_stderr.txt;
+  # time ${bin_path}paq8l -d HS.seq.paq8l Hs.seq.de 1> report_d_stdout.txt 2> report_d_stderr.txt;
   # #
   # # Lossless validation:
   # cmp HS.seq.de HS.seq > cmp.txt;
@@ -497,19 +492,19 @@ function RUN_PAQ8() {
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
-  # ./paq8l -8 HS.seq
+  # ${bin_path}paq8l -8 HS.seq
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   BYTES=`ls -la $FILE.paq8l | awk '{ print $5 }'`;
-  # ./paq8l -d HS.seq.paq8l Hs.seq.de
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.paq8l paq8l_out ./paq8l_out/$FILE \
+  # ${bin_path}paq8l -d HS.seq.paq8l Hs.seq.de
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.paq8l paq8l_out paq8l_out/$FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $FILE ./paq8l_out/$FILE > cmp.txt
+  cmp $FILE paq8l_out/$FILE > cmp.txt
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -531,19 +526,19 @@ function RUN_CMIX() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  agcFileOrig=${FILE%.*}_clean.fa;
-  agcFileC=${FILE%.*}_clean.cmix;
-  agcFileD=${FILE%.*}_clean.cmix.out;
+  FileOrig=${FILE%.*}_clean.fa;
+  FileC=${FILE%.*}_clean.cmix;
+  FileD=${FILE%.*}_clean.cmix.out;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $agcFileOrig -t $agcFileOrig -o $agcFileC 1> c_stdout.txt 2> c_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $FileOrig -t $FileOrig -o $FileC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $agcFileC | awk '{ print $5 }'`;
+  BYTES=`ls -la $FileC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $agcFileOrig -t $agcFileC -o $agcFileD 1> c_stdout.txt 2> d_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $FileOrig -t $FileC -o $FileD 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
-  cmp $agcFileOrig $agcFileD > cmp.txt; # may differ due to EOLs
+  cmp $FileOrig $FileD > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -568,23 +563,23 @@ function RUN_MEMRGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  agcFileOrig=${FILE%.*}_clean.fa;
-  agcFileC=${FILE%.*}_clean.memrgc;
-  agcFileD=${FILE%.*}_clean.memrgc.out;
+  FileOrig=${FILE%.*}_clean.fa;
+  FileC=${FILE%.*}_clean.memrgc;
+  FileD=${FILE%.*}_clean.memrgc.out;
   #
-  # RUN_MEMRGC "$FILE" "./memrgc e -m file " "./memrgc d -m file " "MEMRGC" "49"
+  # RUN_MEMRGC "$FILE" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "49"
   #
-  # ./memrgc e -m file -r testData/ref.fa -t testData/tar.fa -o $agcFileC
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $agcFileOrig -t $agcFileOrig -o $agcFileC 1> c_stdout.txt 2> c_tmp_report.txt;
+  # ${bin_path}memrgc e -m file -r testData/ref.fa -t testData/tar.fa -o $FileC
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $FileOrig -t $FileOrig -o $FileC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $agcFileC | awk '{ print $5 }'`;
+  BYTES=`ls -la $FileC | awk '{ print $5 }'`;
   #
-  # ./memrgc d -m file -t $agcFileC -o testData/dec.fa
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $agcFileOrig -t $agcFileC -o $agcFileD 1> c_stdout.txt 2> d_tmp_report.txt;
+  # ${bin_path}memrgc d -m file -t $FileC -o testData/dec.fa
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $FileOrig -t $FileC -o $FileD 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
-  cmp $agcFileOrig $agcFileD > cmp.txt; # may differ due to EOLs
+  cmp $FileOrig $FileD > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -596,7 +591,7 @@ function RUN_MEMRGC() {
   #
   printf "${FILE%.*}$space$NAME$space$BYTES$space$C_TIME$space$C_MEME$space$D_TIME$space$D_MEME$space$CMP_SIZE$space$5$EOL";
   #
-  rm -f cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt;
+  rm -f ${FileC}tmp cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt;
   #
 }
 #
@@ -622,7 +617,7 @@ FILES=(
 )
 
 # alternativa automatica
-# FILES=( $(ls ../genomes/ | egrep "*.seq$") )
+# FILES=( $(ls .${bin_path}genomes/ | egrep "*.seq$") )
 
 if [[ "$*" == *"--latex"* ||  "$*" == *"-l"* ]]; then
   space="\t&\t"
@@ -635,130 +630,117 @@ fi
 printf "SEQUENCE $space PROGRAM $space CBYTES $space CTIME (m) $space CMEM (GB) $space DTIME (m) $space DMEM (GB) $space DIFF $space RUN \\\\\\\\ \hline \n\n";
 
 run=0;
+bin_path="../bin/"
 
 for FILE in "${FILES[@]}"; do
     #
     # ==============================================================================
     #
-    # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    #   RUN_GECO2 "$FILE" "GeCo2 -v -tm 13:1:0:0:0.7/0:0:0" "GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
-    # else
-    #   RUN_GECO2 "$FILE" "./GeCo2 -v -tm 13:1:0:0:0.7/0:0:0" "./GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "./GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
-    #   RUN_GECO2 "$FILE" "./GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "./GeDe2 -v " "GeCo2" "$((run+=1))"
-    # fi
-    # # #
-    # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -tm 13:1:0:0:0.7/0:0:0" "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:40:0.88/3:10:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
-    # else
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -tm 13:1:0:0:0.7/0:0:0" "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:40:0.88/3:10:0.88 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    #   RUN_GECO3 "$FILE" "./GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 " "./GeDe3 -v " "GeCo3" "$((run+=1))"
-    # fi
-    # # #
-    # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    #   RUN_JARVIS1 "$FILE" "JARVIS -v " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "JARVIS -v -l 3 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "JARVIS -v -l 5 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "JARVIS -v -l 10 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "JARVIS -v -l 15 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "JARVIS -d " "JARVIS1" "$((run+=1))"
-    # else 
-    #   RUN_JARVIS1 "$FILE" "./JARVIS -v " "./JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "./JARVIS -v -l 3 " "./JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "./JARVIS -v -l 5 " "./JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "./JARVIS -v -l 10 " "./JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "./JARVIS -v -l 15 " "./JARVIS -v -d " "JARVIS1" "$((run+=1))"
-    #   RUN_JARVIS1 "$FILE" "./JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "./JARVIS -d " "JARVIS1" "$((run+=1))"
-    # fi
-    # # #
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 1" "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 2 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 3 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 4 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 5 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 10 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 15 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 20 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -l 24 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -rm 50:11:1:0.9:7:0.4:1:0.2:200000 -cm 1:1:0:0.7/0:0:0:0 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -lr 0.005 -hs 48 -rm 2000:14:1:0.9:7:0.4:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -lr 0.005 -hs 92 -rm 2000:15:1:0.9:7:0.3:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 4:1:0:0.85/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 11:1:1:0.85/0:0:0:0 -cm 14:1:1:0.85/1:1:1:0.9 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # RUN_JARVIS2_BIN "$FILE" "./JARVIS2 -v -lr 0.01 -hs 42 -rm 1000:13:1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " "./JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
-    # # #
-    # RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
-    # RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
-    # RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 150MB --threads 6 --dna "
-    # RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 100MB --threads 8 --dna "
-    # # #
-    # # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    # #   RUN_NAF "$FILE" "ennaf --strict --temp-dir tmp/ --dna --level 22 " "unnaf " "NAF-22" "$((run+=1))"
-    # # else
-    # #   RUN_NAF "$FILE" "./ennaf --strict --temp-dir tmp/ --dna --level 22 " "./unnaf " "NAF-22" "$((run+=1))"
-    # # fi
-    # RUN_LZMA "$FILE" "lzma -9 -f -k " "lzma -f -k -d " "LZMA-9" "$((run+=1))"
-    # RUN_BZIP2 "$FILE" "bzip2 -9 -f -k " "bzip2 -f -k -d " "BZIP2-9" "$((run+=1))"
-    # #
-    # RUN_BSC "$FILE" " -b800000000 " "./bsc-m03 " "BSC-m03" "$((run+=1))"
-    # RUN_BSC "$FILE" " -b400000000 " "./bsc-m03 " "BSC-m03" "$((run+=1))"
-    # RUN_BSC "$FILE" " -b4096000 " "./bsc-m03 " "BSC-m03" "$((run+=1))"
-    # #
-    # RUN_MFC "$FILE" "./MFCompressC -v -1 -p 1 -t 1 " "./MFCompressD " "MFC" "$((run+=1))"
-    # RUN_MFC "$FILE" "./MFCompressC -v -2 -p 1 -t 1 " "./MFCompressD " "MFC" "$((run+=1))"
-    # RUN_MFC "$FILE" "./MFCompressC -v -3 -p 1 -t 1 " "./MFCompressD " "MFC" "$((run+=1))"
-    # #
-    # RUN_DMcompress "$FILE" "./DMcompressC " "./DMcompressD " "DMcompress" "$((run+=1))"
-    # #
-    # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
-    # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
-    # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    #   RUN_MBGC "$FILE" "mbgc -c 0 -i " "mbgc -d " "MBGC" "$((run+=1))"
-    #   RUN_MBGC "$FILE" "mbgc -i " "mbgc -d " "MBGC" "$((run+=1))"
-    #   RUN_MBGC "$FILE" "mbgc -c 2 -i " "mbgc -d " "MBGC" "$((run+=1))"
-    #   RUN_MBGC "$FILE" "mbgc -c 3 -i " "mbgc -d " "MBGC" "$((run+=1))"
-    # else
-    #   RUN_MBGC "$FILE" "./mbgc -c 0 -i " "./mbgc -d " "MBGC" "$((run+=1))"
-    #   RUN_MBGC "$FILE" "./mbgc -i " "./mbgc -d " "MBGC" "$((run+=1))"
-    #   RUN_MBGC "$FILE" "./mbgc -c 2 -i " "./mbgc -d " "MBGC" "$((run+=1))"
-    #   RUN_MBGC "$FILE" "./mbgc -c 3 -i " "./mbgc -d " "MBGC" "$((run+=1))"
-    # fi
-    # #
-    # ./agc create ref.fa in1.fa in2.fa > col.agc
-    # agc getcol [options] <in.agc> > <out.fa>
-    # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    #   RUN_AGC "$FILE" "agc create " "agc getcol " "AGC" "$((run+=1))"
-    # else
-    #   RUN_AGC "$FILE" "./agc create " "./agc getcol " "AGC" "$((run+=1))"
-    # fi
-    # # #
-    # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    #   RUN_PAQ8 "$FILE" "paq8l -8 " "paq8l -d " "PAQ8L" "$((run+=1))"
-    # else
-    #   RUN_PAQ8 "$FILE" "./paq8l -8 " "./paq8l -d " "PAQ8L" "$((run+=1))"
-    # fi
-    # # #
-    RUN_MEMRGC "$FILE" "./memrgc e -m file " "./memrgc d -m file " "MEMRGC" "49"
-    # RUN_CMIX "$FILE" "./cmix -c " "./cmix -d " "CMIX" "$((run+=1))"
+    if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
+      RUN_GECO2 "$FILE" "GeCo2 -v -tm 13:1:0:0:0.7/0:0:0" "GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "GeDe2 -v " "GeCo2" "$((run+=1))"
+      #
+      RUN_GECO3 "$FILE" "GeCo3 -v -tm 13:1:0:0:0.7/0:0:0" "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:40:0.88/3:10:0.88 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 " "GeDe3 -v " "GeCo3" "$((run+=1))"
+      #
+      RUN_JARVIS1 "$FILE" "JARVIS -v " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "JARVIS -v -l 3 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "JARVIS -v -l 5 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "JARVIS -v -l 10 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "JARVIS -v -l 15 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "JARVIS -d " "JARVIS1" "$((run+=1))"
+      #
+      RUN_NAF "$FILE" "ennaf --strict --temp-dir tmp/ --dna --level 22 " "unnaf " "NAF-22" "$((run+=1))"
+      #
+      RUN_MBGC "$FILE" "mbgc -c 0 -i " "mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$FILE" "mbgc -i " "mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$FILE" "mbgc -c 2 -i " "mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$FILE" "mbgc -c 3 -i " "mbgc -d " "MBGC" "$((run+=1))"
+      #
+      RUN_AGC "$FILE" "agc create " "agc getcol " "AGC" "$((run+=1))"
+      #
+      RUN_PAQ8 "$FILE" "paq8l -8 " "paq8l -d " "PAQ8L" "$((run+=1))"
+    else
+      RUN_GECO2 "$FILE" "${bin_path}GeCo2 -v -tm 13:1:0:0:0.7/0:0:0" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      RUN_GECO2 "$FILE" "${bin_path}GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      #
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -tm 13:1:0:0:0.7/0:0:0" "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:40:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      RUN_GECO3 "$FILE" "${bin_path}GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      #
+      RUN_JARVIS1 "$FILE" "${bin_path}JARVIS -v " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "${bin_path}JARVIS -v -l 3 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "${bin_path}JARVIS -v -l 5 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "${bin_path}JARVIS -v -l 10 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "${bin_path}JARVIS -v -l 15 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      RUN_JARVIS1 "$FILE" "${bin_path}JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "${bin_path}JARVIS -d " "JARVIS1" "$((run+=1))"
+      #
+      RUN_NAF "$FILE" "${bin_path}ennaf --strict --temp-dir tmp/ --dna --level 22 " "${bin_path}unnaf " "NAF-22" "$((run+=1))"
+      #
+      RUN_MBGC "$FILE" "${bin_path}mbgc -c 0 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$FILE" "${bin_path}mbgc -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$FILE" "${bin_path}mbgc -c 2 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$FILE" "${bin_path}mbgc -c 3 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      #
+      RUN_AGC "$FILE" "${bin_path}agc create " "${bin_path}agc getcol " "AGC" "$((run+=1))"
+      #
+      RUN_PAQ8 "$FILE" "${bin_path}paq8l -8 " "${bin_path}paq8l -d " "PAQ8L" "$((run+=1))"
+    fi
+    # 
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 1" "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 2 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 3 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 4 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 5 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 10 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 15 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 20 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 24 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -rm 50:11:1:0.9:7:0.4:1:0.2:200000 -cm 1:1:0:0.7/0:0:0:0 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -lr 0.005 -hs 48 -rm 2000:14:1:0.9:7:0.4:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -lr 0.005 -hs 92 -rm 2000:15:1:0.9:7:0.3:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 4:1:0:0.85/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 11:1:1:0.85/0:0:0:0 -cm 14:1:1:0.85/1:1:1:0.9 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -lr 0.01 -hs 42 -rm 1000:13:1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
+    #
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 150MB --threads 6 --dna "
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 100MB --threads 8 --dna "
+    #
+    RUN_LZMA "$FILE" "lzma -9 -f -k " "lzma -f -k -d " "LZMA-9" "$((run+=1))"
+    RUN_BZIP2 "$FILE" "bzip2 -9 -f -k " "bzip2 -f -k -d " "BZIP2-9" "$((run+=1))"
+    #
+    RUN_BSC "$FILE" " -b800000000 " "${bin_path}bsc-m03 " "BSC-m03" "$((run+=1))"
+    RUN_BSC "$FILE" " -b400000000 " "${bin_path}bsc-m03 " "BSC-m03" "$((run+=1))"
+    RUN_BSC "$FILE" " -b4096000 " "${bin_path}bsc-m03 " "BSC-m03" "$((run+=1))"
+    #
+    RUN_MFC "$FILE" "${bin_path}MFCompressC -v -1 -p 1 -t 1 " "${bin_path}MFCompressD " "MFC" "$((run+=1))"
+    RUN_MFC "$FILE" "${bin_path}MFCompressC -v -2 -p 1 -t 1 " "${bin_path}MFCompressD " "MFC" "$((run+=1))"
+    RUN_MFC "$FILE" "${bin_path}MFCompressC -v -3 -p 1 -t 1 " "${bin_path}MFCompressD " "MFC" "$((run+=1))"
+    #
+    RUN_DMcompress "$FILE" "${bin_path}DMcompressC " "${bin_path}DMcompressD " "DMcompress" "$((run+=1))"
+    #
+    RUN_MEMRGC "$FILE" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "49"
+    #
+    RUN_CMIX "$FILE" "${bin_path}cmix -c " "${bin_path}cmix -d " "CMIX" "$((run+=1))"
     # #
     # # ==============================================================================
     # #

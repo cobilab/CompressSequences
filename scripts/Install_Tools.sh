@@ -93,7 +93,7 @@ function INSTALL_WITHOUT_CONDA() {
     #
     git clone https://github.com/kowallus/mbgc.git
     cd mbgc
-    mkdir build
+    mkdir -p build
     cd build
     cmake ..
     make mbgc
@@ -102,6 +102,9 @@ function INSTALL_WITHOUT_CONDA() {
     cp mbgc_dir/build/mbgc .
     rm -fr mbgc_dir
 }
+#
+mkdir -p ../bin
+cd ../bin
 #
 if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
     INSTALL_WITH_CONDA;
@@ -188,7 +191,7 @@ rm -fr DMcompress
 #
 # PAQ8l ------------------------------------------------------------------------
 #
-mkdir paq8l_dir
+mkdir -p paq8l_dir
 cd paq8l_dir
 wget http://mattmahoney.net/dc/paq8l.zip
 unzip paq8l.zip
