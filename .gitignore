@@ -1,8 +1,9 @@
 # Ignore these
+bin/*
 scripts/*
 bench-results.tex
 
-# Except for these
+# Except these
 !scripts/*.sh
 
 !scripts/phyml_tree.fa
@@ -11,5 +12,5 @@ bench-results.tex
 !scripts/MFCexample.fa
 !scripts/zika.fa
 
-# "except except" for these
+# "except except" these
 scripts/JARVIS2.sh
