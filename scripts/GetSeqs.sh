@@ -51,9 +51,9 @@ for faFile in "${faFiles[@]}"; do
 
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
         # preprocess .fa files, whether they were already preprocessed or not
-        gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
+        gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
     else
-        ../bin/gto/bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ./gto/bin/gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
+        ../bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ../bin/gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
     fi
 
     seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq

@@ -36,9 +36,12 @@ function INSTALL_WITHOUT_CONDA() {
     # GTO ------------------------------------------------------------------------
     #
     git clone https://github.com/bioinformatics-ua/gto.git
-    cd gto/src/
+    mv gto gto_dir
+    cd gto_dir/src/
     make
+    cp ../bin/gto_fasta_to_seq ../bin/gto_fasta_from_seq ../../
     cd ../../
+    rm -fr gto_dir
     #
     # JARVIS1 ----------------------------------------------------------------------
     #
