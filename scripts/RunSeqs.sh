@@ -148,13 +148,15 @@ function RUN_JARVIS2_SH {
   D_COMMAND="$3";
   NAME="$4";
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}JARVIS2.sh --level " $C_COMMAND " $6 --input $IN_FILE \
+  cp ../bin/* . 
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" ./../bin/JARVIS2.sh --level " $C_COMMAND " $6 --input $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   BYTES=`ls -la $IN_FILE.tar | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}JARVIS2.sh $D_COMMAND $IN_FILE.tar \
+  /bin/time -f "TIME\t%e\tMEM\t%M" ./../bin/JARVIS2.sh $D_COMMAND $IN_FILE.tar \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -169,7 +171,7 @@ function RUN_JARVIS2_SH {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "${FILE%.*}$space$NAME$space$BYTES$space$C_TIME$space$C_MEME$space$D_TIME$space$D_MEME$space$CMP_SIZE$space$5$EOL";
+  printf "${IN_FILE%.*}$space$NAME$space$BYTES$space$C_TIME$space$C_MEME$space$D_TIME$space$D_MEME$space$CMP_SIZE$space$5$EOL";
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   }
@@ -622,12 +624,14 @@ FILES=(
 if [[ "$*" == *"--latex"* ||  "$*" == *"-l"* ]]; then
   space="\t&\t"
   EOL=" \\\\\\\\ \n\n"
+  headerEOL="\\\\\\\\ \hline \n\n"
 else
   space="\t"
   EOL="\n"
+  headerEOL="\n\n"
 fi
 
-printf "SEQUENCE $space PROGRAM $space CBYTES $space CTIME (m) $space CMEM (GB) $space DTIME (m) $space DMEM (GB) $space DIFF $space RUN \\\\\\\\ \hline \n\n";
+printf "SEQUENCE $space PROGRAM $space CBYTES $space CTIME (m) $space CMEM (GB) $space DTIME (m) $space DMEM (GB) $space DIFF $space RUN $headerEOL";
 
 run=0;
 bin_path="../bin/"
@@ -705,7 +709,7 @@ for FILE in "${FILES[@]}"; do
       #
       RUN_PAQ8 "$FILE" "${bin_path}paq8l -8 " "${bin_path}paq8l -d " "PAQ8L" "$((run+=1))"
     fi
-    # 
+    #
     RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 1" "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
     RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 2 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
     RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -l 3 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
@@ -720,10 +724,10 @@ for FILE in "${FILES[@]}"; do
     RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -lr 0.005 -hs 92 -rm 2000:15:1:0.9:7:0.3:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 4:1:0:0.85/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 11:1:1:0.85/0:0:0:0 -cm 14:1:1:0.85/1:1:1:0.9 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
     RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -lr 0.01 -hs 42 -rm 1000:13:1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
     #
-    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
-    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
-    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 150MB --threads 6 --dna "
-    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 100MB --threads 8 --dna "
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "20" " --block 270MB --threads 3 --dna "
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "21" " --block 270MB --threads 3 --dna "
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "22" " --block 150MB --threads 6 --dna "
+    RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "23" " --block 100MB --threads 8 --dna "
     #
     RUN_LZMA "$FILE" "lzma -9 -f -k " "lzma -f -k -d " "LZMA-9" "$((run+=1))"
     RUN_BZIP2 "$FILE" "bzip2 -9 -f -k " "bzip2 -f -k -d " "BZIP2-9" "$((run+=1))"
@@ -741,7 +745,9 @@ for FILE in "${FILES[@]}"; do
     RUN_MEMRGC "$FILE" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "49"
     #
     RUN_CMIX "$FILE" "${bin_path}cmix -c " "${bin_path}cmix -d " "CMIX" "$((run+=1))"
-    # #
-    # # ==============================================================================
-    # #
+    #
+    # ==============================================================================
+    #
+    # remove all executables and JARVIS2.sh from current directory (they were added to current directory to run JARVIS2.sh properly)
+    find . -maxdepth 1 ! -name "*.*" ! -name "JARVIS2.sh" ! -name "v0.2.1.tar.gz" -type f -delete
 done
