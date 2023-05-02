@@ -148,8 +148,6 @@ function RUN_JARVIS2_SH {
   D_COMMAND="$3";
   NAME="$4";
   #
-  cp ../bin/* . 
-  #
   /bin/time -f "TIME\t%e\tMEM\t%M" ./../bin/JARVIS2.sh --level " $C_COMMAND " $6 --input $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
@@ -180,26 +178,26 @@ function RUN_JARVIS2_SH {
 #
 function RUN_NAF {
   #
-  mkdir -p tmp/
-  TMP="tmp/tmp-x.fa";
-  rm -f $TMP.naf $TMP.unnaf
-  echo ">x" > $TMP;
-  cat $1 >> $TMP;
-  printf "\n" >> $TMP;
-  #
+  FILE="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $TMP 2> naf_tmp_report.txt;
+  FILEC=naf_out/$FILE.naf;
+  FILED=naf_out/$FILE.unnaf;
+  #
+  mkdir -p naf_out/
+  rm -f $FILEC $FILED
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE 2> naf_tmp_report.txt;
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $TMP.naf | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -o $TMP.unnaf $TMP.naf 2> naf_tmp_report.txt 
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -o $FILED $FILEC 2> naf_tmp_report.txt 
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $TMP.unnaf $TMP > cmp.txt;
+  cmp $FILED $FILE > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -613,9 +611,9 @@ FILES=(
     # "phyml_tree.seq" # 2.36MB	
     
     "EscherichiaPhageLambda.seq" # 49.2KB
-    "mt_genome_CM029732.seq" # 15.06KB
-    "zika.seq" # 11.0KB
-    "herpes.seq" # 2.7KB
+    # "mt_genome_CM029732.seq" # 15.06KB
+    # "zika.seq" # 11.0KB
+    # "herpes.seq" # 2.7KB
 )
 
 # alternativa automatica
@@ -724,10 +722,15 @@ for FILE in "${FILES[@]}"; do
     RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -lr 0.005 -hs 92 -rm 2000:15:1:0.9:7:0.3:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 4:1:0:0.85/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 11:1:1:0.85/0:0:0:0 -cm 14:1:1:0.85/1:1:1:0.9 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
     RUN_JARVIS2_BIN "$FILE" "${bin_path}JARVIS2 -v -lr 0.01 -hs 42 -rm 1000:13:1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
     #
+    cp ../bin/* . 
+    #
     RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "20" " --block 270MB --threads 3 --dna "
     RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "21" " --block 270MB --threads 3 --dna "
     RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "22" " --block 150MB --threads 6 --dna "
     RUN_JARVIS2_SH "$FILE" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "23" " --block 100MB --threads 8 --dna "
+    #
+    # remove all stuff copied from bin (they were added to current directory to run JARVIS2.sh properly)
+    find . -maxdepth 1 ! -name "*.*" -type f -delete && rm -fr JARVIS2.sh v0.2.1.tar.gz
     #
     RUN_LZMA "$FILE" "lzma -9 -f -k " "lzma -f -k -d " "LZMA-9" "$((run+=1))"
     RUN_BZIP2 "$FILE" "bzip2 -9 -f -k " "bzip2 -f -k -d " "BZIP2-9" "$((run+=1))"
@@ -748,6 +751,5 @@ for FILE in "${FILES[@]}"; do
     #
     # ==============================================================================
     #
-    # remove all executables and JARVIS2.sh from current directory (they were added to current directory to run JARVIS2.sh properly)
-    find . -maxdepth 1 ! -name "*.*" ! -name "JARVIS2.sh" ! -name "v0.2.1.tar.gz" -type f -delete
 done
+'
