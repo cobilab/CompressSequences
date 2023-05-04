@@ -423,25 +423,26 @@ function RUN_MBGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  IN_FILE=$GENOME.seq;
+  IN_FILE=${GENOME}_clean.fa;
   FILEC=$GENOME.mbgc;
-  FILED=mbgc_out/$GENOME.fa;
+  FILED=mbgc_out/$IN_FILE;
   #
   mkdir -p mbgc_out
   #
   # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
-  # exemplo: mbgc -i GCA_lm_concat.fna archive2.mbgc
+  # exemplo: ./mbgc -i input.fasta comp.mbgc
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
   # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
-  # exemplo: mbgc -d archive2.mbgc out
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC mbgc_out; } 2>>d_tmp_report.txt
+  # exemplo: ./mbgc -l 80 -d comp.mbgc out
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC mbgc_out; } 2>> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $IN_FILE $FILED > cmp.txt;
+  # compare input file to decompressed file; they should have the same sequence
+  diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -471,13 +472,17 @@ function RUN_AGC() {
   FILED=${GENOME}_agc.fa;
   #
   # agc create .${bin_path}genomes/zika.seq.agc -o .${bin_path}genomes/zika.seq.agc.c
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE > $FILEC; } 1> c_stdout.txt 2> c_tmp_report.txt;
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE -o $FILEC; } 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  # agc getcol .${bin_path}genomes/zika.fa.agc > zika.fa.agc
+  # alternative #1: ./agc getcol in.agc > out.fa  
   { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC > $FILED; } 1> c_stdout.txt 2> d_tmp_report.txt;
+  # alternative #2: ./agc getcol -o out_path/ in.agc
+  # mkdir -p agc_out;
+  # FILED=agc_out/$IN_FILE;
+  # { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -o agc_out $FILEC; } 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
   # compare input file to decompressed file; they should have the same sequence
@@ -730,10 +735,10 @@ for GENOME in "${GENOMES[@]}"; do
       # #
       # RUN_NAF "$GENOME" "${bin_path}ennaf --strict --temp-dir tmp/ --dna --level 22 " "${bin_path}unnaf " "NAF-22" "$((run+=1))"
       # #
-      # RUN_MBGC "$GENOME" "${bin_path}mbgc -c 0 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      # RUN_MBGC "$GENOME" "${bin_path}mbgc -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      # RUN_MBGC "$GENOME" "${bin_path}mbgc -c 2 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      # RUN_MBGC "$GENOME" "${bin_path}mbgc -c 3 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 0 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 2 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 3 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
       #
       RUN_AGC "$GENOME" "${bin_path}agc create " "${bin_path}agc getcol " "AGC" "$((run+=1))"
       #
