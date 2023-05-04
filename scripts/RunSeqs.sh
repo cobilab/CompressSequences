@@ -4,23 +4,27 @@
 #
 function RUN_GECO3 {
   #
-  IN_FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
+  #
+  IN_FILE=$GENOME.seq;
+  FILEC=$IN_FILE.co;
+  FILED=$IN_FILE.de;
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $IN_FILE.co | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $IN_FILE.co \
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $IN_FILE.de $IN_FILE > cmp.txt
+  cmp $FILED $IN_FILE > cmp.txt
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -39,23 +43,27 @@ function RUN_GECO3 {
 #
 function RUN_GECO2 {
   #
-  IN_FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
+  #
+  IN_FILE=$GENOME.seq;
+  FILEC=$IN_FILE.co;
+  FILED=$IN_FILE.de;
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $IN_FILE.co | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $IN_FILE.co \
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $IN_FILE.de $IN_FILE > cmp.txt;
+  cmp $FILED $IN_FILE > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -73,23 +81,27 @@ function RUN_GECO2 {
 #
 function RUN_JARVIS2_BIN {
   #
-  IN_FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
+  #
+  IN_FILE=$GENOME.seq;
+  FILEC=$IN_FILE.jc;
+  FILED=$IN_FILE.jc.jd;
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $IN_FILE.jc | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $IN_FILE.jc \
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $IN_FILE.jc.jd $IN_FILE > cmp.txt;
+  cmp $FILED $IN_FILE > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -108,23 +120,27 @@ function RUN_JARVIS2_BIN {
 #
 function RUN_JARVIS1 {
   #
-  IN_FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
+  #
+  IN_FILE=$GENOME.seq;
+  FILEC=$IN_FILE.jc;
+  FILED=$IN_FILE.jc.jd;
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $IN_FILE.jc | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $IN_FILE.jc \
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $IN_FILE.jc.jd $IN_FILE > cmp.txt;
+  cmp $FILED $IN_FILE > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -172,24 +188,25 @@ function RUN_JARVIS2_SH {
   printf "${IN_FILE%.*}$space$NAME$space$BYTES$space$C_TIME$space$C_MEME$space$D_TIME$space$D_MEME$space$CMP_SIZE$space$5$EOL";
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
-  }
+}
 #
 # ==============================================================================
 #
 function RUN_NAF {
   #
-  FILE="$1"_clean.fa;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  FILEC=naf_out/$FILE.naf;
-  FILED=naf_out/$FILE.unnaf;
+  IN_FILE=${GENOME}_clean.fa;
+  FILEC=naf_out/$IN_FILE.naf;
+  FILED=naf_out/$IN_FILE.unnaf;
   #
   mkdir -p naf_out/
   rm -f $FILEC $FILED
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -o $FILE 2> naf_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -o $IN_FILE 2> naf_tmp_report.txt;
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
@@ -197,7 +214,7 @@ function RUN_NAF {
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -o $FILED $FILEC 2> naf_tmp_report.txt 
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $FILED $FILE > cmp.txt;
+  cmp $FILED $IN_FILE > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -246,28 +263,31 @@ function RUN_LZMA {
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   #
-  }
+}
 #
 # ==============================================================================
 #
 function RUN_BZIP2 {
   #
-  FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  cp $FILE $FILE.orig
+  IN_FILE=$GENOME.seq;
+  FILEC=$IN_FILE.orig.bz2;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE.orig 2> c_tmp_report.txt;
+  cp $IN_FILE $IN_FILE.orig
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE.orig 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILE.orig.bz2 | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.orig.bz2 2> d_tmp_report.txt
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $FILE $FILE.orig > cmp.txt;
+  cmp $IN_FILE $IN_FILE.orig > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -279,7 +299,7 @@ function RUN_BZIP2 {
   #
   printf "$GENOME$space$NAME$space$BYTES$space$C_TIME$space$C_MEME$space$D_TIME$space$D_MEME$space$CMP_SIZE$space$5$EOL";
   #
-  rm -f $FILE.orig $FILE.orig.bz2 c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
+  rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   #
   }
 #
@@ -287,22 +307,24 @@ function RUN_BZIP2 {
 #
 function RUN_BSC {
   #
-  FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  cp $FILE $FILE.orig
+  IN_FILE=$GENOME.seq;
+  FILEC=$IN_FILE.bsc;
+  FILED=$IN_FILE.out;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}bsc-m03 e $FILE.orig $FILE.bsc $C_COMMAND 1> c_stdout.txt 2> c_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}bsc-m03 e $IN_FILE $FILEC $C_COMMAND 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILE.bsc | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND d $FILE.bsc $FILE.out 1> d_stdout.txt 2> d_tmp_report.txt
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND d $FILEC $FILED 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $FILE.out $FILE.orig > cmp.txt;
+  cmp $FILED $IN_FILE.orig > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -314,13 +336,13 @@ function RUN_BSC {
   #
   printf "$GENOME$space$NAME$space$BYTES$space$C_TIME$space$C_MEME$space$D_TIME$space$D_MEME$space$CMP_SIZE$space$5$EOL";
   #
-  rm -f $FILE.orig $FILE.bsc $FILE.out c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
+  rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
   }
 #
 # ==============================================================================
 #
-function RUN_MFC {
+function RUN_MFC  {
   #
   FILE="$1".seq;
   C_COMMAND="$2";
@@ -353,7 +375,7 @@ function RUN_MFC {
   #
   rm -f $FILE.orig $FILE.mfc $FILE.d c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
-  }
+}
 #
 # ==============================================================================
 # 
@@ -396,29 +418,30 @@ function RUN_DMcompress() {
 #
 function RUN_MBGC() {
   #
-  mkdir -p mbgc_out
-  #
-  FILE="$1"_clean.fa; # .seq file with relative path
+  GENOME="$1"; # .seq file with relative path
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  FileC=${FILE%.*}_clean.mbgc;
-  FileD=mbgc_out/${FILE%.*}_clean.fa;
+  IN_FILE=$GENOME.seq;
+  FILEC=$GENOME.mbgc;
+  FILED=mbgc_out/$GENOME.fa;
+  #
+  mkdir -p mbgc_out
   #
   # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
   # exemplo: mbgc -i GCA_lm_concat.fna archive2.mbgc
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE $FileC 1> c_stdout.txt 2> c_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FileC | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
   # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
   # exemplo: mbgc -d archive2.mbgc out
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FileC mbgc_out; } 2>>d_tmp_report.txt
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC mbgc_out; } 2>>d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $FILE $FileD > cmp.txt;
+  cmp $IN_FILE $FILED > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -438,25 +461,27 @@ function RUN_MBGC() {
 # 
 function RUN_AGC() {
   #
-  FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  FileC=$(echo $FILE | sed 's/seq/agc/g');
-  FileD=${FILE%.*}.fa.out;
+  IN_FILE=$GENOME.seq;
+  #
+  FILEC=$GENOME.agc;
+  FILED=$GENOME.fa.out;
   #
   # agc create .${bin_path}genomes/zika.seq.agc -o .${bin_path}genomes/zika.seq.agc.c
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE > $FileC; } 1> c_stdout.txt 2> c_tmp_report.txt;
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE > $FILEC; } 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FileC | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
   # agc getcol .${bin_path}genomes/zika.fa.agc > zika.fa.agc
-  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FileC > $FileD; } 1> c_stdout.txt 2> d_tmp_report.txt;
+  { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC > $FILED; } 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
-  cmp $FILE $FileD > cmp.txt; # may differ due to EOLs
+  cmp $IN_FILE $FILED > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -486,23 +511,29 @@ function RUN_PAQ8() {
   # cmp HS.seq.de HS.seq > cmp.txt;
   mkdir -p paq8l_out
   #
-  FILE="$1".seq;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
+  #
+  IN_FILE=$GENOME.seq;
+  FILEC=$IN_FILE.paq8l;
+  FILED=paq8l_out/$IN_FILE;
+  #
   # ${bin_path}paq8l -8 HS.seq
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE \
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $FILE.paq8l | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  #
   # ${bin_path}paq8l -d HS.seq.paq8l Hs.seq.de
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.paq8l paq8l_out paq8l_out/$FILE \
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC paq8l_out $FILED \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $FILE paq8l_out/$FILE > cmp.txt
+  cmp $IN_FILE $FILED > cmp.txt
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -519,23 +550,25 @@ function RUN_PAQ8() {
 #
 function RUN_CMIX() {
   #
-  FILE="$1"_clean.fa;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  FileC=${FILE%.*}_clean.cmix;
-  FileD=${FILE%.*}_clean.cmix.out;
+  IN_FILE=${GENOME}_clean.fa;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $FILE -t $FILE -o $FileC 1> c_stdout.txt 2> c_tmp_report.txt;
+  FILEC=${GENOME}_clean.cmix;
+  FILED=${GENOME}_clean.cmix.out;
+  #
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $IN_FILE -t $IN_FILE -o $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FileC | awk '{ print $5 }'`;
+  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $FILE -t $FileC -o $FileD 1> c_stdout.txt 2> d_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $IN_FILE -t $FILEC -o $FILED 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
-  cmp $FILE $FileD > cmp.txt; # may differ due to EOLs
+  cmp $IN_FILE $FILED > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -555,27 +588,29 @@ function RUN_CMIX() {
 #
 function RUN_MEMRGC() {
   #
-  FILE="$1"_clean.fa;
+  GENOME="$1";
   C_COMMAND="$2";
   D_COMMAND="$3";
   NAME="$4";
   #
-  FileC=${FILE%.*}_clean.memrgc;
-  FileD=${FILE%.*}_clean.memrgc.out;
+  IN_FILE="$1"_clean.fa;
   #
-  # RUN_MEMRGC "$FILE" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "49"
+  FileC=${IN_FILE%.*}_clean.memrgc;
+  FileD=${IN_FILE%.*}_clean.memrgc.out;
+  #
+  # RUN_MEMRGC "$IN_FILE" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "49"
   #
   # ${bin_path}memrgc e -m file -r testData/ref.fa -t testData/tar.fa -o $FileC
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $FILE -t $FILE -o $FileC 1> c_stdout.txt 2> c_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $IN_FILE -t $IN_FILE -o $FileC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $FileC | awk '{ print $5 }'`;
   #
   # ${bin_path}memrgc d -m file -t $FileC -o testData/dec.fa
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $FILE -t $FileC -o $FileD 1> c_stdout.txt 2> d_tmp_report.txt;
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $IN_FILE -t $FileC -o $FileD 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
-  cmp $FILE $FileD > cmp.txt; # may differ due to EOLs
+  cmp $IN_FILE $FileD > cmp.txt; # may differ due to EOLs
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
