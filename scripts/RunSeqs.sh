@@ -466,10 +466,9 @@ function RUN_AGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  IN_FILE=$GENOME.seq;
-  #
+  IN_FILE=${GENOME}_clean.fa;
   FILEC=$GENOME.agc;
-  FILED=$GENOME.fa.out;
+  FILED=${GENOME}_agc.fa;
   #
   # agc create .${bin_path}genomes/zika.seq.agc -o .${bin_path}genomes/zika.seq.agc.c
   { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE > $FILEC; } 1> c_stdout.txt 2> c_tmp_report.txt;
@@ -481,7 +480,8 @@ function RUN_AGC() {
   { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC > $FILED; } 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   # 
-  cmp $IN_FILE $FILED > cmp.txt; # may differ due to EOLs
+  # compare input file to decompressed file; they should have the same sequence
+  diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -528,12 +528,13 @@ function RUN_PAQ8() {
   BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
   # ${bin_path}paq8l -d HS.seq.paq8l Hs.seq.de
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC paq8l_out $FILED \
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC $FILED \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $IN_FILE $FILED > cmp.txt
+  # compare input file to decompressed file; they should have the same sequence
+  diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -704,35 +705,35 @@ for GENOME in "${GENOMES[@]}"; do
       #
       RUN_PAQ8 "$GENOME" "paq8l -8 " "paq8l -d " "PAQ8L" "$((run+=1))"
     else
-      RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 13:1:0:0:0.7/0:0:0" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
-      RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
-      RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
-      RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
-      RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
-      #
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -tm 13:1:0:0:0.7/0:0:0" "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:40:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
-      #
-      RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
-      RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 3 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
-      RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 5 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
-      RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 10 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
-      RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 15 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
-      RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "${bin_path}JARVIS -d " "JARVIS1" "$((run+=1))"
-      #
-      RUN_NAF "$GENOME" "${bin_path}ennaf --strict --temp-dir tmp/ --dna --level 22 " "${bin_path}unnaf " "NAF-22" "$((run+=1))"
-      #
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 0 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 2 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 3 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      # RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 13:1:0:0:0.7/0:0:0" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      # RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      # RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      # RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      # RUN_GECO2 "$GENOME" "${bin_path}GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9" "${bin_path}GeDe2 -v " "GeCo2" "$((run+=1))"
+      # #
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -tm 13:1:0:0:0.7/0:0:0" "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:40:0.88/3:10:0.88 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # RUN_GECO3 "$GENOME" "${bin_path}GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 " "${bin_path}GeDe3 -v " "GeCo3" "$((run+=1))"
+      # #
+      # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 3 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 5 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 10 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 15 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
+      # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "${bin_path}JARVIS -d " "JARVIS1" "$((run+=1))"
+      # #
+      # RUN_NAF "$GENOME" "${bin_path}ennaf --strict --temp-dir tmp/ --dna --level 22 " "${bin_path}unnaf " "NAF-22" "$((run+=1))"
+      # #
+      # RUN_MBGC "$GENOME" "${bin_path}mbgc -c 0 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      # RUN_MBGC "$GENOME" "${bin_path}mbgc -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      # RUN_MBGC "$GENOME" "${bin_path}mbgc -c 2 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      # RUN_MBGC "$GENOME" "${bin_path}mbgc -c 3 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
       #
       RUN_AGC "$GENOME" "${bin_path}agc create " "${bin_path}agc getcol " "AGC" "$((run+=1))"
       #
