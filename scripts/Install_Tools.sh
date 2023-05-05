@@ -76,12 +76,12 @@ function INSTALL_WITHOUT_CONDA() {
     # NAF ------------------------------------------------------------------------
     #
     # sudo apt install git gcc make diffutils perl # asks manual password
-    # git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
-    # cd naf && make && make test && sudo make install
-    # cp ennaf/ennaf ../
-    # cp unnaf/unnaf ../
-    # cd ../
-    # rm -fr naf
+    git clone --recurse-submodules https://github.com/KirillKryukov/naf.git
+    cd naf && make && make test && sudo make install
+    cp ennaf/ennaf ../
+    cp unnaf/unnaf ../
+    cd ../
+    rm -fr naf
     #
     # AGC ------------------------------------------------------------------------
     #

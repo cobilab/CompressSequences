@@ -200,21 +200,23 @@ function RUN_NAF {
   NAME="$4";
   #
   IN_FILE=${GENOME}_clean.fa;
-  FILEC=naf_out/$IN_FILE.naf;
-  FILED=naf_out/$IN_FILE.unnaf;
+  FILEC=naf_out/${GENOME}_clean.naf;
+  FILED=naf_out/$IN_FILE;
   #
-  mkdir -p naf_out/
-  rm -f $FILEC $FILED
+  mkdir -p naf_out
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -o $IN_FILE 2> naf_tmp_report.txt;
+  # compress: ennaf file.fa -o file.naf
+  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE -o $FILEC 2> naf_tmp_report.txt;
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -o $FILED $FILEC 2> naf_tmp_report.txt 
+  # decompress: unnaf file.naf -o file.fa
+  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC -o $FILED 2> naf_tmp_report.txt 
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
-  cmp $FILED $IN_FILE > cmp.txt;
+  # compare input file to decompressed file; they should have the same sequence
+  diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
   #
   C_TIME=`cat c_time_mem.txt | awk '{ print $1}'`;
   C_MEME=`cat c_time_mem.txt | awk '{ print $2}'`;
@@ -699,12 +701,17 @@ for GENOME in "${GENOMES[@]}"; do
       RUN_JARVIS1 "$GENOME" "JARVIS -v -l 15 " "JARVIS -v -d " "JARVIS1" "$((run+=1))"
       RUN_JARVIS1 "$GENOME" "JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "JARVIS -d " "JARVIS1" "$((run+=1))"
       #
-      RUN_NAF "$GENOME" "ennaf --strict --temp-dir tmp/ --dna --level 22 " "unnaf " "NAF-22" "$((run+=1))"
+      RUN_NAF "$GENOME" "ennaf --fasta --temp-dir naf_out/ " "unnaf " "NAF-1" "$((run+=1))"
+      RUN_NAF "$GENOME" "ennaf --fasta --temp-dir naf_out/ --level 5 " "unnaf " "NAF-5" "$((run+=1))"
+      RUN_NAF "$GENOME" "ennaf --fasta --temp-dir naf_out/ --level 10 " "unnaf " "NAF-10" "$((run+=1))"
+      RUN_NAF "$GENOME" "ennaf --fasta --temp-dir naf_out/ --level 15 " "unnaf " "NAF-15" "$((run+=1))"
+      RUN_NAF "$GENOME" "ennaf --fasta --temp-dir naf_out/ --level 20 " "unnaf " "NAF-20" "$((run+=1))"
+      RUN_NAF "$GENOME" "ennaf --fasta --temp-dir naf_out/ --level 22 " "unnaf " "NAF-22" "$((run+=1))"
       #
-      RUN_MBGC "$GENOME" "mbgc -c 0 -i " "mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "mbgc -i " "mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "mbgc -c 2 -i " "mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "mbgc -c 3 -i " "mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$GENOME" "mbgc -c 0 -i " "mbgc -d " "MBGC-0" "$((run+=1))"
+      RUN_MBGC "$GENOME" "mbgc -i " "mbgc -d " "MBGC-1" "$((run+=1))"
+      RUN_MBGC "$GENOME" "mbgc -c 2 -i " "mbgc -d " "MBGC-2" "$((run+=1))"
+      RUN_MBGC "$GENOME" "mbgc -c 3 -i " "mbgc -d " "MBGC-3" "$((run+=1))"
       #
       RUN_AGC "$GENOME" "agc create " "agc getcol " "AGC" "$((run+=1))"
       #
@@ -733,12 +740,17 @@ for GENOME in "${GENOMES[@]}"; do
       # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -l 15 " "${bin_path}JARVIS -v -d " "JARVIS1" "$((run+=1))"
       # RUN_JARVIS1 "$GENOME" "${bin_path}JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 " "${bin_path}JARVIS -d " "JARVIS1" "$((run+=1))"
       # #
-      # RUN_NAF "$GENOME" "${bin_path}ennaf --strict --temp-dir tmp/ --dna --level 22 " "${bin_path}unnaf " "NAF-22" "$((run+=1))"
+      RUN_NAF "$GENOME" "${bin_path}ennaf --fasta --temp-dir naf_out/ " "${bin_path}unnaf " "NAF-1" "$((run+=1))"
+      RUN_NAF "$GENOME" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 5 " "${bin_path}unnaf " "NAF-5" "$((run+=1))"
+      RUN_NAF "$GENOME" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 10 " "${bin_path}unnaf " "NAF-10" "$((run+=1))"
+      RUN_NAF "$GENOME" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 15 " "${bin_path}unnaf " "NAF-15" "$((run+=1))"
+      RUN_NAF "$GENOME" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 20 " "${bin_path}unnaf " "NAF-20" "$((run+=1))"
+      RUN_NAF "$GENOME" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 22 " "${bin_path}unnaf " "NAF-22" "$((run+=1))"
       # #
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 0 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 2 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
-      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 3 -i " "${bin_path}mbgc -d " "MBGC" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 0 -i " "${bin_path}mbgc -d " "MBGC-0" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -i " "${bin_path}mbgc -d " "MBGC-1" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 2 -i " "${bin_path}mbgc -d " "MBGC-2" "$((run+=1))"
+      RUN_MBGC "$GENOME" "${bin_path}mbgc -c 3 -i " "${bin_path}mbgc -d " "MBGC-3" "$((run+=1))"
       #
       RUN_AGC "$GENOME" "${bin_path}agc create " "${bin_path}agc getcol " "AGC" "$((run+=1))"
       #
