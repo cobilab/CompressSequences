@@ -164,16 +164,16 @@ rm -fr nncp-2021-06-01/ nncp-2021-06-01.tar.gz
 #
 # CMIX ------------------------------------------------------------------------
 #
-# git clone https://github.com/byronknoll/cmix.git
-# cd cmix
+git clone https://github.com/byronknoll/cmix.git
+mv cmix cmix_dir
+cd cmix_dir
 # sudo apt update # asks manual password
 # sudo apt install clang
-# make 
-# cd ..
-# mv cmix cmix_dir
-# cp cmix_dir/cmix .
-# cp cmix_dir/enwik9-preproc .
-# rm -fr cmix_dir
+make 
+cd ..
+cp cmix_dir/cmix .
+cp cmix_dir/enwik9-preproc .
+rm -fr cmix_dir
 #
 # MEMRGC ------------------------------------------------------------------------
 #
