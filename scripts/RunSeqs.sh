@@ -657,13 +657,13 @@ GENOMES=(
     # "CASSAVA" # CASSAVA, 727.09MB
     # "TME204.HiFi_HiC.haplotig2" # 673.62MB
     
-    # "MFCexample" # 3.5MB
-    # "phyml_tree" # 2.36MB	
+    "MFCexample" # 3.5MB
+    "phyml_tree" # 2.36MB	
     
     "EscherichiaPhageLambda" # 49.2KB
-    # "mt_genome_CM029732" # 15.06KB
-    # "zika" # 11.0KB
-    # "herpes" # 2.7KB
+    "mt_genome_CM029732" # 15.06KB
+    "zika" # 11.0KB
+    "herpes" # 2.7KB
 )
 
 # alternativa automatica
@@ -775,11 +775,12 @@ for GENOME in "${GENOMES[@]}"; do
       RUN_PAQ8 "$GENOME" "${bin_path}paq8l -1 " "${bin_path}paq8l -d " "PAQ8L-1" "$((run+=1))"
       RUN_PAQ8 "$GENOME" "${bin_path}paq8l -2 " "${bin_path}paq8l -d " "PAQ8L-2" "$((run+=1))"
       RUN_PAQ8 "$GENOME" "${bin_path}paq8l -3 " "${bin_path}paq8l -d " "PAQ8L-3" "$((run+=1))"
-      RUN_PAQ8 "$GENOME" "${bin_path}paq8l -4 " "${bin_path}paq8l -d " "PAQ8L-4" "$((run+=1))"
-      RUN_PAQ8 "$GENOME" "${bin_path}paq8l -5 " "${bin_path}paq8l -d " "PAQ8L-5" "$((run+=1))"
-      RUN_PAQ8 "$GENOME" "${bin_path}paq8l -6 " "${bin_path}paq8l -d " "PAQ8L-6" "$((run+=1))"
-      RUN_PAQ8 "$GENOME" "${bin_path}paq8l -7 " "${bin_path}paq8l -d " "PAQ8L-7" "$((run+=1))"
-      RUN_PAQ8 "$GENOME" "${bin_path}paq8l -8 " "${bin_path}paq8l -d " "PAQ8L-8" "$((run+=1))"
+      # very slow tests 
+      # RUN_PAQ8 "$GENOME" "${bin_path}paq8l -4 " "${bin_path}paq8l -d " "PAQ8L-4" "$((run+=1))"
+      # RUN_PAQ8 "$GENOME" "${bin_path}paq8l -5 " "${bin_path}paq8l -d " "PAQ8L-5" "$((run+=1))"
+      # RUN_PAQ8 "$GENOME" "${bin_path}paq8l -6 " "${bin_path}paq8l -d " "PAQ8L-6" "$((run+=1))"
+      # RUN_PAQ8 "$GENOME" "${bin_path}paq8l -7 " "${bin_path}paq8l -d " "PAQ8L-7" "$((run+=1))"
+      # RUN_PAQ8 "$GENOME" "${bin_path}paq8l -8 " "${bin_path}paq8l -d " "PAQ8L-8" "$((run+=1))"
     fi
     #
     RUN_JARVIS2_BIN "$GENOME" "${bin_path}JARVIS2 -v -l 1" "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
@@ -797,10 +798,10 @@ for GENOME in "${GENOMES[@]}"; do
     RUN_JARVIS2_BIN "$GENOME" "${bin_path}JARVIS2 -v -lr 0.01 -hs 42 -rm 1000:13:1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " "${bin_path}JARVIS2 -d" "JARVIS2-bin" "$((run+=1))"
     #
     cp ../bin/* . 
-    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "20" " --block 270MB --threads 3 --dna "
-    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "21" " --block 270MB --threads 3 --dna "
-    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "22" " --block 150MB --threads 6 --dna "
-    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "23" " --block 100MB --threads 8 --dna "
+    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
+    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 3 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 270MB --threads 3 --dna "
+    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 6 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 150MB --threads 6 --dna "
+    RUN_JARVIS2_SH "$GENOME" " -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 " " --decompress --threads 8 --dna --input " "JARVIS2-sh" "$((run+=1))" " --block 100MB --threads 8 --dna "
     # remove all stuff copied from bin (they were added to current directory to run JARVIS2.sh properly)
     find . -maxdepth 1 ! -name "*.*" -type f -delete && rm -fr JARVIS2.sh v0.2.1.tar.gz
     #
@@ -817,7 +818,7 @@ for GENOME in "${GENOMES[@]}"; do
     #
     RUN_DMcompress "$GENOME" "${bin_path}DMcompressC " "${bin_path}DMcompressD " "DMcompress" "$((run+=1))"
     #
-    RUN_MEMRGC "$GENOME" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "49"
+    RUN_MEMRGC "$GENOME" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "$((run+=1))"
     #
     RUN_CMIX "$GENOME" "${bin_path}cmix -n " "${bin_path}cmix -d " "CMIX" "$((run+=1))"
     #

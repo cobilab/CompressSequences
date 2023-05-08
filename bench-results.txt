@@ -1,281 +1,479 @@
 (sapiens, without conda)
 not working: naf, mbgc, agc, cmix, memrgc
 
-SEQUENCE 	 PROGRAM 	 CBYTES 	 CTIME (m) 	 CMEM (GB) 	 DTIME (m) 	 DMEM (GB) 	 DIFF 	 RUN 
+GENOME 	 PROGRAM 	 CBYTES 	 CTIME (m) 	 CMEM (GB) 	 DTIME (m) 	 DMEM (GB) 	 DIFF 	 RUN 
 
-EscherichiaPhageLambda	GeCo2	12159	0	0.144592	0	0.144478	0	1
-EscherichiaPhageLambda	GeCo2	11935	0	0.234688	0	0.234394	0	2
-EscherichiaPhageLambda	GeCo2	11934	0	0.322357	0	0.322002	0	3
-EscherichiaPhageLambda	GeCo2	11933	0.0833333	1.78378	0.0833333	1.78338	0	4
-EscherichiaPhageLambda	GeCo2	12176	0.133333	3.3688	0.133333	3.36847	0	5
-EscherichiaPhageLambda	GeCo3	12176	0	0.00157166	0	0.00172424	0	6
-EscherichiaPhageLambda	GeCo3	12176	0	0.00165558	0	0.00172424	0	7
-EscherichiaPhageLambda	GeCo3	12176	0	0.00164795	0	0.00172043	0	8
-EscherichiaPhageLambda	GeCo3	12176	0	0.00165939	0	0.00175858	0	9
-EscherichiaPhageLambda	GeCo3	12176	0	0.00164032	0	0.0017128	0	10
-EscherichiaPhageLambda	GeCo3	12176	0	0.00163651	0	0.00170135	0	11
-EscherichiaPhageLambda	GeCo3	12176	0	0.00166321	0	0.00171661	0	12
-EscherichiaPhageLambda	GeCo3	12176	0	0.00159454	0	0.00175476	0	13
-EscherichiaPhageLambda	GeCo3	12176	0	0.00162888	0	0.00173187	0	14
-EscherichiaPhageLambda	JARVIS1	11982	0	0.144634	0	0.144569	0	15
-EscherichiaPhageLambda	JARVIS1	12146	0	0.144669	0	0.144627	0	16
-EscherichiaPhageLambda	JARVIS1	12249	0	0.148216	0	0.14817	0	17
-EscherichiaPhageLambda	JARVIS1	12184	0.0166667	0.712185	0.0166667	0.712181	0	18
-EscherichiaPhageLambda	JARVIS1	12138	0.0166667	0.627525	0.0166667	0.627483	0	19
-EscherichiaPhageLambda	JARVIS1	12008	0	0.143452	0	0.143406	0	20
-ls: cannot access 'tmp/tmp-x.fa.naf': No such file or directory
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-EscherichiaPhageLambda	NAF-22		0	0.000995636	0	0.000995636	0	21
-ls: cannot access 'EscherichiaPhageLambda_clean.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda	MBGC		0	0.00363541	0	0.00370026	0	22
-ls: cannot access 'EscherichiaPhageLambda_clean.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda	MBGC		0	0.00365448	0	0.00366592	0	23
-ls: cannot access 'EscherichiaPhageLambda_clean.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda	MBGC		0	0.00365829	0	0.00364304	0	24
-ls: cannot access 'EscherichiaPhageLambda_clean.mbgc': No such file or directory
-cmp: mbgc_out/EscherichiaPhageLambda_clean.fa: No such file or directory
-EscherichiaPhageLambda	MBGC		0	0.00369263	0	0.00365067	0	25
-cmp: EOF on EscherichiaPhageLambda_clean.fa.out which is empty
-EscherichiaPhageLambda	AGC	0	0	0.00379181	0	0.00384521	0	26
-EscherichiaPhageLambda	PAQ8L	11879	0.2	0.625263	0.2	0.625313	0	27
-EscherichiaPhageLambda	JARVIS2-bin	12076	0	0.160728	0	0.160664	0	28
-EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160931	0	0.160812	0	29
-EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.1609	0	0.160889	0	30
-EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160843	0	0.160774	0	31
-EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160904	0	0.160812	0	32
-EscherichiaPhageLambda	JARVIS2-bin	11928	0.0166667	0.393139	0.0166667	0.393074	0	33
-EscherichiaPhageLambda	JARVIS2-bin	11943	0.0166667	0.423069	0.0166667	0.422958	0	34
-EscherichiaPhageLambda	JARVIS2-bin	11895	0.0166667	0.393047	0.0166667	0.392979	0	35
-EscherichiaPhageLambda	JARVIS2-bin	11907	0	0.268379	0	0.268311	0	36
-EscherichiaPhageLambda	JARVIS2-bin	12024	0	0.160603	0	0.160519	0	37
-EscherichiaPhageLambda	JARVIS2-bin	12044	0.0166667	0.268215	0.0166667	0.26815	0	38
-EscherichiaPhageLambda	JARVIS2-bin	11967	0.0333333	0.511608	0.0333333	0.511589	0	39
-EscherichiaPhageLambda	JARVIS2-bin	12030	0	0.268375	0	0.268311	0	40
-EscherichiaPhageLambda	JARVIS2-sh	20480	0	0.267517	0	0.267406	0	20
-EscherichiaPhageLambda	JARVIS2-sh	20480	0.0166667	0.268002	0.0166667	0.267937	0	21
-EscherichiaPhageLambda	JARVIS2-sh	20480	0.0166667	0.26791	0.0166667	0.267902	0	22
-EscherichiaPhageLambda	JARVIS2-sh	20480	0	0.267536	0	0.267521	0	23
-EscherichiaPhageLambda	LZMA-9	13424	0	0.00307846	0	0.00217438	0	41
-EscherichiaPhageLambda	BZIP2-9	13249	0	0.00194168	0	0.00175095	0	42
-EscherichiaPhageLambda	BSC-m03	12156	0	0.00514603	0	0.00486755	0	43
-EscherichiaPhageLambda	BSC-m03	12156	0	0.00514603	0	0.00488281	0	44
-EscherichiaPhageLambda	BSC-m03	12156	0	0.00514603	0	0.00485992	0	45
-EscherichiaPhageLambda	MFC	12266	0	0.235413	0	0.234306	0	46
-EscherichiaPhageLambda	MFC	12198	0	0.235874	0	0.234829	0	47
-EscherichiaPhageLambda	MFC	12286	0	0.45433	0	0.453285	0	48
-EscherichiaPhageLambda	DMcompress	12152	0	0.322853	0	0.321938	0	49
-cmp: EOF on EscherichiaPhageLambda_clean.memrgc.out which is empty
-EscherichiaPhageLambda	MEMRGC	0	0	0.0037117	0	0.00366592	0	49
-ls: cannot access 'EscherichiaPhageLambda_clean.cmix': No such file or directory
-cmp: EscherichiaPhageLambda_clean.cmix.out: No such file or directory
-EscherichiaPhageLambda	CMIX		0	0.000995636	0	0.000995636	0	50
-mt_genome_CM029732	GeCo2	3805	0	0.050499	0	0.0502586	0	51
-mt_genome_CM029732	GeCo2	3641	0	0.0885811	0	0.0882454	0	52
-mt_genome_CM029732	GeCo2	3641	0	0.105839	0	0.105556	0	53
-mt_genome_CM029732	GeCo2	3641	0.0833333	1.78294	0.0833333	1.7827	0	54
-mt_genome_CM029732	GeCo2	3822	0.133333	3.31896	0.133333	3.31865	0	55
-mt_genome_CM029732	GeCo3	3822	0	0.00157166	0	0.00172806	0	56
-mt_genome_CM029732	GeCo3	3822	0	0.00165939	0	0.00175476	0	57
-mt_genome_CM029732	GeCo3	3822	0	0.00166321	0	0.00172806	0	58
-mt_genome_CM029732	GeCo3	3822	0	0.00165939	0	0.00171661	0	59
-mt_genome_CM029732	GeCo3	3822	0	0.00165939	0	0.00171661	0	60
-mt_genome_CM029732	GeCo3	3822	0	0.00165558	0	0.00172806	0	61
-mt_genome_CM029732	GeCo3	3822	0	0.00165558	0	0.00170517	0	62
-mt_genome_CM029732	GeCo3	3822	0	0.0015831	0	0.00172806	0	63
-mt_genome_CM029732	GeCo3	3822	0	0.00159454	0	0.00172043	0	64
-mt_genome_CM029732	JARVIS1	3615	0	0.0678406	0	0.0678101	0	65
-mt_genome_CM029732	JARVIS1	3729	0	0.0678558	0	0.0679054	0	66
-mt_genome_CM029732	JARVIS1	3805	0	0.071003	0	0.0709496	0	67
-mt_genome_CM029732	JARVIS1	3808	0	0.320381	0	0.320389	0	68
-mt_genome_CM029732	JARVIS1	3797	0	0.284512	0	0.284492	0	69
-mt_genome_CM029732	JARVIS1	3688	0	0.0671043	0	0.0669556	0	70
-ls: cannot access 'tmp/tmp-x.fa.naf': No such file or directory
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-mt_genome_CM029732	NAF-22		0	0.000995636	0	0.000995636	0	71
-ls: cannot access 'mt_genome_CM029732_clean.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732	MBGC		0	0.00367355	0	0.00364304	0	72
-ls: cannot access 'mt_genome_CM029732_clean.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732	MBGC		0	0.00362778	0	0.00364304	0	73
-ls: cannot access 'mt_genome_CM029732_clean.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732	MBGC		0	0.00364685	0	0.00365067	0	74
-ls: cannot access 'mt_genome_CM029732_clean.mbgc': No such file or directory
-cmp: mbgc_out/mt_genome_CM029732_clean.fa: No such file or directory
-mt_genome_CM029732	MBGC		0	0.00364304	0	0.00362778	0	75
-cmp: EOF on mt_genome_CM029732_clean.fa.out which is empty
-mt_genome_CM029732	AGC	0	0	0.00378799	0	0.00378799	0	76
-mt_genome_CM029732	PAQ8L	3621	0.0666667	0.427361	0.0666667	0.427353	0	77
-mt_genome_CM029732	JARVIS2-bin	3604	0	0.0869217	0	0.0868683	0	78
-mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870018	0	0.0869408	0	79
-mt_genome_CM029732	JARVIS2-bin	3600	0	0.0871353	0	0.0870743	0	80
-mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870667	0	0.0870247	0	81
-mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870895	0	0.0869675	0	82
-mt_genome_CM029732	JARVIS2-bin	3620	0	0.173267	0	0.173264	0	83
-mt_genome_CM029732	JARVIS2-bin	3625	0	0.193283	0	0.193161	0	84
-mt_genome_CM029732	JARVIS2-bin	3624	0	0.173237	0	0.173172	0	85
-mt_genome_CM029732	JARVIS2-bin	3622	0	0.143967	0	0.143841	0	86
-mt_genome_CM029732	JARVIS2-bin	3602	0	0.0860939	0	0.0859756	0	87
-mt_genome_CM029732	JARVIS2-bin	3621	0	0.143963	0	0.143894	0	88
-mt_genome_CM029732	JARVIS2-bin	3642	0	0.21656	0	0.216427	0	89
-mt_genome_CM029732	JARVIS2-bin	3614	0	0.143967	0	0.143883	0	90
-mt_genome_CM029732	JARVIS2-sh	10240	0	0.143169	0	0.143063	0	20
-mt_genome_CM029732	JARVIS2-sh	10240	0	0.144329	0	0.14426	0	21
-mt_genome_CM029732	JARVIS2-sh	10240	0	0.144295	0	0.144268	0	22
-mt_genome_CM029732	JARVIS2-sh	10240	0	0.143063	0	0.143044	0	23
-mt_genome_CM029732	LZMA-9	4304	0	0.0028038	0	0.00215149	0	91
-mt_genome_CM029732	BZIP2-9	4151	0	0.00183868	0	0.00166321	0	92
-mt_genome_CM029732	BSC-m03	3716	0	0.00452805	0	0.00437927	0	93
-mt_genome_CM029732	BSC-m03	3716	0	0.00452805	0	0.00437546	0	94
-mt_genome_CM029732	BSC-m03	3716	0	0.00452805	0	0.00440216	0	95
-mt_genome_CM029732	MFC	3886	0	0.0894051	0	0.0883598	0	96
-mt_genome_CM029732	MFC	3765	0	0.0898018	0	0.0888214	0	97
-mt_genome_CM029732	MFC	3818	0	0.158394	0	0.157291	0	98
-mt_genome_CM029732	DMcompress	3706	0	0.106632	0	0.105614	0	99
-cmp: EOF on mt_genome_CM029732_clean.memrgc.out which is empty
-mt_genome_CM029732	MEMRGC	0	0	0.00368118	0	0.00372696	0	49
-ls: cannot access 'mt_genome_CM029732_clean.cmix': No such file or directory
-cmp: mt_genome_CM029732_clean.cmix.out: No such file or directory
-mt_genome_CM029732	CMIX		0	0.000995636	0	0.000995636	0	100
-zika	GeCo2	2731	0	0.0401955	0	0.0398979	0	101
-zika	GeCo2	2684	0	0.0742836	0	0.0739975	0	102
-zika	GeCo2	2684	0	0.0816002	0	0.0813675	0	103
-zika	GeCo2	2684	0.0833333	1.7816	0.0833333	1.78131	0	104
-zika	GeCo2	2748	0.133333	3.31304	0.133333	3.31272	0	105
-zika	GeCo3	2748	0	0.00159836	0	0.00172806	0	106
-zika	GeCo3	2748	0	0.00164413	0	0.00171661	0	107
-zika	GeCo3	2748	0	0.00164795	0	0.00173187	0	108
-zika	GeCo3	2748	0	0.00164413	0	0.00170517	0	109
-zika	GeCo3	2748	0	0.00168991	0	0.00170898	0	110
-zika	GeCo3	2748	0	0.00166321	0	0.00172043	0	111
-zika	GeCo3	2748	0	0.00165176	0	0.00173187	0	112
-zika	GeCo3	2748	0	0.0015831	0	0.00172424	0	113
-zika	GeCo3	2748	0	0.00157166	0	0.00171661	0	114
-zika	JARVIS1	2675	0	0.0603218	0	0.0602531	0	115
-zika	JARVIS1	2742	0	0.0603561	0	0.0602798	0	116
-zika	JARVIS1	2746	0	0.0619087	0	0.0619431	0	117
-zika	JARVIS1	2773	0	0.264503	0	0.264439	0	118
-zika	JARVIS1	2759	0	0.233543	0	0.233536	0	119
-zika	JARVIS1	2720	0	0.0601578	0	0.0600815	0	120
-ls: cannot access 'tmp/tmp-x.fa.naf': No such file or directory
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-zika	NAF-22		0	0.000995636	0	0.000995636	0	121
-ls: cannot access 'zika_clean.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika	MBGC		0	0.00365067	0	0.00370407	0	122
-ls: cannot access 'zika_clean.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika	MBGC		0	0.00368118	0	0.00369644	0	123
-ls: cannot access 'zika_clean.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika	MBGC		0	0.00370407	0	0.00364685	0	124
-ls: cannot access 'zika_clean.mbgc': No such file or directory
-cmp: mbgc_out/zika_clean.fa: No such file or directory
-zika	MBGC		0	0.00365448	0	0.00363541	0	125
-cmp: EOF on zika_clean.fa.out which is empty
-zika	AGC	0	0	0.00386047	0	0.00378799	0	126
-zika	PAQ8L	2701	0.05	0.381489	0.05	0.381519	0	127
-zika	JARVIS2-bin	2740	0	0.0681458	0	0.0680161	0	128
-zika	JARVIS2-bin	2699	0	0.0682793	0	0.0682106	0	129
-zika	JARVIS2-bin	2699	0	0.0683022	0	0.0682373	0	130
-zika	JARVIS2-bin	2699	0	0.0683022	0	0.0682373	0	131
-zika	JARVIS2-bin	2699	0	0.068306	0	0.0682373	0	132
-zika	JARVIS2-bin	2718	0	0.140297	0	0.140232	0	133
-zika	JARVIS2-bin	2731	0	0.159454	0	0.159397	0	134
-zika	JARVIS2-bin	2722	0	0.140141	0	0.140114	0	135
-zika	JARVIS2-bin	2719	0	0.122002	0	0.121979	0	136
-zika	JARVIS2-bin	2704	0	0.068306	0	0.0682373	0	137
-zika	JARVIS2-bin	2735	0	0.121635	0	0.121674	0	138
-zika	JARVIS2-bin	2751	0	0.172859	0	0.172848	0	139
-zika	JARVIS2-bin	2730	0	0.12204	0	0.12191	0	140
-zika	JARVIS2-sh	10240	0	0.121719	0	0.121593	0	20
-zika	JARVIS2-sh	10240	0	0.121861	0	0.121902	0	21
-zika	JARVIS2-sh	10240	0	0.121861	0	0.121815	0	22
-zika	JARVIS2-sh	10240	0	0.121735	0	0.121647	0	23
-zika	LZMA-9	3195	0	0.00276566	0	0.00214005	0	141
-zika	BZIP2-9	2995	0	0.00182343	0	0.00167084	0	142
-zika	BSC-m03	2758	0	0.0045929	0	0.00443268	0	143
-zika	BSC-m03	2758	0	0.0045929	0	0.00447083	0	144
-zika	BSC-m03	2758	0	0.0045929	0	0.00447464	0	145
-zika	MFC	2831	0	0.0751038	0	0.0741692	0	146
-zika	MFC	2843	0	0.0755615	0	0.0745544	0	147
-zika	MFC	2895	0	0.13031	0	0.129311	0	148
-zika	DMcompress	2779	0	0.0823212	0	0.0813675	0	149
-cmp: EOF on zika_clean.memrgc.out which is empty
-zika	MEMRGC	0	0	0.00368118	0	0.00367737	0	49
-ls: cannot access 'zika_clean.cmix': No such file or directory
-cmp: zika_clean.cmix.out: No such file or directory
-zika	CMIX		0	0.000999451	0	0.000995636	0	150
-herpes	GeCo2	664	0	0.0114212	0	0.0110397	0	151
-herpes	GeCo2	647	0	0.0194817	0	0.0193443	0	152
-herpes	GeCo2	647	0	0.0204773	0	0.0202599	0	153
-herpes	GeCo2	647	0.0833333	1.76666	0.0833333	1.76643	0	154
-herpes	GeCo2	674	0.133333	3.27506	0.133333	3.27467	0	155
-herpes	GeCo3	674	0	0.0015831	0	0.00173187	0	156
-herpes	GeCo3	674	0	0.00163269	0	0.00175476	0	157
-herpes	GeCo3	674	0	0.00163651	0	0.00173187	0	158
-herpes	GeCo3	674	0	0.00166321	0	0.00170898	0	159
-herpes	GeCo3	674	0	0.00166321	0	0.00170517	0	160
-herpes	GeCo3	674	0	0.00165939	0	0.00172424	0	161
-herpes	GeCo3	674	0	0.00165939	0	0.00172806	0	162
-herpes	GeCo3	674	0	0.00160217	0	0.00172806	0	163
-herpes	GeCo3	674	0	0.00160217	0	0.00173187	0	164
-herpes	JARVIS1	635	0	0.0181808	0	0.0181961	0	165
-herpes	JARVIS1	662	0	0.0181961	0	0.0181923	0	166
-herpes	JARVIS1	663	0	0.0188103	0	0.0188065	0	167
-herpes	JARVIS1	695	0	0.0777588	0	0.077774	0	168
-herpes	JARVIS1	688	0	0.0693893	0	0.0693855	0	169
-herpes	JARVIS1	661	0	0.0182457	0	0.0181732	0	170
-ls: cannot access 'tmp/tmp-x.fa.naf': No such file or directory
-cmp: tmp/tmp-x.fa.unnaf: No such file or directory
-herpes	NAF-22		0	0.000991821	0	0.000995636	0	171
-ls: cannot access 'herpes_clean.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes	MBGC		0	0.00363922	0	0.00363922	0	172
-ls: cannot access 'herpes_clean.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes	MBGC		0	0.00364304	0	0.00362396	0	173
-ls: cannot access 'herpes_clean.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes	MBGC		0	0.00368881	0	0.0036087	0	174
-ls: cannot access 'herpes_clean.mbgc': No such file or directory
-cmp: mbgc_out/herpes_clean.fa: No such file or directory
-herpes	MBGC		0	0.00364304	0	0.00367355	0	175
-cmp: EOF on herpes_clean.fa.out which is empty
-herpes	AGC	0	0	0.00381851	0	0.00384521	0	176
-herpes	PAQ8L	651	0	0.18177	0	0.181801	0	177
-herpes	JARVIS2-bin	640	0	0.0201225	0	0.0200729	0	178
-herpes	JARVIS2-bin	648	0	0.0202599	0	0.0201492	0	179
-herpes	JARVIS2-bin	648	0	0.020298	0	0.0202332	0	180
-herpes	JARVIS2-bin	648	0	0.0203514	0	0.0202866	0	181
-herpes	JARVIS2-bin	648	0	0.0203514	0	0.0202332	0	182
-herpes	JARVIS2-bin	661	0	0.0375328	0	0.0374031	0	183
-herpes	JARVIS2-bin	668	0	0.0443916	0	0.0442657	0	184
-herpes	JARVIS2-bin	668	0	0.0374146	0	0.0374184	0	185
-herpes	JARVIS2-bin	668	0	0.0355682	0	0.0354385	0	186
-herpes	JARVIS2-bin	648	0	0.0203857	0	0.0203133	0	187
-herpes	JARVIS2-bin	670	0	0.0355377	0	0.0354729	0	188
-herpes	JARVIS2-bin	686	0	0.0496445	0	0.0495186	0	189
-herpes	JARVIS2-bin	671	0	0.0355034	0	0.0354805	0	190
-herpes	JARVIS2-sh	10240	0	0.035408	0	0.035347	0	20
-herpes	JARVIS2-sh	10240	0	0.0355339	0	0.0353508	0	21
-herpes	JARVIS2-sh	10240	0	0.0354424	0	0.0354195	0	22
-herpes	JARVIS2-sh	10240	0	0.0353508	0	0.0353928	0	23
-herpes	LZMA-9	817	0	0.00259399	0	0.0021286	0	191
-herpes	BZIP2-9	749	0	0.00160217	0	0.00167084	0	192
-herpes	BSC-m03	684	0	0.00444794	0	0.00428772	0	193
-herpes	BSC-m03	684	0	0.00444794	0	0.00430679	0	194
-herpes	BSC-m03	684	0	0.00444794	0	0.00427628	0	195
-herpes	MFC	749	0	0.0203247	0	0.0193443	0	196
-herpes	MFC	757	0	0.020771	0	0.0198364	0	197
-herpes	MFC	798	0	0.032074	0	0.0310707	0	198
-herpes	DMcompress	749	0	0.0212135	0	0.0203667	0	199
-cmp: EOF on herpes_clean.memrgc.out which is empty
-herpes	MEMRGC	0	0	0.00360489	0	0.00366592	0	49
-ls: cannot access 'herpes_clean.cmix': No such file or directory
-cmp: herpes_clean.cmix.out: No such file or directory
-herpes	CMIX		0	0.000995636	0	0.000995636	0	200
+MFCexample	GeCo2	581493	0.0333333	0.50145	0.0333333	0.501236	0	1
+MFCexample	GeCo2	553971	0.05	0.50301	0.05	0.502712	0	2
+MFCexample	GeCo2	552472	0.1	1.95762	0.1	1.95736	0	3
+MFCexample	GeCo2	554040	0.15	1.78436	0.15	1.78408	0	4
+MFCexample	GeCo2	559061	0.233333	3.40942	0.233333	3.40915	0	5
+MFCexample	GeCo3	559061	0	0.00162888	0	0.00172424	0	6
+MFCexample	GeCo3	559061	0	0.00164795	0	0.00176239	0	7
+MFCexample	GeCo3	559061	0	0.00163651	0	0.00170517	0	8
+MFCexample	GeCo3	559061	0	0.00166321	0	0.00173187	0	9
+MFCexample	GeCo3	559061	0	0.00163651	0	0.00170898	0	10
+MFCexample	GeCo3	559061	0	0.00166321	0	0.00172806	0	11
+MFCexample	GeCo3	559061	0	0.0016861	0	0.00170517	0	12
+MFCexample	GeCo3	559061	0	0.00157928	0	0.00170898	0	13
+MFCexample	GeCo3	559061	0	0.00159836	0	0.00175858	0	14
+MFCexample	JARVIS1	559018	0.05	0.31744	0.05	0.317165	0	15
+MFCexample	JARVIS1	551401	0.05	0.317581	0.05	0.317368	0	16
+MFCexample	JARVIS1	552367	0.0666667	0.323265	0.05	0.323112	0	17
+MFCexample	JARVIS1	550514	0.266667	2.82087	0.266667	2.82067	0	18
+MFCexample	JARVIS1	550686	0.233333	2.69461	0.25	2.69445	0	19
+MFCexample	JARVIS1	552746	0.0666667	0.309311	0.0666667	0.309029	0	20
+tail: cannot open 'naf_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	NAF-1	591743	0	0.00476837	0	0.00144196	1	21
+tail: cannot open 'naf_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	NAF-5	616184	0	0.0198555	0	0.00141907	1	22
+tail: cannot open 'naf_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	NAF-10	612976	0	0.0638237	0	0.00143433	1	23
+tail: cannot open 'naf_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	NAF-15	612664	0.0166667	0.31773	0	0.00144577	1	24
+tail: cannot open 'naf_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	NAF-20	582651	0.0333333	0.788795	0	0.00139618	1	25
+tail: cannot open 'naf_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	NAF-22	582437	0.0833333	3.17231	0	0.00144196	1	26
+ls: cannot access 'MFCexample.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	MBGC-0		0	0.00370789	0	0.00368881	1	27
+ls: cannot access 'MFCexample.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	MBGC-1		0	0.00364685	0	0.00364685	1	28
+ls: cannot access 'MFCexample.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	MBGC-2		0	0.00371933	0	0.00362396	1	29
+ls: cannot access 'MFCexample.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/MFCexample_clean.fa' for reading: No such file or directory
+MFCexample	MBGC-3		0	0.00363922	0	0.00369263	1	30
+ls: cannot access 'MFCexample.agc': No such file or directory
+MFCexample	AGC		0	0.00378799	0	0.00378799	1	31
+MFCexample	PAQ8L-1	570137	1.08333	0.0386467	1.08333	0.0386391	0	32
+MFCexample	PAQ8L-2	566650	1.1	0.0444069	1.08333	0.0443687	0	33
+MFCexample	PAQ8L-3	562216	1.1	0.054203	1.1	0.0541649	0	34
+MFCexample	JARVIS2-bin	564304	0.233333	0.306801	0.233333	0.306797	0	35
+MFCexample	JARVIS2-bin	556938	0.266667	0.306999	0.266667	0.306934	0	36
+MFCexample	JARVIS2-bin	556886	0.266667	0.306965	0.266667	0.307003	0	37
+MFCexample	JARVIS2-bin	545462	0.3	0.307022	0.3	0.306896	0	38
+MFCexample	JARVIS2-bin	544909	0.3	0.307339	0.3	0.307228	0	39
+MFCexample	JARVIS2-bin	541862	0.4	0.807072	0.4	0.807022	0	40
+MFCexample	JARVIS2-bin	541469	0.416667	0.854614	0.416667	0.854568	0	41
+MFCexample	JARVIS2-bin	541801	0.4	0.806908	0.4	0.806782	0	42
+MFCexample	JARVIS2-bin	541084	0.4	0.442806	0.4	0.442741	0	43
+MFCexample	JARVIS2-bin	547172	0.316667	0.28093	0.316667	0.280926	0	44
+MFCexample	JARVIS2-bin	544062	0.416667	0.446697	0.416667	0.446651	0	45
+MFCexample	JARVIS2-bin	542830	0.916667	2.30918	1	2.30911	0	46
+MFCexample	JARVIS2-bin	542703	0.383333	0.442825	0.4	0.442741	0	47
+MFCexample	JARVIS2-sh	552960	0.366667	0.40601	0.366667	0.405945	0	48
+MFCexample	JARVIS2-sh	552960	0.416667	0.432201	0.4	0.432076	0	49
+MFCexample	JARVIS2-sh	552960	0.4	0.432163	0.4	0.432098	0	50
+MFCexample	JARVIS2-sh	552960	0.366667	0.405949	0.366667	0.405922	0	51
+MFCexample	LZMA-9	602647	0.05	0.0225677	0	0.00434494	0	52
+MFCexample	BZIP2-9	634946	0	0.00748444	0	0.00477219	0	53
+MFCexample	BSC-m03	576774	0.0666667	0.0401039	0.05	0.0342751	0	54
+MFCexample	BSC-m03	576774	0.0666667	0.0401611	0.05	0.0342789	0	55
+MFCexample	BSC-m03	576774	0.0666667	0.0401649	0.05	0.0342903	0	56
+MFCexample	MFC	559926	0.0333333	0.503147	0.0333333	0.502102	0	57
+MFCexample	MFC	556128	0.0333333	0.503605	0.0333333	0.502563	0	58
+MFCexample	MFC	556352	0.116667	2.22341	0.1	2.22236	0	59
+MFCexample	DMcompress	554809	0.1	1.95766	0.1	1.95667	0	60
+MFCexample	MEMRGC	0	0	0.00590515	0	0.00366211	1	61
+ls: cannot access 'MFCexample.cmix': No such file or directory
+tail: cannot open 'MFCexample_cmix_out.fa' for reading: No such file or directory
+MFCexample	CMIX		0	0.00302124	0	0.0030098	1	62
+phyml_tree	GeCo2	16416	0	0.179131	0	0.178799	0	63
+phyml_tree	GeCo2	16116	0	0.278839	0	0.278477	0	64
+phyml_tree	GeCo2	16116	0	0.415241	0	0.414982	0	65
+phyml_tree	GeCo2	16114	0.0833333	1.78387	0.0833333	1.78355	0	66
+phyml_tree	GeCo2	16433	0.133333	3.37879	0.133333	3.37853	0	67
+phyml_tree	GeCo3	16433	0	0.00160217	0	0.00175476	0	68
+phyml_tree	GeCo3	16433	0	0.00165558	0	0.00175095	0	69
+phyml_tree	GeCo3	16433	0	0.00165939	0	0.00172424	0	70
+phyml_tree	GeCo3	16433	0	0.00165558	0	0.00170517	0	71
+phyml_tree	GeCo3	16433	0	0.00166321	0	0.00176239	0	72
+phyml_tree	GeCo3	16433	0	0.00168991	0	0.00170517	0	73
+phyml_tree	GeCo3	16433	0	0.00163651	0	0.00172424	0	74
+phyml_tree	GeCo3	16433	0	0.00162888	0	0.00172806	0	75
+phyml_tree	GeCo3	16433	0	0.00158691	0	0.00172806	0	76
+phyml_tree	JARVIS1	16120	0	0.158749	0	0.158684	0	77
+phyml_tree	JARVIS1	16356	0	0.158833	0	0.158718	0	78
+phyml_tree	JARVIS1	16487	0	0.162395	0	0.16227	0	79
+phyml_tree	JARVIS1	16385	0.0166667	0.834923	0.0166667	0.834854	0	80
+phyml_tree	JARVIS1	16364	0.0166667	0.739655	0.0166667	0.73959	0	81
+phyml_tree	JARVIS1	16159	0	0.158215	0	0.158081	0	82
+tail: cannot open 'naf_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	NAF-1	16447	0	0.00258255	0	0.00141144	1	83
+tail: cannot open 'naf_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	NAF-5	16641	0	0.0170135	0	0.00144577	1	84
+tail: cannot open 'naf_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	NAF-10	16641	0	0.0608978	0	0.00141525	1	85
+tail: cannot open 'naf_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	NAF-15	16642	0	0.314743	0	0.00143814	1	86
+tail: cannot open 'naf_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	NAF-20	16469	0.0166667	0.786129	0	0.00141525	1	87
+tail: cannot open 'naf_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	NAF-22	16469	0.0666667	3.16953	0	0.00139236	1	88
+ls: cannot access 'phyml_tree.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	MBGC-0		0	0.00364304	0	0.00363159	1	89
+ls: cannot access 'phyml_tree.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	MBGC-1		0	0.00369263	0	0.00366974	1	90
+ls: cannot access 'phyml_tree.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	MBGC-2		0	0.00366592	0	0.00366211	1	91
+ls: cannot access 'phyml_tree.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/phyml_tree_clean.fa' for reading: No such file or directory
+phyml_tree	MBGC-3		0	0.00366211	0	0.00368118	1	92
+ls: cannot access 'phyml_tree.agc': No such file or directory
+phyml_tree	AGC		0	0.00379181	0	0.00378799	1	93
+phyml_tree	PAQ8L-1	16046	0.0166667	0.0377579	0.0166667	0.0377235	0	94
+phyml_tree	PAQ8L-2	16047	0.0166667	0.0425415	0.0166667	0.0425262	0	95
+phyml_tree	PAQ8L-3	16046	0.0166667	0.0519943	0.0166667	0.0519867	0	96
+phyml_tree	JARVIS2-bin	16282	0	0.175381	0	0.17527	0	97
+phyml_tree	JARVIS2-bin	16061	0	0.175533	0	0.175404	0	98
+phyml_tree	JARVIS2-bin	16061	0	0.175556	0	0.175491	0	99
+phyml_tree	JARVIS2-bin	16061	0	0.175533	0	0.175491	0	100
+phyml_tree	JARVIS2-bin	16061	0	0.175602	0	0.175468	0	101
+phyml_tree	JARVIS2-bin	16102	0.0166667	0.4519	0.0166667	0.451836	0	102
+phyml_tree	JARVIS2-bin	16118	0.0166667	0.482658	0.0166667	0.482594	0	103
+phyml_tree	JARVIS2-bin	16084	0.0166667	0.451736	0.0166667	0.451694	0	104
+phyml_tree	JARVIS2-bin	16073	0.0166667	0.289928	0.0166667	0.289886	0	105
+phyml_tree	JARVIS2-bin	16100	0	0.175327	0	0.175285	0	106
+phyml_tree	JARVIS2-bin	16208	0.0166667	0.289429	0.0166667	0.28936	0	107
+phyml_tree	JARVIS2-bin	16164	0.0333333	0.619705	0.0333333	0.61964	0	108
+phyml_tree	JARVIS2-bin	16177	0.0166667	0.289948	0.0166667	0.289932	0	109
+phyml_tree	JARVIS2-sh	20480	0.0166667	0.288902	0.0166667	0.288898	0	110
+phyml_tree	JARVIS2-sh	20480	0.0166667	0.289265	0.0166667	0.289257	0	111
+phyml_tree	JARVIS2-sh	20480	0.0166667	0.289288	0.0166667	0.289272	0	112
+phyml_tree	JARVIS2-sh	20480	0.0166667	0.28896	0.0166667	0.288834	0	113
+phyml_tree	LZMA-9	18163	0	0.00322723	0	0.00219345	0	114
+phyml_tree	BZIP2-9	17901	0	0.00219727	0	0.00174713	0	115
+phyml_tree	BSC-m03	16368	0	0.0051651	0	0.00514984	0	116
+phyml_tree	BSC-m03	16368	0	0.00521851	0	0.00514984	0	117
+phyml_tree	BSC-m03	16368	0	0.0051651	0	0.0051384	0	118
+phyml_tree	MFC	16533	0	0.279438	0	0.278473	0	119
+phyml_tree	MFC	16456	0	0.279968	0	0.278877	0	120
+phyml_tree	MFC	16544	0.0166667	0.568756	0.0166667	0.567688	0	121
+phyml_tree	DMcompress	16341	0	0.41589	0	0.414986	0	122
+phyml_tree	MEMRGC	0	0	0.00372696	0	0.00368881	1	123
+ls: cannot access 'phyml_tree.cmix': No such file or directory
+tail: cannot open 'phyml_tree_cmix_out.fa' for reading: No such file or directory
+phyml_tree	CMIX		0	0.00300598	0	0.00299835	1	124
+EscherichiaPhageLambda	GeCo2	12159	0	0.144588	0	0.144478	0	125
+EscherichiaPhageLambda	GeCo2	11935	0	0.234715	0	0.234348	0	126
+EscherichiaPhageLambda	GeCo2	11934	0	0.322357	0	0.322025	0	127
+EscherichiaPhageLambda	GeCo2	11933	0.0833333	1.7837	0.0833333	1.78344	0	128
+EscherichiaPhageLambda	GeCo2	12176	0.133333	3.36873	0.133333	3.36843	0	129
+EscherichiaPhageLambda	GeCo3	12176	0	0.00160217	0	0.00172424	0	130
+EscherichiaPhageLambda	GeCo3	12176	0	0.00165939	0	0.00172806	0	131
+EscherichiaPhageLambda	GeCo3	12176	0	0.00164032	0	0.00172424	0	132
+EscherichiaPhageLambda	GeCo3	12176	0	0.00164032	0	0.00172806	0	133
+EscherichiaPhageLambda	GeCo3	12176	0	0.00166321	0	0.00175476	0	134
+EscherichiaPhageLambda	GeCo3	12176	0	0.00164413	0	0.00172806	0	135
+EscherichiaPhageLambda	GeCo3	12176	0	0.00165558	0	0.00173187	0	136
+EscherichiaPhageLambda	GeCo3	12176	0	0.00162888	0	0.00172806	0	137
+EscherichiaPhageLambda	GeCo3	12176	0	0.00160217	0	0.00172806	0	138
+EscherichiaPhageLambda	JARVIS1	11982	0	0.144638	0	0.144634	0	139
+EscherichiaPhageLambda	JARVIS1	12146	0	0.144672	0	0.14468	0	140
+EscherichiaPhageLambda	JARVIS1	12249	0	0.148277	0	0.148209	0	141
+EscherichiaPhageLambda	JARVIS1	12184	0.0166667	0.712238	0.0166667	0.712189	0	142
+EscherichiaPhageLambda	JARVIS1	12138	0.0166667	0.627575	0.0166667	0.627464	0	143
+EscherichiaPhageLambda	JARVIS1	12008	0	0.143517	0	0.143452	0	144
+tail: cannot open 'naf_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	NAF-1	12217	0	0.00252914	0	0.00140762	1	145
+tail: cannot open 'naf_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	NAF-5	12334	0	0.0170135	0	0.00144577	1	146
+tail: cannot open 'naf_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	NAF-10	12334	0	0.0609016	0	0.00143051	1	147
+tail: cannot open 'naf_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	NAF-15	12337	0	0.314808	0	0.00143814	1	148
+tail: cannot open 'naf_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	NAF-20	12252	0.0166667	0.78595	0	0.00141144	1	149
+tail: cannot open 'naf_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	NAF-22	12252	0.0666667	3.16941	0	0.00141525	1	150
+ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	MBGC-0		0	0.00366974	0	0.00363922	1	151
+ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	MBGC-1		0	0.00365067	0	0.00370789	1	152
+ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	MBGC-2		0	0.00363922	0	0.00363159	1	153
+ls: cannot access 'EscherichiaPhageLambda.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/EscherichiaPhageLambda_clean.fa' for reading: No such file or directory
+EscherichiaPhageLambda	MBGC-3		0	0.00370789	0	0.00364304	1	154
+ls: cannot access 'EscherichiaPhageLambda.agc': No such file or directory
+EscherichiaPhageLambda	AGC		0	0.00384903	0	0.00382996	1	155
+EscherichiaPhageLambda	PAQ8L-1	11858	0.0166667	0.0377159	0.0166667	0.0377045	0	156
+EscherichiaPhageLambda	PAQ8L-2	11858	0.0166667	0.0424652	0.0166667	0.0424843	0	157
+EscherichiaPhageLambda	PAQ8L-3	11858	0.0166667	0.052002	0.0166667	0.0519905	0	158
+EscherichiaPhageLambda	JARVIS2-bin	12076	0	0.160679	0	0.160614	0	159
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160881	0	0.160751	0	160
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.1609	0	0.160892	0	161
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160904	0	0.160835	0	162
+EscherichiaPhageLambda	JARVIS2-bin	11876	0	0.160843	0	0.160774	0	163
+EscherichiaPhageLambda	JARVIS2-bin	11928	0.0166667	0.393143	0.0166667	0.393078	0	164
+EscherichiaPhageLambda	JARVIS2-bin	11943	0.0166667	0.423023	0.0166667	0.423004	0	165
+EscherichiaPhageLambda	JARVIS2-bin	11895	0.0166667	0.393101	0.0166667	0.392963	0	166
+EscherichiaPhageLambda	JARVIS2-bin	11907	0	0.268379	0	0.268288	0	167
+EscherichiaPhageLambda	JARVIS2-bin	12024	0	0.160583	0	0.160568	0	168
+EscherichiaPhageLambda	JARVIS2-bin	12044	0.0166667	0.268154	0.0166667	0.26815	0	169
+EscherichiaPhageLambda	JARVIS2-bin	11967	0.0333333	0.511608	0.0333333	0.511543	0	170
+EscherichiaPhageLambda	JARVIS2-bin	12030	0	0.268375	0	0.268284	0	171
+EscherichiaPhageLambda	JARVIS2-sh	20480	0	0.26759	0	0.26741	0	172
+EscherichiaPhageLambda	JARVIS2-sh	20480	0.0166667	0.268005	0.0166667	0.267941	0	173
+EscherichiaPhageLambda	JARVIS2-sh	20480	0.0166667	0.267971	0.0166667	0.267902	0	174
+EscherichiaPhageLambda	JARVIS2-sh	20480	0	0.267513	0	0.267483	0	175
+EscherichiaPhageLambda	LZMA-9	13424	0	0.00308228	0	0.00218201	0	176
+EscherichiaPhageLambda	BZIP2-9	13249	0	0.00194168	0	0.00174713	0	177
+EscherichiaPhageLambda	BSC-m03	12156	0	0.00514603	0	0.00490189	0	178
+EscherichiaPhageLambda	BSC-m03	12156	0	0.00514984	0	0.004879	0	179
+EscherichiaPhageLambda	BSC-m03	12156	0	0.00520706	0	0.00487518	0	180
+EscherichiaPhageLambda	MFC	12266	0	0.235416	0	0.234367	0	181
+EscherichiaPhageLambda	MFC	12198	0	0.235878	0	0.234875	0	182
+EscherichiaPhageLambda	MFC	12286	0	0.45433	0	0.453339	0	183
+EscherichiaPhageLambda	DMcompress	12152	0	0.322914	0	0.322006	0	184
+EscherichiaPhageLambda	MEMRGC	0	0	0.0037117	0	0.00368118	1	185
+ls: cannot access 'EscherichiaPhageLambda.cmix': No such file or directory
+tail: cannot open 'EscherichiaPhageLambda_cmix_out.fa' for reading: No such file or directory
+EscherichiaPhageLambda	CMIX		0	0.00299454	0	0.00305176	1	186
+mt_genome_CM029732	GeCo2	3805	0	0.0505066	0	0.0502243	0	187
+mt_genome_CM029732	GeCo2	3641	0	0.0886192	0	0.088253	0	188
+mt_genome_CM029732	GeCo2	3641	0	0.105877	0	0.105614	0	189
+mt_genome_CM029732	GeCo2	3641	0.0833333	1.78292	0.0833333	1.7827	0	190
+mt_genome_CM029732	GeCo2	3822	0.133333	3.31899	0.133333	3.31867	0	191
+mt_genome_CM029732	GeCo3	3822	0	0.00160217	0	0.00175858	0	192
+mt_genome_CM029732	GeCo3	3822	0	0.00165939	0	0.00170517	0	193
+mt_genome_CM029732	GeCo3	3822	0	0.00163651	0	0.00172806	0	194
+mt_genome_CM029732	GeCo3	3822	0	0.00163269	0	0.00173187	0	195
+mt_genome_CM029732	GeCo3	3822	0	0.00164032	0	0.00173187	0	196
+mt_genome_CM029732	GeCo3	3822	0	0.00165939	0	0.00172806	0	197
+mt_genome_CM029732	GeCo3	3822	0	0.0016861	0	0.00171661	0	198
+mt_genome_CM029732	GeCo3	3822	0	0.00159454	0	0.00172806	0	199
+mt_genome_CM029732	GeCo3	3822	0	0.00159073	0	0.00170135	0	200
+mt_genome_CM029732	JARVIS1	3615	0	0.0678978	0	0.0678291	0	201
+mt_genome_CM029732	JARVIS1	3729	0	0.0678139	0	0.0678368	0	202
+mt_genome_CM029732	JARVIS1	3805	0	0.071022	0	0.0710068	0	203
+mt_genome_CM029732	JARVIS1	3808	0	0.320454	0	0.320366	0	204
+mt_genome_CM029732	JARVIS1	3797	0	0.284454	0	0.284439	0	205
+mt_genome_CM029732	JARVIS1	3688	0	0.0670586	0	0.0669594	0	206
+tail: cannot open 'naf_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	NAF-1	3675	0	0.00244522	0	0.00143051	1	207
+tail: cannot open 'naf_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	NAF-5	3755	0	0.0168686	0	0.00141525	1	208
+tail: cannot open 'naf_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	NAF-10	3744	0	0.06073	0	0.00141907	1	209
+tail: cannot open 'naf_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	NAF-15	3745	0	0.314716	0	0.00139999	1	210
+tail: cannot open 'naf_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	NAF-20	3690	0.0166667	0.785881	0	0.0014267	1	211
+tail: cannot open 'naf_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	NAF-22	3690	0.0666667	3.16935	0	0.00139236	1	212
+ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	MBGC-0		0	0.00363541	0	0.00367737	1	213
+ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	MBGC-1		0	0.00363159	0	0.00366592	1	214
+ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	MBGC-2		0	0.00369644	0	0.00366592	1	215
+ls: cannot access 'mt_genome_CM029732.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/mt_genome_CM029732_clean.fa' for reading: No such file or directory
+mt_genome_CM029732	MBGC-3		0	0.00370407	0	0.00370407	1	216
+ls: cannot access 'mt_genome_CM029732.agc': No such file or directory
+mt_genome_CM029732	AGC		0	0.00384903	0	0.00379181	1	217
+mt_genome_CM029732	PAQ8L-1	3610	0	0.0376816	0	0.0376892	0	218
+mt_genome_CM029732	PAQ8L-2	3610	0	0.0424652	0	0.0424271	0	219
+mt_genome_CM029732	PAQ8L-3	3610	0	0.0519447	0	0.0519447	0	220
+mt_genome_CM029732	JARVIS2-bin	3604	0	0.0869179	0	0.0868454	0	221
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870094	0	0.0870514	0	222
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0871315	0	0.0870743	0	223
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870667	0	0.0870247	0	224
+mt_genome_CM029732	JARVIS2-bin	3600	0	0.0870857	0	0.0870285	0	225
+mt_genome_CM029732	JARVIS2-bin	3620	0	0.173374	0	0.17326	0	226
+mt_genome_CM029732	JARVIS2-bin	3625	0	0.193222	0	0.193218	0	227
+mt_genome_CM029732	JARVIS2-bin	3624	0	0.173176	0	0.173111	0	228
+mt_genome_CM029732	JARVIS2-bin	3622	0	0.143967	0	0.143898	0	229
+mt_genome_CM029732	JARVIS2-bin	3602	0	0.0860901	0	0.0860329	0	230
+mt_genome_CM029732	JARVIS2-bin	3621	0	0.144073	0	0.143955	0	231
+mt_genome_CM029732	JARVIS2-bin	3642	0	0.216454	0	0.216389	0	232
+mt_genome_CM029732	JARVIS2-bin	3614	0	0.143967	0	0.143837	0	233
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.14312	0	0.142998	0	234
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.144268	0	0.144264	0	235
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.14423	0	0.144161	0	236
+mt_genome_CM029732	JARVIS2-sh	10240	0	0.143101	0	0.143059	0	237
+mt_genome_CM029732	LZMA-9	4304	0	0.00279999	0	0.0021553	0	238
+mt_genome_CM029732	BZIP2-9	4151	0	0.00183487	0	0.00167084	0	239
+mt_genome_CM029732	BSC-m03	3716	0	0.00452805	0	0.00438309	0	240
+mt_genome_CM029732	BSC-m03	3716	0	0.00458908	0	0.00437927	0	241
+mt_genome_CM029732	BSC-m03	3716	0	0.00458908	0	0.00440216	0	242
+mt_genome_CM029732	MFC	3886	0	0.0894051	0	0.0883636	0	243
+mt_genome_CM029732	MFC	3765	0	0.0898666	0	0.0888023	0	244
+mt_genome_CM029732	MFC	3818	0	0.158344	0	0.157291	0	245
+mt_genome_CM029732	DMcompress	3706	0	0.106606	0	0.105656	0	246
+mt_genome_CM029732	MEMRGC	0	0	0.00362015	0	0.00371552	1	247
+ls: cannot access 'mt_genome_CM029732.cmix': No such file or directory
+tail: cannot open 'mt_genome_CM029732_cmix_out.fa' for reading: No such file or directory
+mt_genome_CM029732	CMIX		0	0.00299454	0	0.00299454	1	248
+zika	GeCo2	2731	0	0.0401955	0	0.0399628	0	249
+zika	GeCo2	2684	0	0.074295	0	0.0740242	0	250
+zika	GeCo2	2684	0	0.0816498	0	0.081337	0	251
+zika	GeCo2	2684	0.0833333	1.78154	0.0833333	1.78125	0	252
+zika	GeCo2	2748	0.133333	3.31304	0.133333	3.31278	0	253
+zika	GeCo3	2748	0	0.00157928	0	0.0017128	0	254
+zika	GeCo3	2748	0	0.00166321	0	0.00167847	0	255
+zika	GeCo3	2748	0	0.00169373	0	0.00173187	0	256
+zika	GeCo3	2748	0	0.00165939	0	0.00175476	0	257
+zika	GeCo3	2748	0	0.00165939	0	0.00170898	0	258
+zika	GeCo3	2748	0	0.00168991	0	0.00172806	0	259
+zika	GeCo3	2748	0	0.00164795	0	0.00172806	0	260
+zika	GeCo3	2748	0	0.00158691	0	0.0017128	0	261
+zika	GeCo3	2748	0	0.00162888	0	0.00173187	0	262
+zika	JARVIS1	2675	0	0.0603752	0	0.0602951	0	263
+zika	JARVIS1	2742	0	0.0603561	0	0.0603943	0	264
+zika	JARVIS1	2746	0	0.0619087	0	0.0618973	0	265
+zika	JARVIS1	2773	0	0.26445	0	0.264442	0	266
+zika	JARVIS1	2759	0	0.233498	0	0.233425	0	267
+zika	JARVIS1	2720	0	0.0601807	0	0.0600967	0	268
+tail: cannot open 'naf_out/zika_clean.fa' for reading: No such file or directory
+zika	NAF-1	2765	0	0.00243378	0	0.00138855	1	269
+tail: cannot open 'naf_out/zika_clean.fa' for reading: No such file or directory
+zika	NAF-5	2801	0	0.0169106	0	0.00141144	1	270
+tail: cannot open 'naf_out/zika_clean.fa' for reading: No such file or directory
+zika	NAF-10	2783	0	0.0608559	0	0.00139618	1	271
+tail: cannot open 'naf_out/zika_clean.fa' for reading: No such file or directory
+zika	NAF-15	2784	0	0.31464	0	0.00141144	1	272
+tail: cannot open 'naf_out/zika_clean.fa' for reading: No such file or directory
+zika	NAF-20	2778	0.0166667	0.785809	0	0.0014267	1	273
+tail: cannot open 'naf_out/zika_clean.fa' for reading: No such file or directory
+zika	NAF-22	2778	0.0666667	3.16933	0	0.00142288	1	274
+ls: cannot access 'zika.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/zika_clean.fa' for reading: No such file or directory
+zika	MBGC-0		0	0.00364304	0	0.00365448	1	275
+ls: cannot access 'zika.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/zika_clean.fa' for reading: No such file or directory
+zika	MBGC-1		0	0.00369263	0	0.00369263	1	276
+ls: cannot access 'zika.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/zika_clean.fa' for reading: No such file or directory
+zika	MBGC-2		0	0.00368118	0	0.00363159	1	277
+ls: cannot access 'zika.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/zika_clean.fa' for reading: No such file or directory
+zika	MBGC-3		0	0.00369263	0	0.00367737	1	278
+ls: cannot access 'zika.agc': No such file or directory
+zika	AGC		0	0.00382996	0	0.00378799	1	279
+zika	PAQ8L-1	2688	0	0.037674	0	0.0376968	0	280
+zika	PAQ8L-2	2688	0	0.0424232	0	0.0424156	0	281
+zika	PAQ8L-3	2688	0	0.0518799	0	0.0518723	0	282
+zika	JARVIS2-bin	2740	0	0.0681419	0	0.0680161	0	283
+zika	JARVIS2-bin	2699	0	0.0682716	0	0.0682144	0	284
+zika	JARVIS2-bin	2699	0	0.0683022	0	0.0682373	0	285
+zika	JARVIS2-bin	2699	0	0.0682983	0	0.0682373	0	286
+zika	JARVIS2-bin	2699	0	0.0683022	0	0.0681648	0	287
+zika	JARVIS2-bin	2718	0	0.140347	0	0.140232	0	288
+zika	JARVIS2-bin	2731	0	0.159462	0	0.159443	0	289
+zika	JARVIS2-bin	2722	0	0.140205	0	0.140079	0	290
+zika	JARVIS2-bin	2719	0	0.122002	0	0.121933	0	291
+zika	JARVIS2-bin	2704	0	0.0683098	0	0.0681152	0	292
+zika	JARVIS2-bin	2735	0	0.121677	0	0.121677	0	293
+zika	JARVIS2-bin	2751	0	0.172916	0	0.172848	0	294
+zika	JARVIS2-bin	2730	0	0.121975	0	0.121929	0	295
+zika	JARVIS2-sh	10240	0	0.121719	0	0.121632	0	296
+zika	JARVIS2-sh	10240	0	0.121861	0	0.121853	0	297
+zika	JARVIS2-sh	10240	0	0.121895	0	0.121796	0	298
+zika	JARVIS2-sh	10240	0	0.121773	0	0.121666	0	299
+zika	LZMA-9	3195	0	0.00276184	0	0.00214386	0	300
+zika	BZIP2-9	2995	0	0.00182343	0	0.00167084	0	301
+zika	BSC-m03	2758	0	0.00465393	0	0.00444412	0	302
+zika	BSC-m03	2758	0	0.00465012	0	0.00442886	0	303
+zika	BSC-m03	2758	0	0.0045929	0	0.00442886	0	304
+zika	MFC	2831	0	0.0750999	0	0.0741196	0	305
+zika	MFC	2843	0	0.0756187	0	0.0746231	0	306
+zika	MFC	2895	0	0.130287	0	0.129265	0	307
+zika	DMcompress	2779	0	0.0822639	0	0.0814095	0	308
+zika	MEMRGC	0	0	0.00361252	0	0.00366592	1	309
+ls: cannot access 'zika.cmix': No such file or directory
+tail: cannot open 'zika_cmix_out.fa' for reading: No such file or directory
+zika	CMIX		0	0.0030098	0	0.00301361	1	310
+herpes	GeCo2	664	0	0.0113487	0	0.011055	0	311
+herpes	GeCo2	647	0	0.0194855	0	0.019165	0	312
+herpes	GeCo2	647	0	0.0205536	0	0.0201988	0	313
+herpes	GeCo2	647	0.0833333	1.76667	0.0833333	1.76637	0	314
+herpes	GeCo2	674	0.133333	3.275	0.133333	3.2747	0	315
+herpes	GeCo3	674	0	0.00162506	0	0.00172806	0	316
+herpes	GeCo3	674	0	0.00162506	0	0.00176239	0	317
+herpes	GeCo3	674	0	0.00164413	0	0.00172043	0	318
+herpes	GeCo3	674	0	0.00165176	0	0.00172424	0	319
+herpes	GeCo3	674	0	0.00165939	0	0.00173187	0	320
+herpes	GeCo3	674	0	0.00164413	0	0.00175858	0	321
+herpes	GeCo3	674	0	0.00164032	0	0.00172043	0	322
+herpes	GeCo3	674	0	0.00159836	0	0.00172806	0	323
+herpes	GeCo3	674	0	0.00163269	0	0.00171661	0	324
+herpes	JARVIS1	635	0	0.0181999	0	0.0182533	0	325
+herpes	JARVIS1	662	0	0.0181999	0	0.0181923	0	326
+herpes	JARVIS1	663	0	0.0188103	0	0.0188026	0	327
+herpes	JARVIS1	695	0	0.0777016	0	0.0778122	0	328
+herpes	JARVIS1	688	0	0.0693893	0	0.0693817	0	329
+herpes	JARVIS1	661	0	0.0181847	0	0.0181732	0	330
+tail: cannot open 'naf_out/herpes_clean.fa' for reading: No such file or directory
+herpes	NAF-1	693	0	0.00247955	0	0.00141525	1	331
+tail: cannot open 'naf_out/herpes_clean.fa' for reading: No such file or directory
+herpes	NAF-5	701	0	0.0168762	0	0.00141525	1	332
+tail: cannot open 'naf_out/herpes_clean.fa' for reading: No such file or directory
+herpes	NAF-10	701	0	0.0607567	0	0.00143051	1	333
+tail: cannot open 'naf_out/herpes_clean.fa' for reading: No such file or directory
+herpes	NAF-15	701	0	0.314552	0	0.00144196	1	334
+tail: cannot open 'naf_out/herpes_clean.fa' for reading: No such file or directory
+herpes	NAF-20	694	0.0166667	0.7859	0	0.00143051	1	335
+tail: cannot open 'naf_out/herpes_clean.fa' for reading: No such file or directory
+herpes	NAF-22	694	0.0666667	3.16924	0	0.00139618	1	336
+ls: cannot access 'herpes.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/herpes_clean.fa' for reading: No such file or directory
+herpes	MBGC-0		0	0.00363922	0	0.00365448	1	337
+ls: cannot access 'herpes.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/herpes_clean.fa' for reading: No such file or directory
+herpes	MBGC-1		0	0.00366211	0	0.00364685	1	338
+ls: cannot access 'herpes.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/herpes_clean.fa' for reading: No such file or directory
+herpes	MBGC-2		0	0.00367737	0	0.003685	1	339
+ls: cannot access 'herpes.mbgc': No such file or directory
+tail: cannot open 'mbgc_out/herpes_clean.fa' for reading: No such file or directory
+herpes	MBGC-3		0	0.00366211	0	0.00362778	1	340
+ls: cannot access 'herpes.agc': No such file or directory
+herpes	AGC		0	0.00379181	0	0.00378799	1	341
+herpes	PAQ8L-1	646	0	0.0376892	0	0.0376549	0	342
+herpes	PAQ8L-2	645	0	0.0422707	0	0.0422592	0	343
+herpes	PAQ8L-3	645	0	0.0495682	0	0.0495453	0	344
+herpes	JARVIS2-bin	640	0	0.0201378	0	0.0200157	0	345
+herpes	JARVIS2-bin	648	0	0.0202751	0	0.0202065	0	346
+herpes	JARVIS2-bin	648	0	0.0203018	0	0.0201759	0	347
+herpes	JARVIS2-bin	648	0	0.0203018	0	0.020237	0	348
+herpes	JARVIS2-bin	648	0	0.0203476	0	0.0202332	0	349
+herpes	JARVIS2-bin	661	0	0.0375748	0	0.0374641	0	350
+herpes	JARVIS2-bin	668	0	0.0443916	0	0.0442543	0	351
+herpes	JARVIS2-bin	668	0	0.0374298	0	0.0373459	0	352
+herpes	JARVIS2-bin	668	0	0.0356178	0	0.0354424	0	353
+herpes	JARVIS2-bin	648	0	0.0203209	0	0.0202599	0	354
+herpes	JARVIS2-bin	670	0	0.0354767	0	0.0355263	0	355
+herpes	JARVIS2-bin	686	0	0.0496483	0	0.0495224	0	356
+herpes	JARVIS2-bin	671	0	0.0356102	0	0.035553	0	357
+herpes	JARVIS2-sh	10240	0	0.0353508	0	0.0352821	0	358
+herpes	JARVIS2-sh	10240	0	0.0354805	0	0.0354156	0	359
+herpes	JARVIS2-sh	10240	0	0.0354424	0	0.0353775	0	360
+herpes	JARVIS2-sh	10240	0	0.0353928	0	0.0352821	0	361
+herpes	LZMA-9	817	0	0.00259018	0	0.0021286	0	362
+herpes	BZIP2-9	749	0	0.00160217	0	0.00167084	0	363
+herpes	BSC-m03	684	0	0.00450897	0	0.00432587	0	364
+herpes	BSC-m03	684	0	0.00444794	0	0.00428391	0	365
+herpes	BSC-m03	684	0	0.00450897	0	0.00429916	0	366
+herpes	MFC	749	0	0.0203896	0	0.0193901	0	367
+herpes	MFC	757	0	0.0207672	0	0.019783	0	368
+herpes	MFC	798	0	0.0321312	0	0.0310783	0	369
+herpes	DMcompress	749	0	0.021328	0	0.0203171	0	370
+herpes	MEMRGC	0	0	0.00369263	0	0.00375366	1	371
+ls: cannot access 'herpes.cmix': No such file or directory
+tail: cannot open 'herpes_cmix_out.fa' for reading: No such file or directory
+herpes	CMIX		0	0.00299454	0	0.00301743	1	372
