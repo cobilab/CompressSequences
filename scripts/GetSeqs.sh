@@ -11,6 +11,8 @@ faFiles=(
     # "MFCexample.fa" # 3.5MB
     # "phyml_tree.fa" # 2.36MB	
     
+    "RL0048_chloroplast.fa" # 154.2KB
+    "RL0057_chloroplast.fa" # 135.7KB
     "EscherichiaPhageLambda.fa" # 49.2KB
     "mt_genome_CM029732.fa" # 15.06KB
     "zika.fa" # 11.0KB
@@ -26,7 +28,9 @@ urls=(
 #     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102193/00_Assembly_Fasta/haplotigs/TME204.HiFi_HiC.haplotig1.fa" # CASSAVA, 727.09MB
 #     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102193/00_Assembly_Fasta/haplotigs/TME204.HiFi_HiC.haplotig2.fa" # 673.62MB
     
-      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102200/phyml_tree.fa" # 2.36MB	
+      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102200/phyml_tree.fa" # 2.36MB
+      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101111/RL0048_chloroplast.fa" # 154.2KB
+      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101120/RL0057_chloroplast.fa" # 135.7KB
       "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102194/mt_genome_CM029732.fa" # 15.06KB
 )
 
