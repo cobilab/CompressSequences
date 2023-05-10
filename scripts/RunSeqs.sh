@@ -1,27 +1,7 @@
 #!/bin/bash
-#
-# ==============================================================================
-#
-GENOMES=(
-    # "chm13v2.0.fa.gz" # genoma humano, ~3GB
-    # "GRCh38_latest_genomic.fna.gz" # genoma humano, ~3GB
 
-    # "Pseudobrama_simoni.genome" # 886.11MB
-    # "Rhodeus_ocellatus.genome" # 860.71MB
-    # "CASSAVA" # CASSAVA, 727.09MB
-    # "TME204.HiFi_HiC.haplotig2" # 673.62MB
-    
-    # some tests are very slow for these two (like MFC -l3)
-    # "MFCexample" # 3.5MB
-    # "phyml_tree" # 2.36MB	
-    
-    "RL0048_chloroplast" # 154.2KB
-    "RL0057_chloroplast" # 135.7KB 
-    "EscherichiaPhageLambda" # 49.2KB
-    "mt_genome_CM029732" # 15.06KB
-    "zika" # 11.0KB
-    "herpes" # 2.7KB
-)
+GENOMES=( $(ls | egrep ".seq$" | sed 's/\.seq$//') )
+
 #
 # ==============================================================================
 #
@@ -227,8 +207,8 @@ function RUN_NAF {
   D_COMMAND="$3";
   NAME="$4";
   #
-  IN_FILE=${GENOME}_clean.fa;
-  FILEC=naf_out/${GENOME}_clean.naf;
+  IN_FILE=${GENOME}.fa;
+  FILEC=naf_out/${GENOME}.naf;
   FILED=naf_out/$IN_FILE;
   #
   mkdir -p naf_out
@@ -459,7 +439,7 @@ function RUN_MBGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  IN_FILE=${GENOME}_clean.fa;
+  IN_FILE=${GENOME}.fa;
   FILEC=$GENOME.mbgc;
   FILED=mbgc_out/$IN_FILE;
   #
@@ -503,9 +483,9 @@ function RUN_AGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  IN_FILE=${GENOME}_clean.fa;
+  IN_FILE=${GENOME}.fa;
   FILEC=$GENOME.agc;
-  FILED=${GENOME}_agc.fa;
+  FILED=${GENOME}_agc_out.fa;
   #
   # agc create .${bin_path}genomes/zika.seq.agc -o .${bin_path}genomes/zika.seq.agc.c
   { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE -o $FILEC; } 1> c_stdout.txt 2> c_tmp_report.txt;
@@ -597,7 +577,7 @@ function RUN_CMIX() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  IN_FILE=${GENOME}_clean.fa;
+  IN_FILE=${GENOME}.fa;
   FILEC=$GENOME.cmix;
   FILED=${GENOME}_cmix_out.fa;
   #
@@ -635,7 +615,7 @@ function RUN_MEMRGC() {
   D_COMMAND="$3";
   NAME="$4";
   #
-  IN_FILE=${GENOME}_clean.fa;
+  IN_FILE=${GENOME}.fa;
   FILEC=$GENOME.memrgc;
   FILED=${GENOME}_memrgc_out.fa;
   #
@@ -668,13 +648,13 @@ function RUN_MEMRGC() {
   #
 }
 #
+# ==============================================================================
+#
 rm -fr ../bench-results.*;
 bin_path="../bin/"
 run=0;
 #
 for i in "${!GENOMES[@]}"; do
-    #
-    # ==============================================================================
     #
     printf "DS$i - ${GENOMES[i]}\nPROGRAM\tC_BYTES\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a ../bench-results.txt;
     #

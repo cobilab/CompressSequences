@@ -2,69 +2,116 @@
 
 genomesPath="." # "../genomes"
 
-faFiles=(
-    # "Pseudobrama_simoni.genome.fa" # 886.11MB
-    # "Rhodeus_ocellatus.genome.fa" # 860.71MB
-    # "TME204.HiFi_HiC.haplotig1.fa" # CASSAVA, 727.09MB
-    # "TME204.HiFi_HiC.haplotig2.fa" # 673.62MB
-    
-    # "MFCexample.fa" # 3.5MB
-    # "phyml_tree.fa" # 2.36MB	
-    
-    "RL0048_chloroplast.fa" # 154.2KB
-    "RL0057_chloroplast.fa" # 135.7KB
-    "EscherichiaPhageLambda.fa" # 49.2KB
-    "mt_genome_CM029732.fa" # 15.06KB
-    "zika.fa" # 11.0KB
-    "herpes.fa" # 2.7KB
-)
-
 urls=(
-#     "https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz" # human reference genome # ~3GB
-#     "https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz" # human reference genome # ~3GB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102205/TaeRenan_refseq_v2.1.fa" # 13.50GB
 
-#     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102191/Pseudobrama_simoni.genome.fa" # 886.11MB
-#     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102192/Rhodeus_ocellatus.genome.fa" # 860.71MB
-#     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102193/00_Assembly_Fasta/haplotigs/TME204.HiFi_HiC.haplotig1.fa" # CASSAVA, 727.09MB
-#     "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102193/00_Assembly_Fasta/haplotigs/TME204.HiFi_HiC.haplotig2.fa" # 673.62MB
+    # "https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz" # human reference genome # ~3GB
+    # "https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz" # human reference genome # ~3GB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102199/GCA_004024665.1_LemCat_v1_BIUU_genomic.fna" # 2.22GB
+
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102199/hg38.fa.gz" # 938.09MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102199/gorGor6.fa.gz" # 903.79MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102199/calJac4.fa.gz" # 887.99MB	
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102191/Pseudobrama_simoni.genome.fa" # 886.11MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102192/Rhodeus_ocellatus.genome.fa" # 860.71MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102188/Naso_vlamingii.genome.fa" # 821.29MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102193/00_Assembly_Fasta/haplotigs/TME204.HiFi_HiC.haplotig1.fa" # CASSAVA, 727.09MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102199/Mmur_3.0.fa.gz" # 720.14MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102193/00_Assembly_Fasta/haplotigs/TME204.HiFi_HiC.haplotig2.fa" # 673.62MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102187/Chaetodon_trifasciatus.genome.fa" # 636.91MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102189/Chelmon_rostratus.genome.fa" # 609.48MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102190/Helostoma_temminckii.genome.fa" # 605.25MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102171/Eudyptes_moseleyi.genomic.fa.gz" # 353.42MB
     
-      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102200/phyml_tree.fa" # 2.36MB
-      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101111/RL0048_chloroplast.fa" # 154.2KB
-      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101120/RL0057_chloroplast.fa" # 135.7KB
-      "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102194/mt_genome_CM029732.fa" # 15.06KB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102205/TaeRenan.pep.fasta" # 61.53MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102198/ensete_glaucum.evm.cds.fna" # 40.21MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102173/Spheniscus_magellanicus.cds.v1.fa" # 23.49MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102171/Eudyptes_moseleyi.cds.v1.fa" # 23.34MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102172/Megadyptes_antipodes_antipodes.cds.v1.fa" # 22.28MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102174/Spheniscus_demersus.cds.v1.fa" # 21.87MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102173/Spheniscus_magellanicus.pep.v1.fa" # 8.90MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102171/Eudyptes_moseleyi.pep.v1.fa" # 8.85MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102170/Eudyptes_chrysocome.pep.v1.fa" # 8.64MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102174/Spheniscus_demersus.pep.v1.fa" # 8.23MB
+    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102200/phyml_tree.fa" # 2.36MB
+
+    "https://raw.githubusercontent.com/rongjiewang/DMcompress/master/test.fasta" # 710.0KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102210/all_spider_toxinprotein.fasta" # 234.59KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102210/all_spider_silkprotein.fasta" # 185.98KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102012/RL0949_chloroplast.fa" # 157.91KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101111/RL0048_chloroplast.fa" # 154.2KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102011/RL0948_chloroplast.fa" # 153.45KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102130/RL1067_chloroplast.fa" # 150.17KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101120/RL0057_chloroplast.fa" # 135.7KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102150/RL1087_chloroplast.fa" # 134.88KB
+    "https://raw.githubusercontent.com/plotly/datasets/master/Dash_Bio/Genetic/COVID_sequence.fasta" # 29.7KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102194/mt_genome_CM029732.fa" # 15.06KB
 )
 
-printf "downloading...\n" # downloads fasta files only if they're missing in directory
+#
+# === Download rawFiles ===========================================================================
+#
+printf "downloading...\n"
 for url in "${urls[@]}"; do
-    faFile=$(echo $url | rev | cut -d'/' -f1 | rev) # gets filename by spliting in "/" and getting the last element
+    # gets filename by spliting in "/" and getting the last element
+    rawFile=$(echo $url | rev | cut -d'/' -f1 | rev | sed 's/\.fa\|\.fna\|\.fasta/_raw.fa/')
+    genFile="${rawFile//_raw/}"
 
-    if [[ ! -f "$genomesPath/$faFile" ]]; then 
-        wget -c $url -P "$genomesPath/"
+    if [[ ! -f "$genomesPath/$genFile" ]]; then 
+        wget -c $url -O "$genomesPath/$rawFile"
 
         # se outros ficheiros do mesmo genoma já existirem apesar de .fa ter sido criado depois, remove-los para atualizar .seq
-        find "$genomesPath/" -name "$faFile.*" ! -name "*.fa" -type f -delete
+        find "$genomesPath/" -name "$rawFile.*" ! -name "*.fa" -type f -delete
     else 
-        echo "$faFile has already been downloaded"
+        # no need to download a file that already exists
+        echo "$rawFile has been previously downloaded"
+    fi
+done
+#
+# === If no new file has been downloaded exit program ===========================================================================
+#
+gzFiles=( $(ls "$genomesPath" | egrep ".gz$") )
+rawFiles=( $(ls $genomesPath | egrep "_raw.fa$") )
+if [ ${#rawFiles[@]} -eq 0 ]; then exit; fi
+
+#
+# === Unzip .gz files ===========================================================================
+#
+printf "\nunzipping .gz files...\n"
+for gzFile in "${gzFiles[@]}"; do
+    rawFile="${gzFile%.gz}"
+
+    if [[ -f "$genomesPath/$rawFile" ]]; then 
+        echo "$gzFile has been previously unzipped" 
+
+    else 
+        gunzip "$gzFile"
+        rm -fr "$gzFile"
+        echo "$rawFile --unzipped-as--> $gzFile"
     fi
 done
 
-faFiles=( $(ls $genomesPath | egrep -v "_clean" | egrep "*.fa$") )
-
+#
+# === Preprocess .fa files onto .seq and _clean.fa files ===========================================================================
+#
 printf "\npreprocessing...\n" # preprocesses each fasta file into its respective seq files
-for faFile in "${faFiles[@]}"; do 
+for rawFile in "${rawFiles[@]}"; do 
+    cleanFaFile=${rawFile/_raw.fa/.fa};
 
-    if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-        # preprocess .fa files, whether they were already preprocessed or not
-        gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
+    if [[ ! -f $genomesPath/$cleanFaFile ]]; then
+        ../bin/gto_fasta_to_seq < $rawFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ../bin/gto_fasta_from_seq -n x -l 80 > $cleanFaFile
+        echo "$cleanFaFile has been created"
     else
-        ../bin/gto_fasta_to_seq < $faFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ../bin/gto_fasta_from_seq -n x -l 80 > ${faFile%.*}_clean.fa
+        echo "$cleanFaFile has been previously created"  
     fi
 
-    seqFile=$(echo $faFile | sed 's/fa/seq/g'); # replaces .fa with .seq
+    seqFile=$(echo $rawFile | sed 's/_raw.fa/.seq/g'); # replaces .fa with .seq
     if [[ ! -f $genomesPath/$seqFile ]]; then   
-        cat "$genomesPath/$faFile" | grep -v ">" | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
+        cat "$genomesPath/$rawFile" | grep -v ">" | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
         echo "$seqFile has been created"
     else
-        echo "$seqFile already exists"
+        echo "$seqFile has been previously created"
     fi
+
+    rm -fr $rawFile
 done

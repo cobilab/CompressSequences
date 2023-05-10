@@ -4,6 +4,7 @@ bench-results.*
 
 # Except these
 !scripts/*.sh
+!scripts/data.csv
 !bench-results.txt
 
 # "except except" these
