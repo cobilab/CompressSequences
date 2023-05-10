@@ -4,13 +4,6 @@ bench-results.*
 
 # Except these
 !scripts/*.sh
-
-!scripts/phyml_tree.fa
-!scripts/EscherichiaPhageLambda.fa
-!scripts/herpes.fa
-!scripts/MFCexample.fa
-!scripts/zika.fa
-
 !bench-results.txt
 
 # "except except" these
