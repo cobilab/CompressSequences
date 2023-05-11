@@ -1,5 +1,6 @@
 #!/bin/bash
 #
+
 CHECK_INPUT () {
   FILE=$1
   if [ -f "$FILE" ];
@@ -11,19 +12,19 @@ CHECK_INPUT () {
     fi
   }
 #
-CHECK_INPUT "data.csv";
-cat data.csv | awk '{ print $4} ' | sort -V | uniq > names.txt
-SIZE=`wc -l names.txt | awk '{ print $1;}'`;
-CHECK_INPUT "names.txt";
+CHECK_INPUT "../data4plot.csv";
+cat ../data4plot.csv | awk '{ print $4} ' | sort -V | uniq > ../names.txt
+SIZE=`wc -l ../names.txt | awk '{ print $1;}'`;
+CHECK_INPUT "../names.txt";
 #
 idx=1;
 plotnames="";
-mapfile -t INT_DATA < names.txt;
+mapfile -t INT_DATA < ../names.txt;
 for dint in "${INT_DATA[@]}"
   do
   #
-  grep $dint data.csv > data-$idx.csv
-  tmp="'data-$idx.csv' u 2:3 w points ls $idx title '$dint', ";
+  grep $dint ../data4plot.csv > ../data4plot-$idx.csv
+  tmp="'../data4plot-$idx.csv' u 2:3 w points ls $idx title '$dint', ";
   plotnames="$plotnames $tmp";
   ((++idx));
   #
@@ -36,7 +37,7 @@ echo "$plotnames";
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdade,12'
-    set output "Benchmark2.pdf"
+    set output "../Benchmark2.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
     set border 3 front ls 101
     set tics nomirror out scale 0.75

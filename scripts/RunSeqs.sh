@@ -16,11 +16,14 @@ function RUN_GECO3 {
   FILEC=$IN_FILE.co;
   FILED=$IN_FILE.de;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -38,7 +41,7 @@ function RUN_GECO3 {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   }
@@ -56,11 +59,14 @@ function RUN_GECO2 {
   FILEC=$IN_FILE.co;
   FILED=$IN_FILE.de;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -78,7 +84,7 @@ function RUN_GECO2 {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   }
 #
@@ -95,11 +101,14 @@ function RUN_JARVIS2_BIN {
   FILEC=$IN_FILE.jc;
   FILED=$IN_FILE.jc.jd;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -117,7 +126,7 @@ function RUN_JARVIS2_BIN {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   }
@@ -135,11 +144,14 @@ function RUN_JARVIS1 {
   FILEC=$IN_FILE.jc;
   FILED=$IN_FILE.jc.jd;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -157,7 +169,7 @@ function RUN_JARVIS1 {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   }
@@ -171,11 +183,14 @@ function RUN_JARVIS2_SH {
   D_COMMAND="$3";
   NAME="$4";
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" ./../bin/JARVIS2.sh --level " $C_COMMAND " $6 --input $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $IN_FILE.tar | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $IN_FILE.tar | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" ./../bin/JARVIS2.sh $D_COMMAND $IN_FILE.tar \
   |& grep "TIME" \
@@ -193,7 +208,7 @@ function RUN_JARVIS2_SH {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
 }
@@ -207,6 +222,8 @@ function RUN_NAF {
   D_COMMAND="$3";
   NAME="$4";
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   IN_FILE=${GENOME}.fa;
   FILEC=naf_out/${GENOME}.naf;
   FILED=naf_out/$IN_FILE;
@@ -217,7 +234,8 @@ function RUN_NAF {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE -o $FILEC 2> naf_tmp_report.txt;
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   # decompress: unnaf file.naf -o file.fa
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC -o $FILED 2> naf_tmp_report.txt 
@@ -234,7 +252,7 @@ function RUN_NAF {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   #
@@ -249,12 +267,15 @@ function RUN_LZMA {
   D_COMMAND="$3";
   NAME="$4";
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   cp $FILE $FILE.orig
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE.orig 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILE.orig.lzma | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILE.orig.lzma | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.orig.lzma 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -270,7 +291,7 @@ function RUN_LZMA {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   #
@@ -288,12 +309,15 @@ function RUN_BZIP2 {
   IN_FILE=$GENOME.seq;
   FILEC=$IN_FILE.orig.bz2;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   cp $IN_FILE $IN_FILE.orig
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE.orig 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -309,7 +333,7 @@ function RUN_BZIP2 {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   #
@@ -328,10 +352,13 @@ function RUN_BSC {
   FILEC=$IN_FILE.bsc;
   FILED=$IN_FILE.out;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}bsc-m03 e $IN_FILE $FILEC $C_COMMAND 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND d $FILEC $FILED 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -348,7 +375,7 @@ function RUN_BSC {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
@@ -367,10 +394,13 @@ function RUN_MFC  {
   cat $FILE >> $FILE.orig;
   printf "\n" >> $FILE.orig;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -o $FILE.mfc $FILE.orig 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILE.mfc | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILE.mfc | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -o $FILE.d $FILE.mfc 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -386,7 +416,7 @@ function RUN_MFC  {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f $FILE.orig $FILE.mfc $FILE.d c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
@@ -405,10 +435,13 @@ function RUN_DMcompress() {
   cat $FILE >> $FILE.orig;
   printf "\n" >> $FILE.orig;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE.orig 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILE.orig.c | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILE.orig.c | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.orig.c 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -424,7 +457,7 @@ function RUN_DMcompress() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
@@ -443,6 +476,8 @@ function RUN_MBGC() {
   FILEC=$GENOME.mbgc;
   FILED=mbgc_out/$IN_FILE;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   mkdir -p mbgc_out
   #
   # mbgc [-c compressionMode] [-t noOfThreads] -i <inputFastaFile> <archiveFile>
@@ -450,7 +485,8 @@ function RUN_MBGC() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
   # exemplo: ./mbgc -l 80 -d comp.mbgc out
@@ -468,7 +504,7 @@ function RUN_MBGC() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f .temp cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt
   #
@@ -487,11 +523,14 @@ function RUN_AGC() {
   FILEC=$GENOME.agc;
   FILED=${GENOME}_agc_out.fa;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   # agc create .${bin_path}genomes/zika.seq.agc -o .${bin_path}genomes/zika.seq.agc.c
   { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE -o $FILEC; } 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   # alternative #1: ./agc getcol in.agc > out.fa  
   { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC > $FILED; } 1> c_stdout.txt 2> d_tmp_report.txt;
@@ -512,7 +551,7 @@ function RUN_AGC() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt;
   #
@@ -541,12 +580,15 @@ function RUN_PAQ8() {
   FILEC=$IN_FILE.paq8l;
   FILED=paq8l_out/$IN_FILE;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   # ${bin_path}paq8l -8 HS.seq
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   # ${bin_path}paq8l -d HS.seq.paq8l Hs.seq.de
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC paq8l_out \
@@ -565,7 +607,7 @@ function RUN_PAQ8() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
 }
 #
 # ==============================================================================
@@ -581,10 +623,13 @@ function RUN_CMIX() {
   FILEC=$GENOME.cmix;
   FILED=${GENOME}_cmix_out.fa;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $IN_FILE -t $FILEC -o $FILED 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -600,7 +645,7 @@ function RUN_CMIX() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt;
   #
@@ -619,13 +664,16 @@ function RUN_MEMRGC() {
   FILEC=$GENOME.memrgc;
   FILED=${GENOME}_memrgc_out.fa;
   #
+  BYTES=`ls -la $IN_FILE | awk '{ print $5 }'`;  
+  #
   # RUN_MEMRGC "$IN_FILE" "${bin_path}memrgc e -m file " "${bin_path}memrgc d -m file " "MEMRGC" "49"
   #
   # ${bin_path}memrgc e -m file -r testData/ref.fa -t testData/tar.fa -o $FILEC
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $IN_FILE -t $IN_FILE -o $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
   #
   # ${bin_path}memrgc d -m file -t $FILEC -o testData/dec.fa
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $IN_FILE -t $FILEC -o $FILED 1> c_stdout.txt 2> d_tmp_report.txt;
@@ -642,7 +690,7 @@ function RUN_MEMRGC() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
+  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$5\n" | tee -a ../bench-results.txt;
   #
   rm -f ${FILEC}tmp cmp.txt c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt c_stdout.txt d_stdout.txt;
   #
@@ -656,7 +704,7 @@ run=0;
 #
 for i in "${!GENOMES[@]}"; do
     #
-    printf "DS$i - ${GENOMES[i]}\nPROGRAM\tC_BYTES\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a ../bench-results.txt;
+    printf "DS$i - ${GENOMES[i]}\nPROGRAM\tBYTES\tC_BYTES\tBPS\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a ../bench-results.txt;
     #
     # ==============================================================================
     #

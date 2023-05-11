@@ -20,9 +20,8 @@ function store_bench_to_latex_file() {
             formatted_line=$(printf "$header" "$dsi" "${caption^}")
             first_ds=false;
         elif [[ "$line" == PROGRAM* ]]; then
-            # Line starts with "sequence" - append "\\\\\\\\ \hline" at the end
-            formatted_line="$line \\\\ \\hline"
-            
+            formatted_line=${line//$'\t'/' & '}
+            formatted_line="$formatted_line \\\\ \\hline"
         else
             formatted_line=${line//$'\t'/' & '}
             formatted_line="$formatted_line \\\\"
