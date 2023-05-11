@@ -22,8 +22,13 @@ function RUN_GECO3 {
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -65,8 +70,13 @@ function RUN_GECO2 {
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -107,8 +117,13 @@ function RUN_JARVIS2_BIN {
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -150,8 +165,13 @@ function RUN_JARVIS1 {
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC \
   |& grep "TIME" \
@@ -189,8 +209,13 @@ function RUN_JARVIS2_SH {
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  C_BYTES=`ls -la $IN_FILE.tar | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$IN_FILE.tar" ]; then
+    C_BYTES=`ls -la $IN_FILE.tar | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" ./../bin/JARVIS2.sh $D_COMMAND $IN_FILE.tar \
   |& grep "TIME" \
@@ -234,8 +259,13 @@ function RUN_NAF {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE -o $FILEC 2> naf_tmp_report.txt;
   cat naf_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   # decompress: unnaf file.naf -o file.fa
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC -o $FILED 2> naf_tmp_report.txt 
@@ -274,8 +304,13 @@ function RUN_LZMA {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE.orig 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILE.orig.lzma | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILE.orig.lzma" ]; then
+    C_BYTES=`ls -la $FILE.orig.lzma | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.orig.lzma 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -316,8 +351,13 @@ function RUN_BZIP2 {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE.orig 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -357,8 +397,13 @@ function RUN_BSC {
   /bin/time -f "TIME\t%e\tMEM\t%M" ${bin_path}bsc-m03 e $IN_FILE $FILEC $C_COMMAND 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND d $FILEC $FILED 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -399,8 +444,13 @@ function RUN_MFC  {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -o $FILE.mfc $FILE.orig 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILE.mfc | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILE.mfc" ]; then
+    C_BYTES=`ls -la $FILE.mfc | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -o $FILE.d $FILE.mfc 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -440,8 +490,13 @@ function RUN_DMcompress() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $FILE.orig 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILE.orig.c | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILE.orig.c" ]; then
+    C_BYTES=`ls -la $FILE.orig.c | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILE.orig.c 1> d_stdout.txt 2> d_tmp_report.txt
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -485,8 +540,13 @@ function RUN_MBGC() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   # mbgc -d [-t noOfThreads] [-f pattern] [-l dnaLineLength] <archiveFile> [<outputPath>]
   # exemplo: ./mbgc -l 80 -d comp.mbgc out
@@ -529,8 +589,13 @@ function RUN_AGC() {
   { /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE -o $FILEC; } 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   # alternative #1: ./agc getcol in.agc > out.fa  
   { /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC > $FILED; } 1> c_stdout.txt 2> d_tmp_report.txt;
@@ -587,8 +652,13 @@ function RUN_PAQ8() {
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   # ${bin_path}paq8l -d HS.seq.paq8l Hs.seq.de
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND $FILEC paq8l_out \
@@ -628,8 +698,13 @@ function RUN_CMIX() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND $IN_FILE $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-    if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $IN_FILE -t $FILEC -o $FILED 1> c_stdout.txt 2> d_tmp_report.txt;
   cat d_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
@@ -672,8 +747,13 @@ function RUN_MEMRGC() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND -r $IN_FILE -t $IN_FILE -o $FILEC 1> c_stdout.txt 2> c_tmp_report.txt;
   cat c_tmp_report.txt | grep "TIME" | tr '.' ',' | awk '{ printf $2/60"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
-  C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-  if [ -e "$FILEC" ]; then BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc); else BPS=-1; fi
+  if [ -e "$FILEC" ]; then
+    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES / $C_BYTES" | bc);
+  else 
+    C_BYTES=-1;
+    BPS=-1;
+  fi
   #
   # ${bin_path}memrgc d -m file -t $FILEC -o testData/dec.fa
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND -r $IN_FILE -t $FILEC -o $FILED 1> c_stdout.txt 2> d_tmp_report.txt;
