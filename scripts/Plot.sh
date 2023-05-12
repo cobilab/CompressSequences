@@ -1,6 +1,5 @@
 #!/bin/bash
 #
-
 CHECK_INPUT () {
   FILE=$1
   if [ -f "$FILE" ];
@@ -37,7 +36,7 @@ echo "$plotnames";
 gnuplot << EOF
     reset
     set terminal pdfcairo enhanced color font 'Verdade,12'
-    set output "../Benchmark2.pdf"
+    set output "../bench-plot.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
     set border 3 front ls 101
     set tics nomirror out scale 0.75

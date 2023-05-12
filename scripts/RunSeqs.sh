@@ -784,7 +784,7 @@ run=0;
 #
 for i in "${!GENOMES[@]}"; do
     #
-    printf "DS$i - ${GENOMES[i]}\nPROGRAM\tBYTES\tC_BYTES\tBPS\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a ../bench-results.txt;
+    printf "DS$(($i+1)) - ${GENOMES[i]}\nPROGRAM\tBYTES\tC_BYTES\tBPS\tC_TIME (m)\tC_MEM (GB)\tD_TIME (m)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a ../bench-results.txt;
     #
     # ==============================================================================
     #
