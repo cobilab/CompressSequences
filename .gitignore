@@ -1,11 +1,8 @@
 # Ignore these
 scripts/*
-bench-results.*
+results/*
 
 # Except these
 !scripts/*.sh
 !scripts/data.csv
-!bench-results.txt
-
-# "except except" these
-scripts/JARVIS2.sh
+!results/bench-results.txt
