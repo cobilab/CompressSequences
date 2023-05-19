@@ -1,7 +1,9 @@
 #!/bin/bash
 
-BENCH_FILE="../bench-results.txt"
-TEX_FILE="../bench-results.tex"
+resultsPath="../results";
+
+BENCH_FILE="$resultsPath/bench-results.txt"
+TEX_FILE="$resultsPath/bench-results.tex"
 
 function store_bench_to_latex_file() {
     header="\\\\begin{longtblr}[label = {tab:benchmark_%s}, caption = %s benchmark.]{rowhead = 1,hlines, vlines,colspec = {X[c] X[0.6,c] X[0.4,c] X[0.45,l] X[0.45,l] X[0.5,l] X[0.54,l] X[0.23,c] X[0.23,c]},colsep  = 4pt,row{1}  = {font=\\\\small\\\\bfseries, c},measure = vbox}"
