@@ -80,13 +80,13 @@ function PLOT_DS() {
     set style line 101 lc rgb '#000000' lt 1 lw 2 
     set border 3 front ls 101
     # set tics nomirror out scale 0.01
-    set key fixed right top vertical Right noreverse noenhanced autotitle nobox
+    set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
     set yrange [auto:auto]
     set xrange [auto:auto]
     set xtics auto
-    set ytics auto # set ytics auto
+    set ytics auto
     set key top right
     set style line 1 lc rgb '#990099'  pt 1 ps 0.6  # circle
     set style line 2 lc rgb '#004C99'  pt 2 ps 0.6  # circle
