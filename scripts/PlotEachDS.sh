@@ -1,7 +1,6 @@
 #!/bin/bash
 #
 resultsPath="../results";
-declare -A ds_size_dict;
 #
 # ==============================================================================
 #
@@ -20,11 +19,9 @@ function SPLIT_BENCH_RESULTS_BY_DS() {
   # read the input file
   input_file="$resultsPath/bench-results.txt"
   file_prefix="$resultsPath/bench-results-"
-  current_dataset="DS$i"
-  output_file=""
 
   # remove datasets before recreating them
-  rm -fr ${resultsPath}DS*.csv
+  rm -fr ${file_prefix}DS*.csv
 
   while IFS= read -r line; do
     # check if the line contains a dataset name
@@ -33,7 +30,6 @@ function SPLIT_BENCH_RESULTS_BY_DS() {
       dataset_name=$(echo "$line" | cut -d" " -f1)
       output_file="${file_prefix}$dataset_name.csv"
       echo "$line" > "$output_file"
-      current_dataset=$dataset_name
     else
       # append the line to the current dataset's file
       echo "$line" >> "$output_file"
@@ -105,32 +101,6 @@ function PLOT_DS() {
 EOF
 }
 #
-function GRP_DS_BY_SIZE() {
-  # group ds by its size
-  bytes_col_unique_vals=($(awk -F' ' '!/-/ && $2 != "BYTES" {print $2}' ../results/bench-results-DS$gen_i.csv | sort -u));
-
-  sum=0;
-  for byte in "${bytes_col_unique_vals[@]}"; do
-      sum=$((sum + byte));
-  done
-
-  avg_bytes=$((sum / ${#bytes_col_unique_vals[@]}));
-
-  if (( avg_bytes < 1048576 )); then # lower than 1MB
-    ds_size_dict["DS$gen_i"]="xs"
-  elif (( avg_bytes < 104857600 )); then # lower than 100MB
-    ds_size_dict["DS$gen_i"]="s"
-  elif (( avg_bytes < 1073741824 )); then # lower than 1GB
-    ds_size_dict["DS$gen_i"]="m"
-  elif (( avg_bytes <  10737418240  )); then # lower than 10GB
-    ds_size_dict["DS$gen_i"]="l"
-  elif (( avg_bytes >=  10737418240  )); then # higher than or equal to 10GB
-    ds_size_dict["DS$gen_i"]="xl"
-  else
-    ds_size_dict["DS$gen_i"]="ERROR"
-  fi
-}
-#
 # === MAIN ===========================================================================
 #
 SPLIT_BENCH_RESULTS_BY_DS;
@@ -140,10 +110,6 @@ while (( gen_i <= num_gens )); do
 
   SPLIT_DS;
   PLOT_DS;
-  GRP_DS_BY_SIZE;
 
   (( gen_i++ ))
 done
-
-echo ${!ds_size_dict[@]}
-echo ${ds_size_dict[@]}
