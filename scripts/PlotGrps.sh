@@ -46,17 +46,17 @@ function GRP_DS_BY_SIZE() {
   # group ds by its size
   bytes_col_unique_vals=($(awk -F' ' '!/-/ && $2 != "BYTES" {print $2}' $resultsPath/bench-results-DS$gen_i.csv | sort -u));
 
-  sum=0;
-  for byte in "${bytes_col_unique_vals[@]}"; do
-      sum=$((sum + byte));
+  seq_num_bytes=${bytes_col_unique_vals[0]}
+  for val in "${bytes_col_unique_vals[@]}"; do
+      if [[ $val -lt $seq_num_bytes ]]; then
+          seq_num_bytes=$val
+      fi
   done
-
-  avg_bytes=$((sum / ${#bytes_col_unique_vals[@]}));
 
   sucess=false;
 
   first=${sizes_bytes[0]};
-  if (( avg_bytes < first )); then # lower than 1MB
+  if (( seq_num_bytes < first )); then # lower than 1MB
     while IFS= read -r line; do
         # Check if the line starts with "DS" or "PROGRAM"
         if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
@@ -70,7 +70,7 @@ function GRP_DS_BY_SIZE() {
   for ((i = 1; i <= length; i++ )); do
     lower_elem=${sizes_bytes[i]};
     higher_elem=${sizes_bytes[i+1]}
-    if (( avg_bytes >= lower_elem && avg_bytes < higher_elem )); then # lower than 100MB
+    if (( seq_num_bytes >= lower_elem && seq_num_bytes < higher_elem )); then # lower than 100MB
       while IFS= read -r line; do
           # Check if the line starts with "DS" or "PROGRAM"
           if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
@@ -82,7 +82,7 @@ function GRP_DS_BY_SIZE() {
   done
 
   last=${sizes_bytes[-1]}
-  if (( avg_bytes >= last )); then # higher than or equal to 10GB
+  if (( seq_num_bytes >= last )); then # higher than or equal to 10GB
         while IFS= read -r line; do
         # Check if the line starts with "DS" or "PROGRAM"
         if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
