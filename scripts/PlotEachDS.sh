@@ -39,7 +39,7 @@ function SPLIT_BENCH_RESULTS_BY_DS() {
   num_gens=$(($(echo "$dataset_name" | sed 's/ds//gi')))
 }
 #
-function SPLIT_DS() {
+function SPLIT_DS_BY_COMPRESSOR() {
   # recreate ds folder
   rm -fr $resultsPath/split_ds$gen_i;
   mkdir -p $resultsPath/split_ds$gen_i;
@@ -68,10 +68,9 @@ function SPLIT_DS() {
 function PLOT_DS() {
   # plots ds results and stores it in folder
   gnuplot << EOF
-    FILE="$1"
     reset
     set terminal pdfcairo enhanced color font 'Verdade,12'
-    set output "$FILE"
+    set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
     set border 3 front ls 101
     # set tics nomirror out scale 0.01
@@ -109,8 +108,8 @@ SPLIT_BENCH_RESULTS_BY_DS;
 gen_i=1;
 while (( gen_i <= num_gens )); do
 
-  SPLIT_DS;
-  PLOT_DS "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i.pdf";
+  SPLIT_DS_BY_COMPRESSOR;
+  PLOT_DS;
 
   (( gen_i++ ))
 done

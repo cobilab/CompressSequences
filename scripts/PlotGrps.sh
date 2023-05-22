@@ -52,45 +52,46 @@ function GRP_DS_BY_SIZE() {
   done
 
   avg_bytes=$((sum / ${#bytes_col_unique_vals[@]}));
-  echo $avg_bytes
 
-  if (( avg_bytes < 1048576 )); then # lower than 1MB
-    echo "hey"
+  sucess=false;
+
+  first=${sizes_bytes[0]};
+  if (( avg_bytes < first )); then # lower than 1MB
     while IFS= read -r line; do
         # Check if the line starts with "DS" or "PROGRAM"
         if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
             echo "$line" >> "$resultsPath/bench-results-grp-${sizes[0]}.csv"
         fi
     done < "$resultsPath/bench-results-DS$gen_i.csv"
-  elif (( avg_bytes < 104857600 )); then # lower than 100MB
-    while IFS= read -r line; do
-        # Check if the line starts with "DS" or "PROGRAM"
-        if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
-            echo "$line" >> "$resultsPath/bench-results-grp-${sizes[1]}.csv"
-        fi
-    done < "$resultsPath/bench-results-DS$gen_i.csv"
-  elif (( avg_bytes < 1073741824 )); then # lower than 1GB
-        while IFS= read -r line; do
-        # Check if the line starts with "DS" or "PROGRAM"
-        if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
-            echo "$line" >> "$resultsPath/bench-results-grp-${sizes[2]}.csv"
-        fi
-    done < "$resultsPath/bench-results-DS$gen_i.csv"
-  elif (( avg_bytes <  10737418240  )); then # lower than 10GB
-        while IFS= read -r line; do
-        # Check if the line starts with "DS" or "PROGRAM"
-        if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
-            echo "$line" >> "$resultsPath/bench-results-grp-${sizes[3]}.csv"
-        fi
-    done < "$resultsPath/bench-results-DS$gen_i.csv"
-  elif (( avg_bytes >=  10737418240  )); then # higher than or equal to 10GB
+    success=true;
+  fi
+
+  length=$(( ${#sizes_bytes[@]} - 2 ))
+  for ((i = 1; i <= length; i++ )); do
+    elem=${sizes_bytes[i]};
+    if (( avg_bytes < elem )); then # lower than 100MB
+      while IFS= read -r line; do
+          # Check if the line starts with "DS" or "PROGRAM"
+          if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
+              echo "$line" >> "$resultsPath/bench-results-grp-${sizes[i]}.csv"
+          fi
+      done < "$resultsPath/bench-results-DS$gen_i.csv"
+      success=true;
+    fi
+  done
+
+  last=${sizes_bytes[-1]}
+  if (( avg_bytes >= last )); then # higher than or equal to 10GB
         while IFS= read -r line; do
         # Check if the line starts with "DS" or "PROGRAM"
         if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
             echo "$line" >> "$resultsPath/bench-results-grp-${sizes[4]}.csv"
         fi
     done < "$resultsPath/bench-results-DS$gen_i.csv"
-  else
+    success=true;
+  fi
+
+  if [ ! "$success" ]; then
     echo "error assigning ds$gen_i to a grp"
   fi
 }
@@ -178,5 +179,3 @@ for size in ${sizes[@]}; do
     SPLIT_GRP;
     PLOT_GRP;
 done
-
-# create bench-results-grp-$grp_i.txt
