@@ -68,12 +68,13 @@ function SPLIT_DS() {
 function PLOT_DS() {
   # plots ds results and stores it in folder
   gnuplot << EOF
+    FILE="$1"
     reset
     set terminal pdfcairo enhanced color font 'Verdade,12'
-    set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i.pdf"
+    set output "$FILE"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
     set border 3 front ls 101
-    set tics nomirror out scale 0.01
+    # set tics nomirror out scale 0.01
     set key fixed right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
@@ -109,7 +110,7 @@ gen_i=1;
 while (( gen_i <= num_gens )); do
 
   SPLIT_DS;
-  PLOT_DS;
+  PLOT_DS "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i.pdf";
 
   (( gen_i++ ))
 done

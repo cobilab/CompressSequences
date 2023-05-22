@@ -4,9 +4,15 @@
 ./PlotEachDS.sh 
 #
 resultsPath="../results";
+#
+declare -A sizesToBytes;
 
 sizes=("xs" "s" "m" "l" "xl");
 sizes_bytes=(1048576 104857600 1073741824 10737418240 10737418240);
+
+for (( i=0; i<${#sizes[@]}; i++ )); do
+    sizesToBytes[${sizes[$i]}]=${sizes_bytes[$i]}
+done
 #
 # ==============================================================================
 #
