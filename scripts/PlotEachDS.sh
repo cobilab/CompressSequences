@@ -15,6 +15,12 @@ function CHECK_INPUT () {
     fi
   }
 #
+function REMOVE_INNACURATE_DATA() {
+  awk '$2 != -1 && $3 != -1 && $2 != 0 && $3 != 0' "$resultsPath/bench-results.txt" > tmp.txt
+  cp tmp.txt "$resultsPath/bench-results.txt"
+  rm -fr tmp.txt
+}
+#
 function SPLIT_BENCH_RESULTS_BY_DS() {
   # read the input file
   input_file="$resultsPath/bench-results.txt"
@@ -103,6 +109,8 @@ EOF
 #
 # === MAIN ===========================================================================
 #
+REMOVE_INNACURATE_DATA;
+
 SPLIT_BENCH_RESULTS_BY_DS;
 
 gen_i=1;
