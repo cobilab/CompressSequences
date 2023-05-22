@@ -68,8 +68,9 @@ function GRP_DS_BY_SIZE() {
 
   length=$(( ${#sizes_bytes[@]} - 2 ))
   for ((i = 1; i <= length; i++ )); do
-    elem=${sizes_bytes[i]};
-    if (( avg_bytes < elem )); then # lower than 100MB
+    lower_elem=${sizes_bytes[i]};
+    higher_elem=${sizes_bytes[i+1]}
+    if (( avg_bytes >= lower_elem && avg_bytes < higher_elem )); then # lower than 100MB
       while IFS= read -r line; do
           # Check if the line starts with "DS" or "PROGRAM"
           if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
