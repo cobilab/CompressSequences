@@ -51,8 +51,8 @@ function SPLIT_DS_BY_COMPRESSOR() {
   mkdir -p $resultsPath/split_ds$gen_i;
 
   CHECK_INPUT "$resultsPath/bench-results-DS$gen_i.csv";
-  # create names.txt inside each ds folder; it contains all compressor names
-  cat $resultsPath/bench-results-DS$gen_i.csv | awk '{ print $1} ' | sort -V | uniq > $resultsPath/split_ds$gen_i/names_ds$gen_i.txt;
+  # create names.txt inside each ds folder; it contains all compressor names only, hence the exclusion of DS* and PROGRAM
+  cat $resultsPath/bench-results-DS$gen_i.csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > $resultsPath/split_ds$gen_i/names_ds$gen_i.txt;
   CHECK_INPUT "$resultsPath/split_ds$gen_i/names_ds$gen_i.txt";
 
   # splits ds into subdatasets by compressor and store them in folder
@@ -60,12 +60,10 @@ function SPLIT_DS_BY_COMPRESSOR() {
   plotnames="";
   mapfile -t INT_DATA < $resultsPath/split_ds$gen_i/names_ds$gen_i.txt;
   for dint in "${INT_DATA[@]}"; do
-    if [[ $dint != PROGRAM && $dint != DS* ]]; then
-      grep $dint $resultsPath/bench-results-DS$gen_i.csv > $resultsPath/split_ds$gen_i/bench-results-DS$gen_i-c$c_i.csv
-      tmp="'$resultsPath/split_ds$gen_i/bench-results-DS$gen_i-c$c_i.csv' u 4:5 w points ls $c_i title '$dint', ";
-      plotnames="$plotnames $tmp";
-      ((++c_i));
-    fi
+    grep $dint $resultsPath/bench-results-DS$gen_i.csv > $resultsPath/split_ds$gen_i/bench-results-DS$gen_i-c$c_i.csv
+    tmp="'$resultsPath/split_ds$gen_i/bench-results-DS$gen_i-c$c_i.csv' u 4:5 w points ls $c_i title '$dint', ";
+    plotnames="$plotnames $tmp";
+    ((++c_i));
   done
 
   echo -e "${plotnames//, /\\n}";

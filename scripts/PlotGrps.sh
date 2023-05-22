@@ -104,7 +104,7 @@ function SPLIT_GRP() {
 
   CHECK_INPUT "$resultsPath/bench-results-grp-$size.csv";
   # create names.txt inside each ds folder; it contains all compressor names
-  cat $resultsPath/bench-results-grp-$size.csv | awk '{ print $1} ' | sort -V | uniq > $resultsPath/split_grp_$size/names_grp_$size.txt;
+  cat $resultsPath/bench-results-grp-$size.csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > $resultsPath/split_grp_$size/names_grp_$size.txt;
   CHECK_INPUT "$resultsPath/split_grp_$size/names_grp_$size.txt";
 
   # splits ds into subdatasets by compressor and store them in folder
