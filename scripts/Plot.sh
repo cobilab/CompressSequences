@@ -22,6 +22,8 @@ function CHECK_INPUT () {
 #
 function REMOVE_INNACURATE_DATA() {
   awk '$2 != -1 && $3 != -1 && $2 != 0 && $3 != 0' "$resultsPath/bench-results.txt" > tmp.txt
+  touch "$resultsPath/bench-results-with-failed-tests.txt"
+  cp "$resultsPath/bench-results.txt" "$resultsPath/bench-results-with-failed-tests.txt"
   cp tmp.txt "$resultsPath/bench-results.txt"
   rm -fr tmp.txt
 }
@@ -75,15 +77,6 @@ function SPLIT_DS_BY_COMPRESSOR() {
 }
 #
 function PLOT_DS() {
-
-  # cf_bytes_col_unique_vals=($(awk -F' ' '!/-/ && $3 != "C_BYTES" {print $3}' $resultsPath/bench-results-DS$gen_i.csv | sort -u));
-  # cf_bytes_min=${cf_bytes_col_unique_vals[0]}
-  # cf_bytes_max=${cf_bytes_col_unique_vals[-1]}
-
-  # bps_col_unique_vals=($(awk -F' ' '!/-/ && $4 != "BTS" {print $4}' $resultsPath/bench-results-DS$gen_i.csv | sort -u));
-  # bps_min=${bps_col_unique_vals[0]}
-  # bps_max=${bps_col_unique_vals[-1]}
-
   # plots ds results and stores it in folder
   gnuplot << EOF
     reset
@@ -95,8 +88,8 @@ function PLOT_DS() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    # set yrange auto
-    # set xrange auto
+    set yrange [*:*]
+    set xrange [*:*]
     set xtics auto
     set ytics auto
     set key top right
@@ -132,8 +125,8 @@ function PLOT_DS_LOG() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    # set yrange auto
-    # set xrange auto
+    set yrange [*:*]
+    set xrange [*:*]
     set xtics auto
     set ytics auto
     set key top right
@@ -262,8 +255,8 @@ function PLOT_GRP() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [auto:auto]
-    set xrange [auto:auto]
+    set yrange [*:*]
+    set xrange [*:*]
     set xtics auto
     set ytics auto 
     set key top right
@@ -299,8 +292,8 @@ function PLOT_GRP_LOG() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [auto:auto]
-    set xrange [auto:auto]
+    set yrange [*:*]
+    set xrange [*:*]
     set xtics auto
     set ytics auto 
     set key top right
