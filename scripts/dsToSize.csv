@@ -1,17 +1,17 @@
-ds, size
-ensete_glaucum.evm.cds, s
-Megadyptes_antipodes_antipodes.cds.v1, s
-Eudyptes_moseleyi.cds.v1, s
-RL0949_chloroplast, xs
-Spheniscus_demersus.cds.v1, s
-phyml_tree, s
-Aldabrachelys_gigantea_mitochondrial_genome, xs
-COVID_sequence, xs
-mt_genome_CM029732, xs
-RL0057_chloroplast, xs
-RL1087_chloroplast, xs
-Spheniscus_magellanicus.cds.v1, s
-RL0948_chloroplast, xs
-RL1067_chloroplast, xs
-RL0048_chloroplast, xs
-test, xs
+ds, bytes, size
+mt_genome_CM029732, 15090, xs
+Aldabrachelys_gigantea_mitochondrial_genome, 16467, xs
+COVID_sequence, 29903, xs
+RL0057_chloroplast, 135455, xs
+RL1087_chloroplast, 137970, xs
+RL1067_chloroplast, 153732, xs
+RL0048_chloroplast, 153933, xs
+RL0948_chloroplast, 156945, xs
+RL0949_chloroplast, 161043, xs
+test, 699930, xs
+phyml_tree, 2383187, s
+Spheniscus_demersus.cds.v1, 21685476, s
+Megadyptes_antipodes_antipodes.cds.v1, 22092384, s
+Eudyptes_moseleyi.cds.v1, 23037690, s
+Spheniscus_magellanicus.cds.v1, 23189613, s
+ensete_glaucum.evm.cds, 41047895, s

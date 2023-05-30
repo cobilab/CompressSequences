@@ -16,8 +16,6 @@ seqFiles=( $(ls "$genomesPath" | egrep ".seq$") );
 for seqFile in "${seqFiles[@]}"; do
     seq_num_bytes=`ls -la $seqFile | awk '{ print $5 }'`;
 
-    echo $seqFile $seq_num_bytes
-
     ds="${seqFile%.*}"
     sucess=false;
 
@@ -48,13 +46,15 @@ for seqFile in "${seqFiles[@]}"; do
     fi
 done
 
-for i in ${!dsToSize[@]}; do
-    echo $i ${dsToSize[$i]};
+# iterate over the hashmap and write to the CSV file
+echo "ds, bytes, size" > "$output_file"  # write the header row
+for ds in "${!dsToSize[@]}"; do
+    bytes=`ls -la $ds.seq | awk '{ print $5 }'`;
+    size="${dsToSize[$ds]}"
+    echo "$ds, $bytes, $size" >> "$output_file"
 done
 
-# iterate over the hashmap and write to the CSV file
-echo "ds, size" > "$output_file"  # write the header row
-for ds in "${!dsToSize[@]}"; do
-  size="${dsToSize[$ds]}"
-  echo "$ds, $size" >> "$output_file"
-done
+sort -t',' -k2,2n dsToSize.csv > dsToSize-tmp.csv
+
+cp dsToSize-tmp.csv dsToSize.csv
+rm -fr dsToSize-tmp.csv
