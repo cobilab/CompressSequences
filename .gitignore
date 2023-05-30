@@ -4,5 +4,5 @@ results/*
 
 # Except these
 !scripts/*.sh
-!scripts/data.csv
+!scripts/dsToSize.csv
 !results/bench-results.txt
