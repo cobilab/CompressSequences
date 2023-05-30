@@ -16,11 +16,12 @@ seqFiles=( $(ls "$genomesPath" | egrep ".seq$") );
 for seqFile in "${seqFiles[@]}"; do
     seq_num_bytes=`ls -la $seqFile | awk '{ print $5 }'`;
 
+    ds="${seqFile%.*}"
     sucess=false;
 
     first=${sizes_bytes[0]};
     if (( seq_num_bytes < first )); then # lower than 1MB
-        dsToSize[$seqFile]=${sizes[0]};
+        dsToSize[$ds]=${sizes[0]};
         success=true;
     fi
 
@@ -29,14 +30,14 @@ for seqFile in "${seqFiles[@]}"; do
         lower_elem=${sizes_bytes[i]};
         higher_elem=${sizes_bytes[i+1]}
         if (( seq_num_bytes >= lower_elem && seq_num_bytes < higher_elem )); then # lower than 100MB
-            dsToSize[$seqFile]=${sizes[$i]};
+            dsToSize[$ds]=${sizes[$i]};
             success=true;
         fi
     done
 
     last=${sizes_bytes[-1]}
     if (( seq_num_bytes >= last )); then # higher than or equal to 10GB
-        dsToSize[$seqFile]=${sizes[-1]};
+        dsToSize[$ds]=${sizes[-1]};
         success=true;
     fi
 
