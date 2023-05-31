@@ -16,17 +16,9 @@ function CHECK_INPUT () {
     echo -e "\e[31mERROR: input file not found ($FILE)!\e[0m";
     exit;
     fi
-  }
+}
 #
 # === FUNCTIONS TO PLOT EACH DS ===========================================================================
-#
-function REMOVE_INNACURATE_DATA() {
-  awk '$2 != -1 && $3 != -1 && $2 != 0 && $3 != 0' "$resultsPath/bench-results.txt" > tmp.txt
-  touch "$resultsPath/bench-results-with-failed-tests.txt"
-  cp "$resultsPath/bench-results.txt" "$resultsPath/bench-results-with-failed-tests.txt"
-  cp tmp.txt "$resultsPath/bench-results.txt"
-  rm -fr tmp.txt
-}
 #
 function SPLIT_BENCH_RESULTS_BY_DS() {
   # read the input file
@@ -151,7 +143,7 @@ EOF
 #
 # === FUNCTIONS TO PLOT EACH DS GRP ===========================================================================
 #
-function GET_NUM_GENS() {
+function GET_NUM_DSs() {
   # read the input file
   input_file="$resultsPath/bench-results.txt"
 
@@ -318,8 +310,6 @@ EOF
 #
 # === PLOT EACH DS ===========================================================================
 #
-REMOVE_INNACURATE_DATA;
-
 SPLIT_BENCH_RESULTS_BY_DS;
 
 gen_i=1;
@@ -340,7 +330,7 @@ for size in ${sizes[@]}; do
     touch $resultsPath/bench-results-grp-$size.csv;
 done
 
-GET_NUM_GENS;
+GET_NUM_DSs;
 
 gen_i=1;
 while (( gen_i <= num_gens )); do

@@ -81,7 +81,7 @@ function RUN_TEST() {
 LOAD_CSV_DSTOSIZE;
 #
 mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
-rm -fr $resultsPath/bench-results.*;
+rm -fr $resultsPath/bench-results-raw.*;
 #
 bin_path="../bin/";
 run=0;
@@ -228,5 +228,3 @@ for i in "${!GENOMES[@]}"; do
     #
 done
 # 
-# save bench to latex and markdown files
-./SaveBench.sh
