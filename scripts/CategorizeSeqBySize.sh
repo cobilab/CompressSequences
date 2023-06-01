@@ -47,11 +47,11 @@ for seqFile in "${seqFiles[@]}"; do
 done
 
 # iterate over the hashmap and write to the CSV file
-echo "ds, bytes, size" > "$output_file"  # write the header row
+echo "ds,bytes,size" > "$output_file"  # write the header row
 for ds in "${!dsToSize[@]}"; do
     bytes=`ls -la $ds.seq | awk '{ print $5 }'`;
     size="${dsToSize[$ds]}"
-    echo "$ds, $bytes, $size" >> "$output_file"
+    echo "$ds,$bytes,$size" >> "$output_file"
 done
 
 sort -t',' -k2,2n dsToSize.csv > dsToSize-tmp.csv
