@@ -151,6 +151,15 @@ cp JARVIS2-bin-64-Linux/JARVIS2.sh .
 cp JARVIS2-bin-64-Linux/JARVIS2 .
 rm -fr JARVIS2-bin-64-Linux/ JARVIS2-bin-64-Linux.zip
 #
+# JARVIS3 ----------------------------------------------------------------------
+#
+git clone https://github.com/cobilab/jarvis3.git
+cd jarvis3/src/
+make
+cp JARVIS3 JARVIS3.sh ../../
+cd ../..
+rm -fr jarvis3/
+#
 # NNCP -------------------------------------------------------------------------
 #
 rm -fr nncp-2021-06-01.tar.gz nncp-2021-06-01/
