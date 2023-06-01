@@ -21,6 +21,7 @@
 | GeCo3           |<a href="https://github.com/cobilab/geco3">code</a>  | <a href="https://doi.org/10.1093/gigascience/giaa119">article</a>|
 | JARVIS          |<a href="https://github.com/cobilab/jarvis">code</a>  | <a href="https://doi.org/10.3390/e21111074">article</a>|
 | JARVIS2         |<a href="https://github.com/cobioders/jarvis2">code</a>  | under review |
+| JARVIS3         |private  | under review |
 | lzma 5.2.5      |<a href="https://tukaani.org/xz/">code</a>  | <a href="https://tukaani.org/xz/">article</a>|
 | MBGC      |<a href="https://github.com/kowallus/mbgc">code</a>  | <a href="https://doi.org/10.1093/gigascience/giab099">article</a>|
 | MemRGC      |<a href="https://github.com/yuansliu/memRGC">code</a>  | <a href="https://doi.org/10.1093/bioinformatics/btaa572">article</a>|
@@ -37,8 +38,19 @@ Change directory and give permitions:
 <pre>
 cd scripts/
 chmod +x *.sh
-Install_Tools.sh
-GetSeqs.sh
-RunSeqs.sh
+./Main.sh
 </pre>
 
+Alternatively:
+<pre>
+cd scripts/
+chmod +x *.sh
+./CleanCandDfiles.sh # optional but recommended
+./Install_Tools.sh
+./GetSeqs.sh
+./CategorizeSeqBySize.sh
+./RunSeqs.sh
+./SaveBenchAsTex.sh # optional 
+./ProcessRawBench.sh
+./Plot.sh
+</pre>
