@@ -49,7 +49,7 @@ chmod +x *.sh
 ./Install_Tools.sh
 ./GetSeqs.sh
 ./CategorizeSeqBySize.sh
-./RunSeqs.sh
+./RunSeqs.sh # ./RunSeqs.sh --size [xs|s|m|l|xl]
 ./SaveBenchAsTex.sh # optional 
 ./ProcessRawBench.sh
 ./Plot.sh
