@@ -22,7 +22,7 @@ function CHECK_INPUT () {
 #
 function SPLIT_BENCH_RESULTS_BY_DS() {
   # read the input file
-  input_file="$resultsPath/bench-results.txt"
+  input_file="$resultsPath/bench-results.csv"
   file_prefix="$resultsPath/bench-results-"
 
   # remove datasets before recreating them
@@ -143,72 +143,6 @@ EOF
 #
 # === FUNCTIONS TO PLOT EACH DS GRP ===========================================================================
 #
-function GET_NUM_DSs() {
-  # read the input file
-  input_file="$resultsPath/bench-results.txt"
-
-  while IFS= read -r line; do
-    # check if the line contains a dataset name
-    if [[ $line == DS* ]]; then
-      # create a new output file for the dataset
-      dataset_name=$(echo "$line" | cut -d" " -f1)
-    fi
-  done < "$input_file"
-
-  num_gens=$(($(echo "$dataset_name" | sed 's/ds//gi')))
-}
-#
-function GRP_DS_BY_SIZE() {
-  # group ds by its size
-  bytes_col_unique_vals=($(awk -F' ' '!/-/ && $2 != "BYTES" {print $2}' $resultsPath/bench-results-DS$gen_i.csv | sort -u));
-  
-  # .seq file size; .seq files are always smaller than respective .fa file
-  seq_num_bytes=${bytes_col_unique_vals[0]}
-
-  sucess=false;
-
-  first=${sizes_bytes[0]};
-  if (( seq_num_bytes < first )); then # lower than 1MB
-    while IFS= read -r line; do
-        # Check if the line starts with "DS" or "PROGRAM"
-        if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
-            echo "$line" >> "$resultsPath/bench-results-grp-${sizes[0]}.csv"
-        fi
-    done < "$resultsPath/bench-results-DS$gen_i.csv"
-    success=true;
-  fi
-
-  length=$(( ${#sizes_bytes[@]} - 2 ))
-  for ((i = 1; i <= length; i++ )); do
-    lower_elem=${sizes_bytes[i]};
-    higher_elem=${sizes_bytes[i+1]}
-    if (( seq_num_bytes >= lower_elem && seq_num_bytes < higher_elem )); then # lower than 100MB
-      while IFS= read -r line; do
-          # Check if the line starts with "DS" or "PROGRAM"
-          if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
-              echo "$line" >> "$resultsPath/bench-results-grp-${sizes[i]}.csv"
-          fi
-      done < "$resultsPath/bench-results-DS$gen_i.csv"
-      success=true;
-    fi
-  done
-
-  last=${sizes_bytes[-1]}
-  if (( seq_num_bytes >= last )); then # higher than or equal to 10GB
-        while IFS= read -r line; do
-        # Check if the line starts with "DS" or "PROGRAM"
-        if [[ "$line" != DS* && "$line" != PROGRAM* ]]; then
-            echo "$line" >> "$resultsPath/bench-results-grp-${sizes[4]}.csv"
-        fi
-    done < "$resultsPath/bench-results-DS$gen_i.csv"
-    success=true;
-  fi
-
-  if [ ! "$success" ]; then
-    echo "error assigning ds$gen_i to a grp"
-  fi
-}
-#
 function SPLIT_GRP_BY_COMPRESSOR() {
   # recreate grp folder
   rm -fr $resultsPath/split_grp_$size;
@@ -324,21 +258,12 @@ done
 #
 # === PLOT EACH GROUP OF DS BY SIZE ===========================================================================
 #
-# recreate grp files
-rm -fr $resultsPath/bench-results-grp*.csv
-for size in ${sizes[@]}; do
-    touch $resultsPath/bench-results-grp-$size.csv;
-done
+clean_grps=( $(find $resultsPath -type f -name "*-grp-*") );
 
-GET_NUM_DSs;
+for clean_grp in ${clean_grps[@]}; do
+    suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"
+    size="${suffix%%.*}";            # remove everything after the first dot
 
-gen_i=1;
-while (( gen_i <= num_gens )); do
-  GRP_DS_BY_SIZE;
-  (( gen_i++ ))
-done
-
-for size in ${sizes[@]}; do
     SPLIT_GRP_BY_COMPRESSOR;
     PLOT_GRP;
     PLOT_GRP_LOG;

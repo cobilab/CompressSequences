@@ -45,11 +45,11 @@ Alternatively:
 <pre>
 cd scripts/
 chmod +x *.sh
-./CleanCandDfiles.sh # optional but recommended
+./CleanCandDfiles.sh # optional
 ./Install_Tools.sh
 ./GetSeqs.sh
 ./CategorizeSeqBySize.sh
-./RunSeqs.sh # ./RunSeqs.sh --size [xs|s|m|l|xl]
+./RunSeqs.sh 1> ../results/bench-results-raw.txt 2> ../results/sterr.txt  # ./RunSeqs.sh --size [xs|s|m|l|xl]
 ./SaveBenchAsTex.sh # optional 
 ./ProcessRawBench.sh
 ./Plot.sh
