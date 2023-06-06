@@ -258,7 +258,7 @@ done
 #
 # === PLOT EACH GROUP OF DS BY SIZE ===========================================================================
 #
-clean_grps=( $(find $resultsPath -type f -name "*-grp-*") );
+clean_grps=( $(find $resultsPath -maxdepth 1 -type f -name "*-grp-*") );
 
 for clean_grp in ${clean_grps[@]}; do
     suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"

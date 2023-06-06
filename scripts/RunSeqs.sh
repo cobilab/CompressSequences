@@ -110,6 +110,7 @@ fi
 # ------------------------------------------------------------------------------
 #
 mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
+rm -fr $resultsPath/bench-results-raw*.txt;
 #
 run=0;
 for i in "${!GENOMES[@]}"; do
