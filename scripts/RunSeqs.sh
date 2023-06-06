@@ -55,10 +55,10 @@ function RUN_TEST() {
   |& tr '.' ',' \
   |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   if [ -e "$FILEC" ]; then
-    C_BYTES=`ls -la $FILEC | awk '{ print $5 }'`;
-    BPS=$(echo "scale=3; $C_BYTES*8 / $BYTES" | bc);
+    BYTES_CF=`ls -la $FILEC | awk '{ print $5 }'`;
+    BPS=$(echo "scale=3; $BYTES_CF*8 / $BYTES" | bc);
   else 
-    C_BYTES=-1;
+    BYTES_CF=-1;
     BPS=-1;
   fi
   #
@@ -78,7 +78,7 @@ function RUN_TEST() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$C_BYTES\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\n" | tee -a $resultsPath/bench-results-raw-$size.txt;
+  printf "$NAME\t$BYTES\t$BYTES_CF\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\n" | tee -a $resultsPath/bench-results-raw-$size.txt;
   #
   rm -fr c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
 }
@@ -131,7 +131,7 @@ for i in "${!GENOMES[@]}"; do
     #
     # --- RUN GENOME TESTS ---------------------------------------------------------------------------
     #
-    printf "DS$(($i+1)) - $genome - $size \nPROGRAM\tBYTES\tC_BYTES\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a $resultsPath/bench-results-raw-$size.txt;
+    printf "DS$(($i+1)) - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a $resultsPath/bench-results-raw-$size.txt;
     #
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
         # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));

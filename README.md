@@ -20,7 +20,7 @@
 | GeCo2           |<a href="https://github.com/cobilab/geco2">code</a>  | <a href="https://link.springer.com/chapter/10.1007/978-3-030-23873-5_17">article</a>|
 | GeCo3           |<a href="https://github.com/cobilab/geco3">code</a>  | <a href="https://doi.org/10.1093/gigascience/giaa119">article</a>|
 | JARVIS          |<a href="https://github.com/cobilab/jarvis">code</a>  | <a href="https://doi.org/10.3390/e21111074">article</a>|
-| JARVIS2         |<a href="https://github.com/cobioders/jarvis2">code</a>  | under review |
+| JARVIS2         |<a href="https://github.com/cobioders/jarvis2">code</a>  | <a href="https://ieeexplore.ieee.org/document/10125337/">article</a> |
 | JARVIS3         |private  | under review |
 | lzma 5.2.5      |<a href="https://tukaani.org/xz/">code</a>  | <a href="https://tukaani.org/xz/">article</a>|
 | MBGC      |<a href="https://github.com/kowallus/mbgc">code</a>  | <a href="https://doi.org/10.1093/gigascience/giab099">article</a>|

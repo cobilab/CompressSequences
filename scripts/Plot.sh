@@ -72,6 +72,7 @@ function PLOT_DS() {
   # plots ds results and stores it in folder
   gnuplot << EOF
     reset
+    # set title "Compression efficiency of DS$gen_i"
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
@@ -98,7 +99,7 @@ function PLOT_DS() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Real time (seconds)"
+    set ylabel "Compression time"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
@@ -108,6 +109,7 @@ function PLOT_DS_LOG() {
   # plots ds results and stores it in folder
   gnuplot << EOF
     reset
+    # set title "Compression efficiency of DS$gen_i"
     set logscale xy 2
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i-log.pdf"
@@ -135,7 +137,7 @@ function PLOT_DS_LOG() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Real time (seconds)"
+    set ylabel "Compression time"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
@@ -173,6 +175,7 @@ function PLOT_GRP() {
   # plots ds results and stores it in folder
   gnuplot << EOF
     reset
+    # set title "Compression efficiency of datasets that belong to the $size group"
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_grp_$size/bench-plot-grp-$size.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
@@ -199,7 +202,7 @@ function PLOT_GRP() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Real time (seconds)"
+    set ylabel "Compression time"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
@@ -209,6 +212,7 @@ function PLOT_GRP_LOG() {
   # plots ds results and stores it in folder
   gnuplot << EOF
     reset
+    # set title "Compression efficiency of datasets that belong to the $size group"
     set logscale xy 2
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_grp_$size/bench-plot-grp-$size-log.pdf"
@@ -236,7 +240,7 @@ function PLOT_GRP_LOG() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Real time (seconds)"
+    set ylabel "Compression time"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF

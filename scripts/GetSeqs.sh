@@ -6,7 +6,7 @@ urls=(
     # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102205/TaeRenan_refseq_v2.1.fa" # 13.50GB
 
     # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102253/Coding_Sequences_AldGig_1.0.fa" # 4.45GB
-    # "https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz" # human reference genome # ~3GB
+    "https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz" # human reference genome # ~3GB
     # "https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz" # human reference genome # ~3GB
     # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102252/SI_Tiger_assembly.fasta" # 2.39GB
     # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102252/Bengal_Tiger_Machali.fasta" # 2.27GB
