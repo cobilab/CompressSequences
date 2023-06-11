@@ -91,7 +91,7 @@ LOAD_CSV_DSTOSIZE;
 #
 for size in "${sizes[@]}"; do
   if [[ "$*" == *"--size $size"* || "$*" == *"-s $size"* ]]; then
-    rm -fr $resultsPath/bench-results-raw-$size*;
+    rm -fr $resultsPath/bench-results-raw-$size*.txt;
     for gen in "${ALL_GENS_IN_DIR[@]}"; do
         if [[ "${dsToSize[$gen]}" == "$size" ]]; then
             GENOMES+=("$gen")
@@ -110,7 +110,6 @@ fi
 # ------------------------------------------------------------------------------
 #
 mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
-rm -fr $resultsPath/bench-results-raw*.txt;
 #
 run=0;
 for i in "${!GENOMES[@]}"; do
@@ -272,8 +271,6 @@ for i in "${!GENOMES[@]}"; do
     RUN_TEST "CMIX" "$genome.fa" "$genome.cmix" "$genome_cmix_out.fa" "${bin_path}cmix -n $genome.fa $genome.cmix" "${bin_path}cmix -d -r $genome.fa -t $genome.cmix -o $genome_cmix_out.fa" "$run"; run=$((run+1));
     #
     # ==============================================================================
-    #
-    printf "\n\n"
     #
 done
 # 
