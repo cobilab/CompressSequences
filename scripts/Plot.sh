@@ -9,13 +9,12 @@ sizes_bytes=(1048576 104857600 1073741824 10737418240 10737418240);
 #
 function CHECK_INPUT () {
   FILE=$1
-  if [ -f "$FILE" ];
-    then
+  if [ -f "$FILE" ]; then
     echo "Input filename: $FILE"
-    else
+  else
     echo -e "\e[31mERROR: input file not found ($FILE)!\e[0m";
     exit;
-    fi
+  fi
 }
 #
 # === FUNCTIONS TO PLOT EACH DS ===========================================================================
@@ -69,7 +68,10 @@ function SPLIT_DS_BY_COMPRESSOR() {
 }
 #
 function PLOT_DS() {
-  # plots ds results and stores it in folder
+  str_time="m";
+  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+    str_time="s";
+  fi
   gnuplot << EOF
     reset
     # set title "Compression efficiency of DS$gen_i"
@@ -99,14 +101,17 @@ function PLOT_DS() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Compression time"
+    set ylabel "Compression time ($str_time)"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
 }
 #
 function PLOT_DS_LOG() {
-  # plots ds results and stores it in folder
+  str_time="m";
+  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+    str_time="s";
+  fi
   gnuplot << EOF
     reset
     # set title "Compression efficiency of DS$gen_i"
@@ -137,7 +142,7 @@ function PLOT_DS_LOG() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Compression time"
+    set ylabel "Compression time ($str_time)"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
@@ -172,7 +177,46 @@ function SPLIT_GRP_BY_COMPRESSOR() {
 }
 #
 function PLOT_GRP() {
-  # plots ds results and stores it in folder
+
+    str_time="m";
+    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+      str_time="s";
+    fi
+
+    # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($4 ~ /^[0-9.]+$/) print $4}' $clean_grp) > tempX.txt
+    bps_Q1=$(awk 'NR==2{print $2}' "tempX.txt");
+    bps_Q3=$(awk 'NR==2{print $5}' "tempX.txt");
+
+    # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $clean_grp) > tempY.txt
+    bytesCF_Q1=$(awk 'NR==2{print $2}' "tempY.txt");
+    bytesCF_Q3=$(awk 'NR==2{print $5}' "tempY.txt");
+
+    # rm -fr tempX.txt tempY.txt;
+
+    # IQR (Inter Quartile Range) = Q3 - Q1
+    bps_IQR=$(echo "$bps_Q3-$bps_Q1" | bc);
+    bytesCF_IQR=$(echo "$bytesCF_Q3-$bytesCF_Q1" | bc);
+
+    # lower bound = Q1 – 1.5*IQR
+    bps_lowerBound=$(echo "$bps_Q1-1.5*$bps_IQR" | bc);
+    bytesCF_lowerBound=$(echo "$bytesCF_Q1-1.5*$bytesCF_IQR" | bc);
+
+    # upper bound = Q3 + 1.5*IQR
+    bps_upperBound=$(echo "$bps_Q3+1.5*$bps_IQR" | bc);
+    bytesCF_upperBound=$(echo "$bytesCF_Q3+1.5*$bytesCF_IQR" | bc);
+
+    cat tempX.txt;
+    # echo "bps IQR: $bps_IQR";
+    echo "bps lower bound: $bps_lowerBound";
+    echo "bps upper bound: $bps_upperBound";
+
+    cat tempY.txt;
+    # echo "bytesCF IQR: $bytesCF_IQR";
+    echo "bytesCF lower bound: $bytesCF_lowerBound";
+    echo "bytesCF upper bound: $bytesCF_upperBound";
+
   gnuplot << EOF
     reset
     # set title "Compression efficiency of datasets that belong to the $size group"
@@ -184,8 +228,8 @@ function PLOT_GRP() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [*:*]
-    set xrange [*:*]
+    set yrange [0:$bytesCF_upperBound]
+    set xrange [$bps_lowerBound:$bps_upperBound]
     set xtics auto
     set ytics auto 
     set key top right
@@ -202,14 +246,18 @@ function PLOT_GRP() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Compression time"
+    set ylabel "Compression time ($str_time)"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
 }
 #
 function PLOT_GRP_LOG() {
-  # plots ds results and stores it in folder
+  str_time="m";
+  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+    str_time="s";
+  fi
+
   gnuplot << EOF
     reset
     # set title "Compression efficiency of datasets that belong to the $size group"
@@ -240,7 +288,7 @@ function PLOT_GRP_LOG() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Compression time"
+    set ylabel "Compression time ($str_time)"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
