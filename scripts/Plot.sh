@@ -29,18 +29,14 @@ function LOAD_CSV_DSTOSIZE() {
 }
 #
 function GET_STATS() {
-    str_time="m";
-    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-      str_time="s";
-    fi
 
     # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($4 ~ /^[0-9.]+$/) print $4}' $clean_grp) > tempX.txt
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($4 ~ /^[0-9.]+$/) print $4}' $csvFile) > tempX.txt
     bps_Q1=$(awk 'NR==2{print $2}' "tempX.txt");
     bps_Q3=$(awk 'NR==2{print $5}' "tempX.txt");
 
     # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $clean_grp) > tempY.txt
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $csvFile) > tempY.txt
     bytesCF_Q1=$(awk 'NR==2{print $2}' "tempY.txt");
     bytesCF_Q3=$(awk 'NR==2{print $5}' "tempY.txt");
 
@@ -331,6 +327,8 @@ for clean_grp in ${clean_grps[@]}; do
     if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
       str_time="s";
     fi
+
+    csvFile=$clean_grp;
 
     SPLIT_GRP_BY_COMPRESSOR;
     GET_STATS;
