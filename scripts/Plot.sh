@@ -7,6 +7,8 @@ sizes=("xs" "s" "m" "l" "xl");
 csv_dsToSize="dsToSize.csv";
 declare -A dsToSize;
 #
+clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
+#
 # ==============================================================================
 #
 function CHECK_INPUT () {
@@ -69,26 +71,32 @@ function GET_STATS() {
 #
 function SPLIT_BENCH_RESULTS_BY_DS() {
   # read the input file
-  input_file="$resultsPath/bench-results.csv"
   file_prefix="$resultsPath/bench-results-"
 
   # remove datasets before recreating them
   rm -fr ${file_prefix}DS*.csv
 
-  while IFS= read -r line; do
-    # check if the line contains a dataset name
-    if [[ $line == DS* ]]; then
-      # create a new output file for the dataset
-      dataset_name=$(echo "$line" | cut -d" " -f1)
-      output_file="${file_prefix}$dataset_name.csv"
-      echo "$line" > "$output_file"
-    else
-      # append the line to the current dataset's file
-      echo "$line" >> "$output_file"
-    fi
-  done < "$input_file"
+  ds_i=0;
+  for input_file in ${clean_bench_grps[@]}; do
+    while IFS= read -r line; do
+      # check if the line contains a dataset name
+      if [[ $line == DS* ]]; then
+        # create a new output file for the dataset
+        dsX="DS$((++ds_i))" # $(echo "$line" | cut -d" " -f1)
+        output_file="${file_prefix}$dsX.csv"
+        DSX_line=$(echo "$line" | sed -E "s/DS[0-9]+/$dsX/g")
+        echo "$DSX_line" > "$output_file"
+      else
+        # append the line to the current dataset's file
+        echo "$line" >> "$output_file"
+      fi
+    done < "$input_file"
+  done 
 
-  num_gens=$(($(echo "$dataset_name" | sed 's/ds//gi')))
+  num_gens=$(($(echo "$dsX" | sed 's/ds//gi')))
+
+
+  echo "POSENTOERNOICSROGOCBGOIRWBOS $num_gens"
 }
 #
 function SPLIT_DS_BY_COMPRESSOR() {
@@ -317,9 +325,7 @@ done
 #
 # === PLOT EACH GROUP OF DS BY SIZE ===========================================================================
 #
-clean_grps=( $(find $resultsPath -maxdepth 1 -type f -name "*-grp-*") );
-
-for clean_grp in ${clean_grps[@]}; do
+for clean_grp in ${clean_bench_grps[@]}; do
     suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"
     size="${suffix%%.*}";            # remove everything after the first dot
 
