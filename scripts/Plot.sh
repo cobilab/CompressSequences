@@ -3,7 +3,9 @@
 resultsPath="../results";
 #
 sizes=("xs" "s" "m" "l" "xl");
-sizes_bytes=(1048576 104857600 1073741824 10737418240 10737418240);
+#
+csv_dsToSize="dsToSize.csv";
+declare -A dsToSize;
 #
 # ==============================================================================
 #
@@ -15,6 +17,56 @@ function CHECK_INPUT () {
     echo -e "\e[31mERROR: input file not found ($FILE)!\e[0m";
     exit;
   fi
+}
+#
+function LOAD_CSV_DSTOSIZE() {
+  while IFS=, read -r ds bytes size; do
+    # Skip the header line
+    if [[ "$ds" != "ds" ]]; then
+      dsToSize[$ds]=$size;
+    fi
+  done < $csv_dsToSize;
+}
+#
+function GET_STATS() {
+    str_time="m";
+    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+      str_time="s";
+    fi
+
+    # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($4 ~ /^[0-9.]+$/) print $4}' $clean_grp) > tempX.txt
+    bps_Q1=$(awk 'NR==2{print $2}' "tempX.txt");
+    bps_Q3=$(awk 'NR==2{print $5}' "tempX.txt");
+
+    # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $clean_grp) > tempY.txt
+    bytesCF_Q1=$(awk 'NR==2{print $2}' "tempY.txt");
+    bytesCF_Q3=$(awk 'NR==2{print $5}' "tempY.txt");
+
+    # IQR (Inter Quartile Range) = Q3 - Q1
+    bps_IQR=$(echo "$bps_Q3-$bps_Q1" | bc);
+    bytesCF_IQR=$(echo "$bytesCF_Q3-$bytesCF_Q1" | bc);
+
+    # lower bound = Q1 – 1.5*IQR
+    bps_lowerBound=$(echo "$bps_Q1-1.5*$bps_IQR" | bc);
+    bytesCF_lowerBound=$(echo "$bytesCF_Q1-1.5*$bytesCF_IQR" | bc);
+
+    # upper bound = Q3 + 1.5*IQR
+    bps_upperBound=$(echo "$bps_Q3+1.5*$bps_IQR" | bc);
+    bytesCF_upperBound=$(echo "$bytesCF_Q3+1.5*$bytesCF_IQR" | bc);
+
+    cat tempX.txt;
+    # printf "bps IQR: $bps_IQR";
+    printf "bps lower bound: $bps_lowerBound \n";
+    printf "bps upper bound: $bps_upperBound \n";
+
+    cat tempY.txt;
+    # printf "bytesCF IQR: $bytesCF_IQR";
+    printf "bytesCF lower bound: $bytesCF_lowerBound \n";
+    printf "bytesCF upper bound: $bytesCF_upperBound \n\n";
+
+    # rm -fr tempX.txt tempY.txt;
 }
 #
 # === FUNCTIONS TO PLOT EACH DS ===========================================================================
@@ -68,13 +120,9 @@ function SPLIT_DS_BY_COMPRESSOR() {
 }
 #
 function PLOT_DS() {
-  str_time="m";
-  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-    str_time="s";
-  fi
   gnuplot << EOF
     reset
-    # set title "Compression efficiency of DS$gen_i"
+    set title "Compression efficiency of DS$gen_i - $genome"
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
@@ -108,13 +156,9 @@ EOF
 }
 #
 function PLOT_DS_LOG() {
-  str_time="m";
-  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-    str_time="s";
-  fi
   gnuplot << EOF
     reset
-    # set title "Compression efficiency of DS$gen_i"
+    set title "Compression efficiency of DS$gen_i - $genome (log scale)"
     set logscale xy 2
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i-log.pdf"
@@ -177,49 +221,9 @@ function SPLIT_GRP_BY_COMPRESSOR() {
 }
 #
 function PLOT_GRP() {
-
-    str_time="m";
-    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-      str_time="s";
-    fi
-
-    # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($4 ~ /^[0-9.]+$/) print $4}' $clean_grp) > tempX.txt
-    bps_Q1=$(awk 'NR==2{print $2}' "tempX.txt");
-    bps_Q3=$(awk 'NR==2{print $5}' "tempX.txt");
-
-    # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $clean_grp) > tempY.txt
-    bytesCF_Q1=$(awk 'NR==2{print $2}' "tempY.txt");
-    bytesCF_Q3=$(awk 'NR==2{print $5}' "tempY.txt");
-
-    # rm -fr tempX.txt tempY.txt;
-
-    # IQR (Inter Quartile Range) = Q3 - Q1
-    bps_IQR=$(echo "$bps_Q3-$bps_Q1" | bc);
-    bytesCF_IQR=$(echo "$bytesCF_Q3-$bytesCF_Q1" | bc);
-
-    # lower bound = Q1 – 1.5*IQR
-    bps_lowerBound=$(echo "$bps_Q1-1.5*$bps_IQR" | bc);
-    bytesCF_lowerBound=$(echo "$bytesCF_Q1-1.5*$bytesCF_IQR" | bc);
-
-    # upper bound = Q3 + 1.5*IQR
-    bps_upperBound=$(echo "$bps_Q3+1.5*$bps_IQR" | bc);
-    bytesCF_upperBound=$(echo "$bytesCF_Q3+1.5*$bytesCF_IQR" | bc);
-
-    cat tempX.txt;
-    # echo "bps IQR: $bps_IQR";
-    echo "bps lower bound: $bps_lowerBound";
-    echo "bps upper bound: $bps_upperBound";
-
-    cat tempY.txt;
-    # echo "bytesCF IQR: $bytesCF_IQR";
-    echo "bytesCF lower bound: $bytesCF_lowerBound";
-    echo "bytesCF upper bound: $bytesCF_upperBound";
-
   gnuplot << EOF
     reset
-    # set title "Compression efficiency of datasets that belong to the $size group"
+    set title "Compression efficiency of sequences from group $size"
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_grp_$size/bench-plot-grp-$size.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
@@ -253,14 +257,9 @@ EOF
 }
 #
 function PLOT_GRP_LOG() {
-  str_time="m";
-  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-    str_time="s";
-  fi
-
   gnuplot << EOF
     reset
-    # set title "Compression efficiency of datasets that belong to the $size group"
+    set title "Compression efficiency of sequences from group $size (log scale)"
     set logscale xy 2
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$resultsPath/split_grp_$size/bench-plot-grp-$size-log.pdf"
@@ -270,8 +269,8 @@ function PLOT_GRP_LOG() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [*:*]
-    set xrange [*:*]
+    set yrange [0:$bytesCF_upperBound]
+    set xrange [$bps_lowerBound:$bps_upperBound]
     set xtics auto
     set ytics auto 
     set key top right
@@ -298,8 +297,20 @@ EOF
 #
 SPLIT_BENCH_RESULTS_BY_DS;
 
+LOAD_CSV_DSTOSIZE;
+genomes=( $(awk -F',' 'NR>1 {print $1}' dsToSize.csv));
+
 gen_i=1;
 while (( gen_i <= num_gens )); do
+  genome="${genomes[$((gen_i-1))]}"
+  size="${dsToSize[$genome]}"
+
+  genome="${genome//_/ }"
+
+  str_time="m";
+  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+    str_time="s";
+  fi
 
   SPLIT_DS_BY_COMPRESSOR;
   PLOT_DS;
@@ -316,7 +327,13 @@ for clean_grp in ${clean_grps[@]}; do
     suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"
     size="${suffix%%.*}";            # remove everything after the first dot
 
+    str_time="m";
+    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+      str_time="s";
+    fi
+
     SPLIT_GRP_BY_COMPRESSOR;
+    GET_STATS;
     PLOT_GRP;
     PLOT_GRP_LOG;
 done
