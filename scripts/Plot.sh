@@ -74,7 +74,7 @@ function SPLIT_BENCH_RESULTS_BY_DS() {
   file_prefix="$resultsPath/bench-results-"
 
   # remove datasets before recreating them
-  rm -fr ${file_prefix}DS*.csv
+  rm -fr ${file_prefix}DS*-*.csv
 
   ds_i=0;
   for input_file in ${clean_bench_grps[@]}; do
@@ -82,10 +82,12 @@ function SPLIT_BENCH_RESULTS_BY_DS() {
       # check if the line contains a dataset name
       if [[ $line == DS* ]]; then
         # create a new output file for the dataset
-        dsX="DS$((++ds_i))" # $(echo "$line" | cut -d" " -f1)
-        output_file="${file_prefix}$dsX.csv"
-        DSX_line=$(echo "$line" | sed -E "s/DS[0-9]+/$dsX/g")
-        echo "$DSX_line" > "$output_file"
+        dsX=$(echo "$line" | cut -d" " -f1)
+        size=$(echo "$line" | cut -d" " -f5)
+
+        output_file="${file_prefix}$dsX-$size.csv"
+        
+        echo "$line" > "$output_file"
       else
         # append the line to the current dataset's file
         echo "$line" >> "$output_file"
@@ -93,29 +95,26 @@ function SPLIT_BENCH_RESULTS_BY_DS() {
     done < "$input_file"
   done 
 
-  num_gens=$(($(echo "$dsX" | sed 's/ds//gi')))
-
-
-  echo "POSENTOERNOICSROGOCBGOIRWBOS $num_gens"
+  num_gens=$(($(echo "$dsX" | sed 's/ds//gi')));
 }
 #
 function SPLIT_DS_BY_COMPRESSOR() {
   # recreate ds folder
-  rm -fr $resultsPath/split_ds$gen_i;
-  mkdir -p $resultsPath/split_ds$gen_i;
+  rm -fr "$resultsPath/split_ds${gen_i}_${size}";
+  mkdir -p "$resultsPath/split_ds${gen_i}_${size}";
 
-  CHECK_INPUT "$resultsPath/bench-results-DS$gen_i.csv";
+  CHECK_INPUT "$resultsPath/bench-results-DS${gen_i}-${size}.csv";
   # create names.txt inside each ds folder; it contains all compressor names only, hence the exclusion of DS* and PROGRAM
-  cat $resultsPath/bench-results-DS$gen_i.csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > $resultsPath/split_ds$gen_i/names_ds$gen_i.txt;
-  CHECK_INPUT "$resultsPath/split_ds$gen_i/names_ds$gen_i.txt";
+  cat $resultsPath/bench-results-DS${gen_i}-${size}.csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > "$resultsPath/split_ds${gen_i}_${size}/names_ds$gen_i.txt";
+  CHECK_INPUT "$resultsPath/split_ds${gen_i}_${size}/names_ds$gen_i.txt";
 
   # splits ds into subdatasets by compressor and store them in folder
   c_i=1;
   plotnames="";
-  mapfile -t INT_DATA < $resultsPath/split_ds$gen_i/names_ds$gen_i.txt;
+  mapfile -t INT_DATA < "$resultsPath/split_ds${gen_i}_${size}/names_ds$gen_i.txt";
   for dint in "${INT_DATA[@]}"; do
-    grep $dint $resultsPath/bench-results-DS$gen_i.csv > $resultsPath/split_ds$gen_i/bench-results-DS$gen_i-c$c_i.csv
-    tmp="'$resultsPath/split_ds$gen_i/bench-results-DS$gen_i-c$c_i.csv' u 4:5 w points ls $c_i title '$dint', ";
+    grep $dint "$resultsPath/bench-results-DS${gen_i}-${size}.csv" > "$resultsPath/split_ds${gen_i}_${size}/bench-results-DS$gen_i-c$c_i.csv"
+    tmp="'$resultsPath/split_ds${gen_i}_${size}/bench-results-DS$gen_i-c$c_i.csv' u 4:5 w points ls $c_i title '$dint', ";
     plotnames="$plotnames $tmp";
     ((++c_i));
   done
@@ -126,9 +125,9 @@ function SPLIT_DS_BY_COMPRESSOR() {
 function PLOT_DS() {
   gnuplot << EOF
     reset
-    set title "Compression efficiency of DS$gen_i - $genome"
+    set title "$Compression efficiency of $str_genome"
     set terminal pdfcairo enhanced color font 'Verdade,12'
-    set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i.pdf"
+    set output "$resultsPath/split_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
     set border 3 front ls 101
     # set tics nomirror out scale 0.01
@@ -162,10 +161,10 @@ EOF
 function PLOT_DS_LOG() {
   gnuplot << EOF
     reset
-    set title "Compression efficiency of DS$gen_i - $genome (log scale)"
+    set title "Compression efficiency of $str_genome (log scale)"
     set logscale xy 2
     set terminal pdfcairo enhanced color font 'Verdade,12'
-    set output "$resultsPath/split_ds$gen_i/bench-plot-ds$gen_i-log.pdf"
+    set output "$resultsPath/split_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size-log.pdf"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
     set border 3 front ls 101
     # set tics nomirror out scale 0.01
@@ -299,28 +298,26 @@ EOF
 #
 # === PLOT EACH DS ===========================================================================
 #
+LOAD_CSV_DSTOSIZE;
+
 SPLIT_BENCH_RESULTS_BY_DS;
 
-LOAD_CSV_DSTOSIZE;
-genomes=( $(awk -F',' 'NR>1 {print $1}' dsToSize.csv));
-
-gen_i=1;
-while (( gen_i <= num_gens )); do
-  genome="${genomes[$((gen_i-1))]}"
-  size="${dsToSize[$genome]}"
-
-  genome="${genome//_/ }"
+clean_bench_dss=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-DS*-*" | sort -t ' ' -k2n) );
+for clean_ds in ${clean_bench_dss[@]}; do
+  header=$(head -n 1 "$clean_ds")
+  IFS=' - ' read -r DSX genome size <<< "$header" # split the header into variables
 
   str_time="m";
   if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
     str_time="s";
   fi
 
+  gen_i=${DSX#DS};
+  str_genome=${genome//_/ }
+
   SPLIT_DS_BY_COMPRESSOR;
   PLOT_DS;
   PLOT_DS_LOG;
-
-  (( gen_i++ ))
 done
 #
 # === PLOT EACH GROUP OF DS BY SIZE ===========================================================================

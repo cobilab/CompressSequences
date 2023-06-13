@@ -13,7 +13,8 @@ function FILTER_INNACURATE_DATA() {
   done
 
   # new results may have size grps different from previous grps, so old results are removed
-  rm -fr *grp*
+  rm -fr "$resultsPath/*grp*"
+  rm -fr "$resultsPath/split*"
 
   # remove tests that failed to compress the sequence
   for i in ${!rawGrps[@]}; do
