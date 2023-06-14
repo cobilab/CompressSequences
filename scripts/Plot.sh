@@ -99,22 +99,27 @@ function SPLIT_BENCH_RESULTS_BY_DS() {
 }
 #
 function SPLIT_DS_BY_COMPRESSOR() {
-  # recreate ds folder
-  rm -fr "$resultsPath/split_ds${gen_i}_${size}";
-  mkdir -p "$resultsPath/split_ds${gen_i}_${size}";
+  plots_folder="$resultsPath/split_ds${gen_i}_${size}";
+  bench_res_csv="$resultsPath/bench-results-DS${gen_i}-${size}.csv";
+  compressor_names="$plots_folder/names_ds$gen_i.txt";
 
-  CHECK_INPUT "$resultsPath/bench-results-DS${gen_i}-${size}.csv";
+  # recreate ds folder
+  rm -fr "$plots_folder";
+  mkdir -p "$plots_folder";
+
+  CHECK_INPUT "$bench_res_csv";
   # create names.txt inside each ds folder; it contains all compressor names only, hence the exclusion of DS* and PROGRAM
-  cat $resultsPath/bench-results-DS${gen_i}-${size}.csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > "$resultsPath/split_ds${gen_i}_${size}/names_ds$gen_i.txt";
-  CHECK_INPUT "$resultsPath/split_ds${gen_i}_${size}/names_ds$gen_i.txt";
+  cat $bench_res_csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > "$compressor_names";
+  CHECK_INPUT "$compressor_names";
 
   # splits ds into subdatasets by compressor and store them in folder
   c_i=1;
   plotnames="";
-  mapfile -t INT_DATA < "$resultsPath/split_ds${gen_i}_${size}/names_ds$gen_i.txt";
+  mapfile -t INT_DATA < "$compressor_names";
   for dint in "${INT_DATA[@]}"; do
-    grep $dint "$resultsPath/bench-results-DS${gen_i}-${size}.csv" > "$resultsPath/split_ds${gen_i}_${size}/bench-results-DS$gen_i-c$c_i.csv"
-    tmp="'$resultsPath/split_ds${gen_i}_${size}/bench-results-DS$gen_i-c$c_i.csv' u 4:5 w points ls $c_i title '$dint', ";
+    compressor_csv="$plots_folder/bench-results-DS$gen_i-c$c_i.csv";
+    grep $dint "$bench_res_csv" > "$compressor_csv"
+    tmp="'$compressor_csv' u 4:5 w points ls $c_i title '$dint', ";
     plotnames="$plotnames $tmp";
     ((++c_i));
   done
@@ -198,23 +203,28 @@ EOF
 # === FUNCTIONS TO PLOT EACH DS GRP ===========================================================================
 #
 function SPLIT_GRP_BY_COMPRESSOR() {
-  # recreate grp folder
-  rm -fr $resultsPath/split_grp_$size;
-  mkdir -p $resultsPath/split_grp_$size;
+  plots_folder="$resultsPath/split_grp_$size";
+  bench_res_csv="$resultsPath/bench-results-grp-$size.csv";
+  compressor_names="$plots_folder/names_grp_$size.txt";
 
-  CHECK_INPUT "$resultsPath/bench-results-grp-$size.csv";
+  # recreate grp folder
+  rm -fr $plots_folder;
+  mkdir -p $plots_folder;
+
+  CHECK_INPUT "$bench_res_csv";
   # create names.txt inside each ds folder; it contains all compressor names
-  cat $resultsPath/bench-results-grp-$size.csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > $resultsPath/split_grp_$size/names_grp_$size.txt;
-  CHECK_INPUT "$resultsPath/split_grp_$size/names_grp_$size.txt";
+  cat $bench_res_csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > "$compressor_names";
+  CHECK_INPUT "$compressor_names";
 
   # splits ds into subdatasets by compressor and store them in folder
   c_i=1;
   plotnames="";
-  mapfile -t INT_DATA < $resultsPath/split_grp_$size/names_grp_$size.txt;
+  mapfile -t INT_DATA < "$compressor_names";
   for dint in "${INT_DATA[@]}"; do
     if [[ $dint != PROGRAM && $dint != DS* ]]; then
-      grep $dint $resultsPath/bench-results-grp-$size.csv > $resultsPath/split_grp_$size/bench-results-grp-$size-c$c_i.csv
-      tmp="'$resultsPath/split_grp_$size/bench-results-grp-$size-c$c_i.csv' u 4:5 w points ls $c_i title '$dint', ";
+      compressor_csv="$plots_folder/bench-results-grp-$size-c$c_i.csv";
+      grep $dint $bench_res_csv > "$compressor_csv";
+      tmp="'$compressor_csv' u 4:5 w points ls $c_i title '$dint', ";
       plotnames="$plotnames $tmp";
       ((++c_i));
     fi
