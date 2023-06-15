@@ -4,8 +4,8 @@
 #
 resultsPath="../results";
 bin_path="../bin/";
-csv_dsToSize="dsToSize.csv";
 #
+csv_dsToSize="dsToSize.csv";
 declare -A dsToSize;
 
 sizes=("xs" "s" "m" "l" "xl"); # to be able to filter genomes to run by size 
@@ -78,9 +78,9 @@ function RUN_TEST() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$BYTES_CF\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\n" | tee -a $resultsPath/bench-results-raw-$size.txt;
+  printf "$NAME\t$BYTES\t$BYTES_CF\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\n" |tee -a "$output_file_grp";
   #
-  rm -fr c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
+  rm -fr "$FILEC" "$FILED" c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
 }
 #
 # === MAIN ===========================================================================
@@ -89,18 +89,23 @@ LOAD_CSV_DSTOSIZE;
 #
 # --- FILTER GENOME ARR BY CHOOSEN SIZE ---------------------------------------------------------------------------
 #
+
+# if one or more sizes are choosen, select genomes with those sizes
 for size in "${sizes[@]}"; do
+  output_file_grp="$resultsPath/bench-results-raw-$size.txt";
   if [[ "$*" == *"--size $size"* || "$*" == *"-s $size"* ]]; then
-    rm -fr $resultsPath/bench-results-raw-$size*.txt;
+    rm -fr "$output_file_grp";
     for gen in "${ALL_GENS_IN_DIR[@]}"; do
         if [[ "${dsToSize[$gen]}" == "$size" ]]; then
-            GENOMES+=("$gen")
+            GENOMES+=("$gen");
         fi
     done
+  else
+    rm -fr $resultsPath/bench-results-raw*.txt;
   fi
 done
 #
-# if no size was choosen, all genomes will be selected
+# if nothing is choosen, all genomes will be selected
 if [ ${#GENOMES[@]} -eq 0 ]; then
     for gen in ${ALL_GENS_IN_DIR[@]}; do
         GENOMES+=($gen);
@@ -112,25 +117,26 @@ fi
 mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
 #
 run=0;
-for i in "${!GENOMES[@]}"; do
+for genome in "${GENOMES[@]}"; do
     #
     # before running the tests, determine size type of sequence to know: 
     # - the number of times each test should be executed (maybe); 
     # - whether c/d time should be in ms, s, m,...
     #
-    genome="${GENOMES[$i]}";
+    ds_id=$(($(grep -n "$genome" dsToSize.csv | cut -d ":" -f 1)-1))
     size=${dsToSize[$genome]};
     # num_runs_to_repeat=1;
     dividendo=60; str_time="m"; # bigger files => slower tests => time measured in minutes
-    #
     if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
       # num_runs_to_repeat=10;
       dividendo=1; str_time="s";
     fi
     #
+    output_file_grp="$resultsPath/bench-results-raw-$size.txt";
+    #
     # --- RUN GENOME TESTS ---------------------------------------------------------------------------
     #
-    printf "DS$(($i+1)) - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a $resultsPath/bench-results-raw-$size.txt;
+    printf "DS$ds_id - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a "$output_file_grp";
     #
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
         # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));
@@ -231,25 +237,27 @@ for i in "${!GENOMES[@]}"; do
     RUN_TEST "JARVIS3_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS3 -v -l 25 $genome.seq" "${bin_path}JARVIS3 -d $genome.seq.jc" "$run"; run=$((run+1));
     RUN_TEST "JARVIS3_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS3 -v -l 27 $genome.seq" "${bin_path}JARVIS3 -d $genome.seq.jc" "$run"; run=$((run+1));
     #
-    # JARVIS2.sh and JARVIS3.sh were developed to run on larger sequences
+    # JARVIS2/3.sh were developed to run on larger sequences
     if [ "$size" = "l" ] || [ "$size" = "xl" ]; then 
-      cp ../bin/* . # necessary to run JARVIS2.sh and JARVIS3.sh
-      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "$./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
-      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "$./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
-      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "$./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 150MB --threads 6 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 6 --dna --input $genome.seq.tar" "$((run+=1))"
-      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "$./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 100MB --threads 8 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 8 --dna --input $genome.seq.tar" "$((run+=1))"
+      # necessary to run JARVIS2/3.sh
+      cp ../bin/bbb ../bin/bzip2 ../bin/*Fast* ../bin/XScore* ../bin/JARVIS* . 
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 150MB --threads 6 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 6 --dna --input $genome.seq.tar" "$((run+=1))"
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 100MB --threads 8 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 8 --dna --input $genome.seq.tar" "$((run+=1))"
       #
       # note: JARVIS3.sh can compress but cannot decompress
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh --block 16MB --threads 8 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 1 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 5 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 10 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 15 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 20 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 25 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 27 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      # for now jarvis3_bin is used to decompress
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh --block 16MB --threads 8 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 1 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 5 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 10 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 15 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 20 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 25 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 27 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
       # remove all stuff copied from bin which was necessary to run JARVIS2/3.sh
-      find . -maxdepth 1 ! -name "*.*" -type f -delete && rm -fr JARVIS2.sh JARVIS3.sh v0.2.1.tar.gz
+      rm -fr bbb bzip2 *Fast* XScore* JARVIS*
     fi
     #
     RUN_TEST "LZMA" "$genome.seq.orig" "$genome.seq.orig.lzma" "$genome.seq.orig" "lzma -9 -f -k $genome.seq.orig" "lzma -f -k -d $genome.seq.orig.lzma" "$run"; run=$((run+1));
