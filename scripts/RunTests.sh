@@ -36,6 +36,9 @@ function RUN_TEST() {
   D_COMMAND="$6";
   nrun="$7";
   #
+  stdErrC="stderrC_ds${ds_id}_$size.txt";
+  stdErrD="stderrD_ds${ds_id}_$size.txt";
+  #
   # some compressors need extra preprocessing
   if [[ $NAME == MFC* || $NAME == DMcompress* ]]; then 
     echo ">x" > $IN_FILE;
@@ -53,7 +56,7 @@ function RUN_TEST() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND \
   |& grep "TIME" \
   |& tr '.' ',' \
-  |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
+  |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> c_time_mem.txt 2> $stdErrC;
   if [ -e "$FILEC" ]; then
     BYTES_CF=`ls -la $FILEC | awk '{ print $5 }'`;
     BPS=$(echo "scale=3; $BYTES_CF*8 / $BYTES" | bc);
@@ -65,7 +68,7 @@ function RUN_TEST() {
   /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND \
   |& grep "TIME" \
   |& tr '.' ',' \
-  |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
+  |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> d_time_mem.txt 2> $stdErrD;
   #
   # compare input file to decompressed file; they should have the same sequence
   diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
@@ -78,45 +81,49 @@ function RUN_TEST() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$BYTES_CF\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\n" |tee -a "$output_file_grp";
+  printf "$NAME\t$BYTES\t$BYTES_CF\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\n";
   #
-  rm -fr "$FILEC" "$FILED" c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
+  if [ ! -s $stdErrC ]; then rm -fr $stdErrC; fi
+  if [ ! -s $stdErrD ]; then rm -fr $stdErrD; fi
+  #
+  rm -fr $FILEC $FILED c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
+  #
 }
 #
 # === MAIN ===========================================================================
 #
 LOAD_CSV_DSTOSIZE;
-#
-# --- FILTER GENOME ARR BY CHOOSEN SIZE ---------------------------------------------------------------------------
-#
 
-# if one or more sizes are choosen, select genomes with those sizes
+mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
+
+# if one or more sizes are choosen, select all genomes with those sizes
 for size in "${sizes[@]}"; do
-  output_file_grp="$resultsPath/bench-results-raw-$size.txt";
   if [[ "$*" == *"--size $size"* || "$*" == *"-s $size"* ]]; then
-    rm -fr "$output_file_grp";
     for gen in "${ALL_GENS_IN_DIR[@]}"; do
         if [[ "${dsToSize[$gen]}" == "$size" ]]; then
             GENOMES+=("$gen");
         fi
     done
-  else
-    rm -fr $resultsPath/bench-results-raw*.txt;
   fi
 done
+
+# if one or more gens are choosen, add them to array if they aren't there yet
+for gen in "${ALL_GENS_IN_DIR[@]}"; do
+  if [[ "$*" == *"--genome $gen"* || "$*" == *"-g $gen"* ]]; then
+    if ! echo "${GENOMES[@]}" | grep -q -w "$gen"; then
+      GENOMES+=("$gen");
+    fi
+  fi
+done
+
 #
 # if nothing is choosen, all genomes will be selected
 if [ ${#GENOMES[@]} -eq 0 ]; then
-    for gen in ${ALL_GENS_IN_DIR[@]}; do
-        GENOMES+=($gen);
-    done
+  GENOMES=("${ALL_GENS_IN_DIR[@]}");
 fi
 #
 # ------------------------------------------------------------------------------
 #
-mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
-#
-run=0;
 for genome in "${GENOMES[@]}"; do
     #
     # before running the tests, determine size type of sequence to know: 
@@ -132,11 +139,12 @@ for genome in "${GENOMES[@]}"; do
       dividendo=1; str_time="s";
     fi
     #
-    output_file_grp="$resultsPath/bench-results-raw-$size.txt";
+    output_file_ds="$resultsPath/bench-results-raw-ds${ds_id}-${size}.txt";
+    run=0;
     #
     # --- RUN GENOME TESTS ---------------------------------------------------------------------------
     #
-    printf "DS$ds_id - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n" | tee -a "$output_file_grp";
+    printf "DS$ds_id - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n";
     #
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
         # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));
