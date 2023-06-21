@@ -4,5 +4,6 @@ results/*
 
 # Except these
 !scripts/*.sh
-!scripts/dsToSize.csv
-!results/bench-results.csv
+
+# Except except these
+scripts/*Optim*.sh

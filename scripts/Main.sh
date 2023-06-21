@@ -2,9 +2,9 @@
 #
 ./CleanCandDfiles.sh # optional but recommended
 ./Install_Tools.sh
-./GetSeqs.sh
+./GetGens.sh
 ./CategorizeSeqBySize.sh
-./RunSeqs.sh 1> ../results/bench-results-raw.txt 2> sterr.txt  # ./RunSeqs.sh --size [xs|s|m|l|xl]
+./RunTestsExample.sh
 ./SaveBenchAsTex.sh # optional 
 ./ProcessRawBench.sh
 ./Plot.sh

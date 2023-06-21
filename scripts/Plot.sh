@@ -86,8 +86,7 @@ function SPLIT_FILE_BY_COMPRESSOR() {
   echo -e "${plotnames//, /\\n}";
 }
 #
-function GET_STATS() {
-
+function GET_PLOT_BOUNDS() {
     # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
     Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($4 ~ /^[0-9.]+$/) print $4}' $csvFile) > tempX.txt
     bps_Q1=$(awk 'NR==2{print $2}' "tempX.txt");
@@ -109,6 +108,23 @@ function GET_STATS() {
     # upper bound = Q3 + 1.5*IQR
     bps_upperBound=$(echo "$bps_Q3+1.5*$bps_IQR" | bc);
     bytesCF_upperBound=$(echo "$bytesCF_Q3+1.5*$bytesCF_IQR" | bc);
+
+    if (( $(echo "$bps_lowerBound < 0" | bc -l) )); then
+      bps_upperBound=-0.1;
+    fi
+
+    if (( $(echo "$bps_upperBound > 2.5" | bc -l) )); then
+      bps_upperBound=2.5;
+    fi
+
+    if (( $(echo "$bytesCF_lowerBound < 0" | bc -l) )); then
+      bytesCF_lowerBound=-0.1;
+    fi
+
+    if (( $(echo "$bytesCF_IQR < 1" | bc -l) )); then
+      bytesCF_lowerBound="*";
+      bytesCF_upperBound="*";
+    fi
 
     cat tempX.txt;
     # printf "bps IQR: $bps_IQR";
@@ -217,19 +233,19 @@ for clean_ds in ${clean_bench_dss[@]}; do
 
   csvFile=$clean_ds;
 
-  plots_folder="$resultsPath/split_ds${gen_i}_${size}";
+  plots_folder="$resultsPath/plot_ds${gen_i}_${size}";
   bench_res_csv="$resultsPath/bench-results-DS${gen_i}-${size}.csv";
   compressor_names="$plots_folder/names_ds$gen_i.txt";
   compressor_csv_prefix="$plots_folder/bench-results-DS$gen_i-c";
 
-  plot_file="$resultsPath/split_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size.pdf";
-  plot_file_log="$resultsPath/split_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size-log.pdf";
+  plot_file="$resultsPath/plot_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size.pdf";
+  plot_file_log="$resultsPath/plot_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size-log.pdf";
 
   plot_title="Compression efficiency of $str_genome";
   plot_title_log="Compression efficiency of $str_genome (log scale)";
 
   SPLIT_FILE_BY_COMPRESSOR;
-  GET_STATS;
+  GET_PLOT_BOUNDS;
   PLOT;
   PLOT_LOG;
 done
@@ -247,19 +263,19 @@ for clean_grp in ${clean_bench_grps[@]}; do
 
     csvFile=$clean_grp;
 
-    plots_folder="$resultsPath/split_grp_$size";
+    plots_folder="$resultsPath/plot_grp_$size";
     bench_res_csv="$resultsPath/bench-results-grp-$size.csv";
     compressor_names="$plots_folder/names_grp_$size.txt";
     compressor_csv_prefix="$plots_folder/bench-results-grp-$size-c";
 
-    plot_file="$resultsPath/split_grp_$size/bench-plot-grp-$size.pdf";
-    plot_file_log="$resultsPath/split_grp_$size/bench-plot-grp-$size-log.pdf";
+    plot_file="$resultsPath/plot_grp_$size/bench-plot-grp-$size.pdf";
+    plot_file_log="$resultsPath/plot_grp_$size/bench-plot-grp-$size-log.pdf";
 
     plot_title="Compression efficiency of sequences from group $size";
     plot_title_log="Compression efficiency of sequences from group $size (log scale)";
 
     SPLIT_FILE_BY_COMPRESSOR;
-    GET_STATS;
+    GET_PLOT_BOUNDS;
     PLOT;
     PLOT_LOG;
 done

@@ -86,7 +86,8 @@ function RUN_TEST() {
   if [ ! -s $stdErrC ]; then rm -fr $stdErrC; fi
   if [ ! -s $stdErrD ]; then rm -fr $stdErrD; fi
   #
-  rm -fr $FILEC $FILED c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
+  rm -fr c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
+  ./CleanCandDfiles.sh;
   #
 }
 #
