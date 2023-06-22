@@ -108,7 +108,7 @@ for rawFile in "${rawFiles[@]}"; do
 
     seqFile=$(echo $rawFile | sed 's/_raw.fa/.seq/g'); # replaces .fa with .seq
     if [[ ! -f $genomesPath/$seqFile ]]; then   
-        cat "$genomesPath/$rawFile" | grep -v ">" | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
+        cat "$genomesPath/$rawFile" | grep -v ">" | tr 'agct' 'AGCT' | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
         echo "$seqFile created with success"
     else
         echo "$seqFile has been previously created"
