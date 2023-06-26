@@ -97,6 +97,9 @@ LOAD_CSV_DSTOSIZE;
 
 mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
 
+# Initialize variables
+timeOut=10;
+
 # if one or more sizes are choosen, select all genomes with those sizes
 for size in "${sizes[@]}"; do
   if [[ "$*" == *"--size $size"* || "$*" == *"-s $size"* ]]; then
@@ -117,15 +120,13 @@ for gen in "${ALL_GENS_IN_DIR[@]}"; do
   fi
 done
 
-#
 # if nothing is choosen, all genomes will be selected
 if [ ${#GENOMES[@]} -eq 0 ]; then
   GENOMES=("${ALL_GENS_IN_DIR[@]}");
 fi
-#
 
-#
 # include ordered filenames (but not files themselves)
+# issue: tests for "ordered" files when they are not multifasta
 if [[ "$*" == *"--sorted"* ]]; then
   TMP_GENS=()
   for gen in "${GENOMES[@]}"; do
@@ -134,6 +135,22 @@ if [[ "$*" == *"--sorted"* ]]; then
   GENOMES=("${TMP_GENS[@]}");
   unset TMP_GENS;
 fi
+
+while [[ $# -gt 0 ]]; do
+  key="$1"
+  case $key in
+    --timeout|-to)
+      timeOut="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    *) 
+      # Ignore any other arguments
+      shift
+      ;;
+  esac
+done
+
 #
 # ------------------------------------------------------------------------------
 #
@@ -195,12 +212,12 @@ for genome in "${GENOMES[@]}"; do
     size=${dsToSize[$unorderedGenome]};
 
     # bigger files => slower tests => time measured in minutes
-    dividendo=60; str_time="m"; timeOut=100; 
+    dividendo=60; str_time="m";
 
     # smaller files => faster tests => time measured in seconds
     if [ "$size" = "xs" ] || [ "$size" = "s" ]; then 
       # num_runs_to_repeat=10;
-      dividendo=1; str_time="s"; timeOut=$(echo "$timeOut*2" | bc);
+      dividendo=1; str_time="s"; 
     fi
     
     output_file_ds="$resultsPath/bench-results-raw-ds${ds_id}-${size}.txt";
@@ -210,96 +227,96 @@ for genome in "${GENOMES[@]}"; do
     #
     printf "DS$ds_id - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n";
     #
-    # if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
-    #     # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 3 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 5 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 10 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 15 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 5 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 10 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 15 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 20 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 22 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -c 0 -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -c 2 -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -c 3 -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "AGC" "$genome.fa" "$genome.agc" "$genome_agc_out.fa" "agc create $genome.fa -o $genome.agc" "agc getcol $genome.agc > $genome_agc_out.fa" "$run"; run=$((run+1));
-    #     #
-    #     # other paq tests are very slow;
-    #     RUN_TEST "PAQ8" "$genome.seq" "$genome.seq.paq8l" "paq8l_out/$genome.seq" "paq8l -1 $genome.seq" "paq8l -d $genome.seq.paq8l paq8l_out" "$run"; run=$((run+1));
-    # else
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 3 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 5 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 10 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 15 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 5 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 10 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 15 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 20 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 22 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -c 0 -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -c 2 -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -c 3 -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "AGC" "$genome.fa" "$genome.agc" "$genome_agc_out.fa" "${bin_path}agc create $genome.fa -o $genome.agc" "${bin_path}agc getcol $genome.agc > $genome_agc_out.fa" "$run"; run=$((run+1));
-    #     #
-    #     RUN_TEST "PAQ8" "$genome.seq" "$genome.seq.paq8l" "paq8l_out/$genome.seq" "${bin_path}paq8l -1 $genome.seq" "${bin_path}paq8l -d $genome.seq.paq8l paq8l_out" "$run"; run=$((run+1));
-    # fi
-    # #
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 1 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 5 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 10 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 15 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 20 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 24 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -rm 50:11:1:0.9:7:0.4:1:0.2:200000 -cm 1:1:0:0.7/0:0:0:0 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -rm 2000:14:1:0.9:7:0.4:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -lr 0.005 -hs 92 -rm 2000:15:1:0.9:7:0.3:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 4:1:0:0.85/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 11:1:1:0.85/0:0:0:0 -cm 14:1:1:0.85/1:1:1:0.9 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
-    # RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -lr 0.01 -hs 42 -rm 1000:13:1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
+        # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo2 -v -tm -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        #
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 $genome.seq" "GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        #
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 3 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 5 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 10 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -l 15 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 $genome.seq" "JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        #
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 5 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 10 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 15 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 20 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "ennaf --fasta --temp-dir naf_out/ --level 22 $genome.fa -o naf_out/$genome.naf" "unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        #
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -c 0 -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -c 2 -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "mbgc -c 3 -i $genome.fa $genome.mbgc" "mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        #
+        RUN_TEST "AGC" "$genome.fa" "$genome.agc" "$genome_agc_out.fa" "agc create $genome.fa -o $genome.agc" "agc getcol $genome.agc > $genome_agc_out.fa" "$run"; run=$((run+1));
+        #
+        # other paq tests are very slow;
+        RUN_TEST "PAQ8" "$genome.seq" "$genome.seq.paq8l" "paq8l_out/$genome.seq" "paq8l -1 $genome.seq" "paq8l -d $genome.seq.paq8l paq8l_out" "$run"; run=$((run+1));
+    else
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo2 -v -tm -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9 $genome.seq" "${bin_path}GeDe2 -v $genome.seq.co" "$run"; run=$((run+1));
+        #
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -tm 13:1:0:0:0.7/0:0:0 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 12:20:0:0:0.88/0:0:0 -tm 14:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:120:0.88/3:10:0.88 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.005 -hs 90 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.7/0:0:0 -tm 11:20:0:0:0.88/0:0:0 -tm 13:50:1:1:0.89/0:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1000:1:70:0.88/3:10:0.88 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.03 -hs 72 -tm 1:1:0:0:0.6/0:0:0 -tm 3:1:0:1:0.70/0:0:0 -tm 8:1:0:1:0.85/0:0:0 -tm 13:20:0:1:0.9/0:1:0.9 -tm 20:1500:1:50:0.9/4:10:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -hs 24 -lr 0.02 -tm 12:1:0:0:0.9/0:0:0 -tm 19:1200:1:10:0.8/3:20:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -lr 0.02 -tm 3:1:0:0:0.7/0:0:0 -tm 18:1200:1:10:0.9/3:10:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo3" "$genome.seq" "$genome.seq.co" "$genome.seq.de" "${bin_path}GeCo3 -v -tm 3:1:0:0:0.7/0:0:0 -tm 19:1000:0:20:0.9/0:20:0.9 $genome.seq" "${bin_path}GeDe3 -v $genome.seq.co" "$run"; run=$((run+1));
+        #
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 3 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 5 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 10 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -l 15 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        RUN_TEST "JARVIS1" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 $genome.seq" "${bin_path}JARVIS -v -d $genome.seq.jc" "$run"; run=$((run+1));
+        #
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 5 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 10 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 15 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 20 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$genome.fa" "naf_out/$genome.naf" "naf_out/$genome.fa" "${bin_path}ennaf --fasta --temp-dir naf_out/ --level 22 $genome.fa -o naf_out/$genome.naf" "${bin_path}unnaf naf_out/$genome.naf -o naf_out/$genome.fa" "$run"; run=$((run+1));
+        #
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -c 0 -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -c 2 -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$genome.fa" "$genome.mbgc" "mbgc_out/$genome.fa" "${bin_path}mbgc -c 3 -i $genome.fa $genome.mbgc" "${bin_path}mbgc -d $genome.mbgc mbgc_out" "$run"; run=$((run+1));
+        #
+        RUN_TEST "AGC" "$genome.fa" "$genome.agc" "$genome_agc_out.fa" "${bin_path}agc create $genome.fa -o $genome.agc" "${bin_path}agc getcol $genome.agc > $genome_agc_out.fa" "$run"; run=$((run+1));
+        #
+        RUN_TEST "PAQ8" "$genome.seq" "$genome.seq.paq8l" "paq8l_out/$genome.seq" "${bin_path}paq8l -1 $genome.seq" "${bin_path}paq8l -d $genome.seq.paq8l paq8l_out" "$run"; run=$((run+1));
+    fi
+    #
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 1 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 5 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 10 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 15 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 20 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -l 24 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -rm 50:11:1:0.9:7:0.4:1:0.2:200000 -cm 1:1:0:0.7/0:0:0:0 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -rm 2000:14:1:0.9:7:0.4:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -lr 0.005 -hs 92 -rm 2000:15:1:0.9:7:0.3:1:0.2:250000 -cm 1:1:0:0.7/0:0:0:0 -cm 4:1:0:0.85/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 11:1:1:0.85/0:0:0:0 -cm 14:1:1:0.85/1:1:1:0.9 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
+    RUN_TEST "JARVIS2_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS2 -v -lr 0.01 -hs 42 -rm 1000:13:1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 $genome.seq" "${bin_path}JARVIS2 -d $genome.seq.jc" "$run"; run=$((run+1));
     #
     RUN_TEST "JARVIS3_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS3 -v -l 1 $genome.seq" "${bin_path}JARVIS3 -d $genome.seq.jc" "$run"; run=$((run+1));
     RUN_TEST "JARVIS3_BIN" "$genome.seq" "$genome.seq.jc" "$genome.seq.jc.jd" "${bin_path}JARVIS3 -v -l 5 $genome.seq" "${bin_path}JARVIS3 -d $genome.seq.jc" "$run"; run=$((run+1));
@@ -313,10 +330,10 @@ for genome in "${GENOMES[@]}"; do
     if [ "$size" = "l" ] || [ "$size" = "xl" ]; then 
       # necessary to run JARVIS2/3.sh
       cp ../bin/bbb ../bin/bzip2 ../bin/*Fast* ../bin/XScore* ../bin/JARVIS* . 
-      # RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
-      # RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
-      # RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 150MB --threads 6 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 6 --dna --input $genome.seq.tar" "$((run+=1))"
-      # RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 100MB --threads 8 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 8 --dna --input $genome.seq.tar" "$((run+=1))"
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 1000:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:10:1:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 270MB --threads 3 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 3 --dna --input $genome.seq.tar" "$((run+=1))"
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 500:12:0.1:0.9:7:0.4:1:0.2:220000 -cm 1:1:0:0.7/0:0:0:0 -cm 7:1:0:0.7/0:0:0:0 -cm 12:1:1:0.85/0:0:0:0 --block 150MB --threads 6 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 6 --dna --input $genome.seq.tar" "$((run+=1))"
+      RUN_TEST "JARVIS2_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS2.sh --level -lr 0.01 -hs 42 -rm 200:11:1:0.9:7:0.3:1:0.2:220000 -cm 12:1:1:0.85/0:0:0:0 --block 100MB --threads 8 --dna --input $genome.seq" "./JARVIS2.sh --decompress --threads 8 --dna --input $genome.seq.tar" "$((run+=1))"
       #
       # note: JARVIS3.sh can compress but cannot decompress
       # for now jarvis3_bin is used to decompress
@@ -332,23 +349,23 @@ for genome in "${GENOMES[@]}"; do
       rm -fr bbb bzip2 *Fast* XScore* JARVIS*
     fi
     #
-    # RUN_TEST "LZMA" "$genome.seq.orig" "$genome.seq.orig.lzma" "$genome.seq.orig" "lzma -9 -f -k $genome.seq.orig" "lzma -f -k -d $genome.seq.orig.lzma" "$run"; run=$((run+1));
-    # #
-    # RUN_TEST "BZIP2" "$genome.seq.orig" "$genome.seq.orig.bz2" "$genome.seq.orig" "bzip2 -9 -f -k $genome.seq.orig" "bzip2 -f -k -d $genome.seq.orig.lzma" "$run"; run=$((run+1));
-    # #
-    # RUN_TEST "BSC-m03" "$genome.seq" "$genome.seq.bsc" "$genome.seq.bsc.out" "${bin_path}bsc-m03 e $genome.seq $genome.seq.bsc -b800000000" "${bin_path}bsc-m03 d $genome.seq.bsc $genome.seq.bsc.out" "$run"; run=$((run+1));
-    # RUN_TEST "BSC-m03" "$genome.seq" "$genome.seq.bsc" "$genome.seq.bsc.out" "${bin_path}bsc-m03 e $genome.seq $genome.seq.bsc -b400000000" "${bin_path}bsc-m03 d $genome.seq.bsc $genome.seq.bsc.out" "$run"; run=$((run+1));
-    # RUN_TEST "BSC-m03" "$genome.seq" "$genome.seq.bsc" "$genome.seq.bsc.out" "${bin_path}bsc-m03 e $genome.seq $genome.seq.bsc -b4096000" "${bin_path}bsc-m03 d $genome.seq.bsc $genome.seq.bsc.out" "$run"; run=$((run+1));
-    # #
-    # RUN_TEST "MFC" "$genome.seq.orig" "$genome.seq.mfc" "$genome.seq.d" "${bin_path}MFCompressC -v -1 -p 1 -t 1 -o $genome.seq.mfc $genome.seq.orig" "${bin_path}MFCompressD -o $genome.seq.d $genome.seq.mfc" "$run"; run=$((run+1));
-    # RUN_TEST "MFC" "$genome.seq.orig" "$genome.seq.mfc" "$genome.seq.d" "${bin_path}MFCompressC -v -2 -p 1 -t 1 -o $genome.seq.mfc $genome.seq.orig" "${bin_path}MFCompressD -o $genome.seq.d $genome.seq.mfc" "$run"; run=$((run+1));
-    # RUN_TEST "MFC" "$genome.seq.orig" "$genome.seq.mfc" "$genome.seq.d" "${bin_path}MFCompressC -v -3 -p 1 -t 1 -o $genome.seq.mfc $genome.seq.orig" "${bin_path}MFCompressD -o $genome.seq.d $genome.seq.mfc" "$run"; run=$((run+1));
-    # #
-    # RUN_TEST "DMcompress" "$genome.seq.orig" "$genome.seq.orig.c" "$genome.seq.orig.c.d" "${bin_path}DMcompressC $genome.seq.orig" "${bin_path}DMcompressD $genome.seq.orig.c" "$run"; run=$((run+1));
-    # #
-    # RUN_TEST "MEMRGC" "$genome.fa" "$genome.memrgc" "$genome_memrgc_out.fa" "${bin_path}memrgc e -m file -r $genome.fa -t $genome.fa -o $genome.memrgc" "${bin_path}memrgc d -m file -r $genome.fa -t $genome.memrgc -o $genome_memrgc_out.fa" "$run"; run=$((run+1));
-    # #
-    # RUN_TEST "CMIX" "$genome.fa" "$genome.cmix" "$genome_cmix_out.fa" "${bin_path}cmix -n $genome.fa $genome.cmix" "${bin_path}cmix -d -r $genome.fa -t $genome.cmix -o $genome_cmix_out.fa" "$run"; run=$((run+1));
+    RUN_TEST "LZMA" "$genome.seq.orig" "$genome.seq.orig.lzma" "$genome.seq.orig" "lzma -9 -f -k $genome.seq.orig" "lzma -f -k -d $genome.seq.orig.lzma" "$run"; run=$((run+1));
+    #
+    RUN_TEST "BZIP2" "$genome.seq.orig" "$genome.seq.orig.bz2" "$genome.seq.orig" "bzip2 -9 -f -k $genome.seq.orig" "bzip2 -f -k -d $genome.seq.orig.lzma" "$run"; run=$((run+1));
+    #
+    RUN_TEST "BSC-m03" "$genome.seq" "$genome.seq.bsc" "$genome.seq.bsc.out" "${bin_path}bsc-m03 e $genome.seq $genome.seq.bsc -b800000000" "${bin_path}bsc-m03 d $genome.seq.bsc $genome.seq.bsc.out" "$run"; run=$((run+1));
+    RUN_TEST "BSC-m03" "$genome.seq" "$genome.seq.bsc" "$genome.seq.bsc.out" "${bin_path}bsc-m03 e $genome.seq $genome.seq.bsc -b400000000" "${bin_path}bsc-m03 d $genome.seq.bsc $genome.seq.bsc.out" "$run"; run=$((run+1));
+    RUN_TEST "BSC-m03" "$genome.seq" "$genome.seq.bsc" "$genome.seq.bsc.out" "${bin_path}bsc-m03 e $genome.seq $genome.seq.bsc -b4096000" "${bin_path}bsc-m03 d $genome.seq.bsc $genome.seq.bsc.out" "$run"; run=$((run+1));
+    #
+    RUN_TEST "MFC" "$genome.seq.orig" "$genome.seq.mfc" "$genome.seq.d" "${bin_path}MFCompressC -v -1 -p 1 -t 1 -o $genome.seq.mfc $genome.seq.orig" "${bin_path}MFCompressD -o $genome.seq.d $genome.seq.mfc" "$run"; run=$((run+1));
+    RUN_TEST "MFC" "$genome.seq.orig" "$genome.seq.mfc" "$genome.seq.d" "${bin_path}MFCompressC -v -2 -p 1 -t 1 -o $genome.seq.mfc $genome.seq.orig" "${bin_path}MFCompressD -o $genome.seq.d $genome.seq.mfc" "$run"; run=$((run+1));
+    RUN_TEST "MFC" "$genome.seq.orig" "$genome.seq.mfc" "$genome.seq.d" "${bin_path}MFCompressC -v -3 -p 1 -t 1 -o $genome.seq.mfc $genome.seq.orig" "${bin_path}MFCompressD -o $genome.seq.d $genome.seq.mfc" "$run"; run=$((run+1));
+    #
+    RUN_TEST "DMcompress" "$genome.seq.orig" "$genome.seq.orig.c" "$genome.seq.orig.c.d" "${bin_path}DMcompressC $genome.seq.orig" "${bin_path}DMcompressD $genome.seq.orig.c" "$run"; run=$((run+1));
+    #
+    RUN_TEST "MEMRGC" "$genome.fa" "$genome.memrgc" "$genome_memrgc_out.fa" "${bin_path}memrgc e -m file -r $genome.fa -t $genome.fa -o $genome.memrgc" "${bin_path}memrgc d -m file -r $genome.fa -t $genome.memrgc -o $genome_memrgc_out.fa" "$run"; run=$((run+1));
+    #
+    RUN_TEST "CMIX" "$genome.fa" "$genome.cmix" "$genome_cmix_out.fa" "${bin_path}cmix -n $genome.fa $genome.cmix" "${bin_path}cmix -d -r $genome.fa -t $genome.cmix -o $genome_cmix_out.fa" "$run"; run=$((run+1));
     #
     # ==============================================================================
     #
