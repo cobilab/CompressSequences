@@ -106,12 +106,9 @@ MERGE_DNA () {
   D_NAMES="";
   IDX_T=1;
   IDX_POS=1;
-
-  echo "POTATO A"
   #
   for file in "${FILES[@]}" #
     do
-    echo "POTATO B"
     ./JARVIS3 -d $file 2> .tmp_report_$file &
     if [[ "$IDX_T" -eq "$THREADS" ]] || [[ "${#FILES[@]}" -eq "$IDX_POS" ]]
       then

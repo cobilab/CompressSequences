@@ -53,7 +53,7 @@ function RUN_TEST() {
   # https://man7.org/linux/man-pages/man1/time.1.html
   # %e: (Not in tcsh(1).)  Elapsed real time (in seconds).
   # %M: Maximum resident set size of the process during its lifetime, in Kbytes.
-  /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND \
+  timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> c_time_mem.txt 2> $stdErrC;
@@ -65,7 +65,7 @@ function RUN_TEST() {
     BPS=-1;
   fi
   #
-  /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND \
+  timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND \
   |& grep "TIME" \
   |& tr '.' ',' \
   |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> d_time_mem.txt 2> $stdErrD;
@@ -129,7 +129,7 @@ fi
 if [[ "$*" == *"--sorted"* ]]; then
   TMP_GENS=()
   for gen in "${GENOMES[@]}"; do
-    TMP_GENS+=($gen ${gen}_sortmf ${gen}_fastaAnaly)
+    TMP_GENS+=($gen ${gen}_sortmf ${gen}_fastaAnaly);
   done
   GENOMES=("${TMP_GENS[@]}");
   unset TMP_GENS;
@@ -181,11 +181,8 @@ for genome in "${GENOMES[@]}"; do
 
       genome="${genome}_fastaAnaly";
     fi
-    #
-    # before running the tests, determine size type of sequence to know: 
-    # - the number of times each test should be executed (maybe); 
-    # - whether c/d time should be in ms, s, m,...
-    #
+
+    # change ds_id if the dataset is sorted
     unorderedGenome="${genome//_sortmf/}";
     unorderedGenome="${unorderedGenome//_fastaAnaly/}"
     ds_id=$(($(grep -n "$unorderedGenome" dsToSize.csv | cut -d ":" -f 1)-1));
@@ -194,15 +191,18 @@ for genome in "${GENOMES[@]}"; do
     elif [[ $genome == *"_fastaAnaly"* ]]; then
       ds_id="${ds_id}_fastaAnaly";
     fi
-    #
+
     size=${dsToSize[$unorderedGenome]};
-    # num_runs_to_repeat=1;
-    dividendo=60; str_time="m"; # bigger files => slower tests => time measured in minutes
-    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+
+    # bigger files => slower tests => time measured in minutes
+    dividendo=60; str_time="m"; timeOut=100; 
+
+    # smaller files => faster tests => time measured in seconds
+    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then 
       # num_runs_to_repeat=10;
-      dividendo=1; str_time="s";
+      dividendo=1; str_time="s"; timeOut=$(echo "$timeOut*2" | bc);
     fi
-    #
+    
     output_file_ds="$resultsPath/bench-results-raw-ds${ds_id}-${size}.txt";
     run=1;
     #
