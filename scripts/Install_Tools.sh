@@ -2,6 +2,10 @@
 #
 function INSTALL_WITH_CONDA() {
     #
+    # AlcoR ------------------------------------------------------------------------
+    #
+    conda install -y -c bioconda alcor
+    #
     # GTO ------------------------------------------------------------------------
     #
     conda install -y -c cobilab gto
@@ -32,6 +36,17 @@ function INSTALL_WITH_CONDA() {
 }
 #
 function INSTALL_WITHOUT_CONDA() {
+    #
+    # AlcoR ------------------------------------------------------------------------
+    #
+    # sudo apt-get install cmake git
+    git clone https://github.com/cobilab/alcor.git
+    cd alcor/src/
+    cmake .
+    make
+    cp AlcoR ../..
+    cd ../..
+    rm -fr alcor
     #
     # GTO ------------------------------------------------------------------------
     #
