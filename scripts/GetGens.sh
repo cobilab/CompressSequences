@@ -57,8 +57,6 @@ for url in "${urls[@]}"; do
     if [[ ! -f "$genomesPath/$genFile" ]]; then 
         wget -c $url -O "$genomesPath/$rawFile"
 
-        # se outros ficheiros do mesmo genoma já existirem apesar de .fa ter sido criado depois, remove-los para atualizar .seq
-        find "$genomesPath/" -name "$rawFile.*" ! -name "*.fa" -type f -delete
     else 
         # no need to download a file that already exists
         echo "$rawFile has been previously downloaded"
@@ -74,6 +72,20 @@ if [ ${#rawFiles[@]} -eq 0 ]; then
     echo "all files have been previously downloaded, so the program will end here"; 
     exit; 
 fi
+
+#
+# === Skip *_raw.fa that are multifasta by removing them from array and renaming as *_raw.mfa ===========================================================================
+#
+for rawFile in ${rawFiles[@]}; do
+    if [ $(grep -c ">" $rawFile) -gt 1 ]; then
+        # remove raw multifasta file from array
+        rawFiles=("${rawFiles[@]/$rawFile}")
+
+        # rename raw multifasta file extension to .mfa
+        mfRawFile=${rawFile/_raw.fa/_raw.mfa}
+        mv $rawFile $mfRawFile
+    fi
+done
 
 #
 # === Unzip .gz files ===========================================================================
@@ -93,7 +105,7 @@ for gzFile in "${gzFiles[@]}"; do
 done
 
 #
-# === Preprocess _raw.fa files onto .seq and .fa files ===========================================================================
+# === Preprocess _raw.fa files onto clean .fa and .seq files ===========================================================================
 #
 printf "\npreprocessing...\n" # preprocesses each fasta file into its respective seq files
 for rawFile in "${rawFiles[@]}"; do 
@@ -106,7 +118,7 @@ for rawFile in "${rawFiles[@]}"; do
         echo "$cleanFaFile has been previously created"  
     fi
 
-    seqFile=$(echo $rawFile | sed 's/_raw.fa/.seq/g'); # replaces .fa with .seq
+    seqFile=$(echo $rawFile | sed 's/_raw.fa/.seq/g'); # replaces _raw.fa with .seq
     if [[ ! -f $genomesPath/$seqFile ]]; then   
         cat "$genomesPath/$rawFile" | grep -v ">" | tr 'agct' 'AGCT' | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
         echo "$seqFile created with success"
