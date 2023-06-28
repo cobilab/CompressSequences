@@ -54,7 +54,7 @@ function INSTALL_WITHOUT_CONDA() {
     mv gto gto_dir
     cd gto_dir/src/
     make
-    cp ../bin/gto_fasta_to_seq ../bin/gto_fasta_from_seq ../../
+    cp ../bin/gto_fasta_to_seq ../bin/gto_fasta_from_seq ../bin/gto_fasta_split_reads ../../
     cd ../../
     rm -fr gto_dir
     #

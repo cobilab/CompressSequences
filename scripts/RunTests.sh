@@ -337,14 +337,14 @@ for genome in "${GENOMES[@]}"; do
       #
       # note: JARVIS3.sh can compress but cannot decompress
       # for now jarvis3_bin is used to decompress
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh --block 16MB --threads 8 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 1 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 5 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 10 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 15 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 20 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 25 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
-      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 27 --input $genome.seq" "${bin_path}JARVIS3 --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh --block 16MB --threads 8 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 1 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 5 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 10 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 15 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 20 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 25 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
+      RUN_TEST "JARVIS3_SH" "$genome.seq" "$genome.seq.tar" "$genome.seq.tar.out" "./JARVIS3.sh -l 27 --input $genome.seq" "./JARVIS3.sh --decompress --threads 4 --input $genome.seq.tar" "$run"; run=$((run+1));
       # remove all stuff copied from bin which was necessary to run JARVIS2/3.sh
       rm -fr bbb bzip2 *Fast* XScore* JARVIS*
     fi
