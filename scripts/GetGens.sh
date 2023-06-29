@@ -74,18 +74,19 @@ if [ ${#rawFiles[@]} -eq 0 ]; then
 fi
 
 #
-# === Skip *_raw.fa that are multifasta by removing them from array and renaming as *_raw.mfa ===========================================================================
+# === Skip *_raw.fa that are multifasta by renaming them as *_raw.mfa and updating array ===========================================================================
 #
 for rawFile in ${rawFiles[@]}; do
     if [ $(grep -c ">" $rawFile) -gt 1 ]; then
-        # remove raw multifasta file from array
-        rawFiles=("${rawFiles[@]/$rawFile}")
 
         # rename raw multifasta file extension to .mfa
         mfRawFile=${rawFile/_raw.fa/_raw.mfa}
         mv $rawFile $mfRawFile
     fi
 done
+
+# update array to exclude raw multifasta files
+rawFiles=( $(ls $genomesPath | egrep "_raw.fa") )
 
 #
 # === Unzip .gz files ===========================================================================
