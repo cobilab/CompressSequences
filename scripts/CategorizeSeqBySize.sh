@@ -54,7 +54,8 @@ for ds in "${!dsToSize[@]}"; do
     echo "$ds,$bytes,$size" >> "$output_file"
 done
 
-sort -t',' -k2,2n dsToSize.csv > dsToSize-tmp.csv
+# order datasets from smallest to largest
+(head -n 1 $output_file && tail -n +2 $output_file | sort -t',' -k2,2n) > dsToSize-tmp.csv
 
-cp dsToSize-tmp.csv dsToSize.csv
+cp dsToSize-tmp.csv $output_file
 rm -fr dsToSize-tmp.csv
