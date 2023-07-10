@@ -30,35 +30,6 @@ function LOAD_CSV_DSTOSIZE() {
   done < $csv_dsToSize;
 }
 #
-function SPLIT_FILES_BY_DS() {
-  # read the input file
-  file_prefix="$resultsPath/bench-results-"
-
-  # remove datasets before recreating them
-  rm -fr ${file_prefix}DS*-*.csv
-
-  ds_i=0;
-  for input_file in ${clean_bench_grps[@]}; do
-    while IFS= read -r line; do
-      # check if the line contains a dataset name
-      if [[ $line == DS* ]]; then
-        # create a new output file for the dataset
-        dsX=$(echo "$line" | cut -d" " -f1)
-        size=$(echo "$line" | cut -d" " -f5)
-
-        output_file="${file_prefix}$dsX-$size.csv"
-        
-        echo "$line" > "$output_file"
-      else
-        # append the line to the current dataset's file
-        echo "$line" >> "$output_file"
-      fi
-    done < "$input_file"
-  done 
-
-  num_gens=$(($(echo "$dsX" | sed 's/ds//gi')));
-}
-#
 function SPLIT_FILE_BY_COMPRESSOR() {
   # recreate grp folder
   rm -fr $plots_folder;
@@ -216,7 +187,6 @@ EOF
 #
 LOAD_CSV_DSTOSIZE;
 
-SPLIT_FILES_BY_DS;
 clean_bench_dss=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-DS*-*" | sort -t ' ' -k2n) );
 
 for clean_ds in ${clean_bench_dss[@]}; do
