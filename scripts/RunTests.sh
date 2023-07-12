@@ -125,17 +125,6 @@ if [ ${#GENOMES[@]} -eq 0 ]; then
   GENOMES=("${ALL_GENS_IN_DIR[@]}");
 fi
 
-# include ordered filenames (but not files themselves)
-# issue: tests for "ordered" files when they are not multifasta
-if [[ "$*" == *"--sorted"* ]]; then
-  TMP_GENS=()
-  for gen in "${GENOMES[@]}"; do
-    TMP_GENS+=($gen ${gen}_sortmf ${gen}_fastaAnaly);
-  done
-  GENOMES=("${TMP_GENS[@]}");
-  unset TMP_GENS;
-fi
-
 while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in

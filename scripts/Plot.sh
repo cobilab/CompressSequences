@@ -6,8 +6,7 @@ sizes=("xs" "s" "m" "l" "xl");
 #
 csv_dsToSize="dsToSize.csv";
 declare -A dsToSize;
-#
-clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
+
 #
 # ==============================================================================
 #
@@ -205,7 +204,7 @@ LOAD_CSV_DSTOSIZE;
 #
 # === MAIN: PLOT EACH DS ===========================================================================
 #
-clean_bench_dss=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-DS*-*" | sort -t ' ' -k2n) );
+clean_bench_dss=( $(find "$resultsPath" -maxdepth 1 -type f -name "*bench-results-DS*-*.csv" | sort -t ' ' -k2n) );
 for clean_ds in ${clean_bench_dss[@]}; do
   header=$(head -n 1 "$clean_ds")
   IFS=' - ' read -r DSX genome size <<< "$header" # split the header into variables
@@ -238,8 +237,9 @@ for clean_ds in ${clean_bench_dss[@]}; do
 done
 
 #
-# === MAIN: PLOT EACH GROUP OF DS BY SIZE ===========================================================================
+# === MAIN: PLOT EACH GROUP OF DSs BY SIZE ===========================================================================
 #
+clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
 for clean_grp in ${clean_bench_grps[@]}; do
     suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"
     size="${suffix%%.*}";            # remove everything after the first dot

@@ -105,7 +105,7 @@ if [[ $resultsPath == "../optimRes" ]]; then
     sort -nk4,4 -nk5,5 $dsFile | head -n $((2+numBestRes)) > $dsFileTMP;
 
     # get N best commands
-    topNcmds="${dsFile/.csv/.sh}";
+    topNcmds="${dsFile/.csv/-top$numBestRes.sh}";
     tail -n +3 $dsFileTMP  | awk '{print substr($0, index($0, "../bin/JARVIS3"))}' > $topNcmds;
     
     rm -fr $dsFile;
