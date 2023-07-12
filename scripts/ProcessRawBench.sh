@@ -1,6 +1,9 @@
 #!/bin/bash
 
 resultsPath="../results";
+optimJV3cmds="optimJV3cmds";
+mkdir -p $optimJV3cmds;
+
 numBestRes=5;
 
 sizes=("xs" "s" "m" "l" "xl");
@@ -106,6 +109,7 @@ if [[ $resultsPath == "../optimRes" ]]; then
 
     # get N best commands
     topNcmds="${dsFile/.csv/-top$numBestRes.sh}";
+    topNcmds="optimJV3cmds/$(basename $topNcmds)";
     tail -n +3 $dsFileTMP  | awk '{print substr($0, index($0, "../bin/JARVIS3"))}' > $topNcmds;
     
     rm -fr $dsFile;
