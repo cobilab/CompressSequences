@@ -96,11 +96,18 @@ SPLIT_FILES_BY_DS;
 # if we are getting optimal JV3 tests...
 if [[ $resultsPath == "../optimRes" ]]; then
 
-  # filter each DS so that they contain the N best tests
+  # filter each DS so that they contain the N best tests and commands
   dsFiles=($(find $resultsPath -maxdepth 1 -type f -name 'bench-results-DS*-*.csv'));
   for dsFile in ${dsFiles[@]}; do
     dsFileTMP="${dsFile/.csv/-TMP.csv}";
+
+    # get N best results
     sort -nk4,4 -nk5,5 $dsFile | head -n $((2+numBestRes)) > $dsFileTMP;
+
+    # get N best commands
+    topNcmds="${dsFile/.csv/.sh}";
+    tail -n +3 $dsFileTMP  | awk '{print substr($0, index($0, "../bin/JARVIS3"))}' > $topNcmds;
+    
     rm -fr $dsFile;
     mv $dsFileTMP $dsFile;
   done
