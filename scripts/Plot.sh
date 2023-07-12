@@ -183,12 +183,29 @@ function PLOT_LOG() {
 EOF
 }
 #
-# === PLOT EACH DS ===========================================================================
+# === MAIN ===========================================================================
 #
+# parse command-line arguments
+while [[ $# -gt 0 ]]; do
+  key="$1"
+  case $key in
+    --optim|-o)
+      resultsPath="../optimRes"
+      shift
+      ;;
+    *) 
+      # ignore any other arguments
+      shift
+      ;;
+  esac
+done
+
 LOAD_CSV_DSTOSIZE;
 
+#
+# === MAIN: PLOT EACH DS ===========================================================================
+#
 clean_bench_dss=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-DS*-*" | sort -t ' ' -k2n) );
-
 for clean_ds in ${clean_bench_dss[@]}; do
   header=$(head -n 1 "$clean_ds")
   IFS=' - ' read -r DSX genome size <<< "$header" # split the header into variables
@@ -219,8 +236,9 @@ for clean_ds in ${clean_bench_dss[@]}; do
   PLOT;
   PLOT_LOG;
 done
+
 #
-# === PLOT EACH GROUP OF DS BY SIZE ===========================================================================
+# === MAIN: PLOT EACH GROUP OF DS BY SIZE ===========================================================================
 #
 for clean_grp in ${clean_bench_grps[@]}; do
     suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"

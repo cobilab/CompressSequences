@@ -54,9 +54,9 @@ function RUN_TEST() {
   # %e: (Not in tcsh(1).)  Elapsed real time (in seconds).
   # %M: Maximum resident set size of the process during its lifetime, in Kbytes.
   timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND \
-  |& grep "TIME" \
-  |& tr '.' ',' \
-  |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> c_time_mem.txt 2> $stdErrC;
+  | grep "TIME" \
+  | tr '.' ',' \
+  | awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> c_time_mem.txt 2> $stdErrC;
   if [ -e "$FILEC" ]; then
     BYTES_CF=`ls -la $FILEC | awk '{ print $5 }'`;
     BPS=$(echo "scale=3; $BYTES_CF*8 / $BYTES" | bc);
@@ -66,9 +66,9 @@ function RUN_TEST() {
   fi
   #
   timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND \
-  |& grep "TIME" \
-  |& tr '.' ',' \
-  |& awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> d_time_mem.txt 2> $stdErrD;
+  | grep "TIME" \
+  | tr '.' ',' \
+  | awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> d_time_mem.txt 2> $stdErrD;
   #
   # compare input file to decompressed file; they should have the same sequence
   diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
