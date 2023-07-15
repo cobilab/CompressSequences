@@ -42,18 +42,25 @@ function SPLIT_FILE_BY_COMPRESSOR() {
   # splits ds into subdatasets by compressor and store them in folder
   c_i=1;
   plotnames="";
+  plotnames_log="";
   mapfile -t INT_DATA < "$compressor_names";
   for dint in "${INT_DATA[@]}"; do
     if [[ $dint != PROGRAM && $dint != DS* ]]; then
       compressor_csv="$compressor_csv_prefix$c_i.csv";
       grep $dint $bench_res_csv > "$compressor_csv";
+      
       tmp="'$compressor_csv' u 4:5 w points ls $c_i title '$dint', ";
       plotnames="$plotnames $tmp";
+      
+      tmp_log="'$compressor_csv' u 4:(pseudo_log(5)) w points ls $c_i title '$dint', ";
+      plotnames_log="$plotnames_log $tmp_log";
+      
       ((++c_i));
     fi
   done
 
   echo -e "${plotnames//, /\\n}";
+  echo -e "${plotnames_log//, /\\n}";
 }
 #
 function GET_PLOT_BOUNDS() {
@@ -91,6 +98,11 @@ function GET_PLOT_BOUNDS() {
       bytesCF_lowerBound=-0.1;
     fi
 
+    if (( $(echo "$bps_IQR < 1" | bc -l) )); then
+      bps_lowerBound="*";
+      bps_upperBound="*";
+    fi
+
     if (( $(echo "$bytesCF_IQR < 1" | bc -l) )); then
       bytesCF_lowerBound="*";
       bytesCF_upperBound="*";
@@ -121,7 +133,7 @@ function PLOT() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [0:$bytesCF_upperBound]
+    set yrange [$bytesCF_lowerBound:$bytesCF_upperBound]
     set xrange [$bps_lowerBound:$bps_upperBound]
     set xtics auto
     set ytics auto
@@ -148,6 +160,10 @@ EOF
 function PLOT_LOG() {
   gnuplot << EOF
     reset
+
+    # define a function to adjust zero or near-zero values
+    pseudo_log(x) = (x <= 0) ? -10 : log10(x)
+
     set title "$plot_title_log"
     set logscale xy 2
     set terminal pdfcairo enhanced color font 'Verdade,12'
@@ -158,7 +174,7 @@ function PLOT_LOG() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [0:$bytesCF_upperBound]
+    set yrange [1e-10:$bytesCF_upperBound]
     set xrange [$bps_lowerBound:$bps_upperBound]
     set xtics auto
     set ytics auto 
@@ -178,7 +194,7 @@ function PLOT_LOG() {
     set grid
     set ylabel "Compression time ($str_time)"
     set xlabel "Average number of bits per symbol"
-    plot $plotnames
+    plot $plotnames_log
 EOF
 }
 #
@@ -237,7 +253,7 @@ for clean_ds in ${clean_bench_dss[@]}; do
 done
 
 #
-# === MAIN: PLOT EACH GROUP OF DSs BY SIZE ===========================================================================
+# === MAIN: PLOT EACH GRP OF DSs BY SIZE ===========================================================================
 #
 clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
 for clean_grp in ${clean_bench_grps[@]}; do
