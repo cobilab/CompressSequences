@@ -78,13 +78,13 @@ function GET_PLOT_BOUNDS() {
     bps_IQR=$(echo "$bps_Q3-$bps_Q1" | bc);
     bytesCF_IQR=$(echo "$bytesCF_Q3-$bytesCF_Q1" | bc);
 
-    # lower bound = Q1 – 0.5*IQR
-    bps_lowerBound=$(echo "$bps_Q1-0.5*$bps_IQR" | bc);
-    bytesCF_lowerBound=$(echo "$bytesCF_Q1-0.5*$bytesCF_IQR" | bc);
+    # lower bound = Q1 – 0.2*IQR
+    bps_lowerBound=$(echo "$bps_Q1-0.2*$bps_IQR" | bc);
+    bytesCF_lowerBound=$(echo "$bytesCF_Q1-0.2*$bytesCF_IQR" | bc);
 
-    # upper bound = Q3 + 0.5*IQR
-    bps_upperBound=$(echo "$bps_Q3+0.5*$bps_IQR" | bc);
-    bytesCF_upperBound=$(echo "$bytesCF_Q3+0.5*$bytesCF_IQR" | bc);
+    # upper bound = Q3 + 0.2*IQR
+    bps_upperBound=$(echo "$bps_Q3+0.2*$bps_IQR" | bc);
+    bytesCF_upperBound=$(echo "$bytesCF_Q3+0.2*$bytesCF_IQR" | bc);
 
     if (( $(echo "$bps_lowerBound < 0" | bc -l) )); then
       bps_upperBound=-0.1;
@@ -98,7 +98,7 @@ function GET_PLOT_BOUNDS() {
       bytesCF_lowerBound=-0.1;
     fi
 
-    if (( $(echo "$bps_IQR < 1" | bc -l) )); then
+    if (( $(echo "$bps_IQR < 0.2" | bc -l) )); then
       bps_lowerBound="*";
       bps_upperBound="*";
     fi

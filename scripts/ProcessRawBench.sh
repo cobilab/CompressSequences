@@ -33,7 +33,7 @@ function FILTER_INNACURATE_DATA() {
         cleanFile="$resultsPath/bench-results$cleanGrp.csv"
         
         if [ -f "$rawFile" ]; then
-            awk '$2 != -1 && $3 != -1 && $2 != 0 && $3 != 0 && NF' "$rawFile" > "$cleanFile";
+            awk '{for(i=1; i<=NF; i++) if ($i == -1) next}; 1' "$rawFile" > "$cleanFile";
         fi
     done
 }
@@ -82,7 +82,7 @@ while [[ $# -gt 0 ]]; do
             shift
             shift
         ;;
-        *)
+        *) 
             # ignore any other arguments
             shift
         ;;

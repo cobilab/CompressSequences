@@ -54,9 +54,10 @@ function RUN_TEST() {
   # %e: (Not in tcsh(1).)  Elapsed real time (in seconds).
   # %M: Maximum resident set size of the process during its lifetime, in Kbytes.
   timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND \
-  | grep "TIME" \
-  | tr '.' ',' \
-  | awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> c_time_mem.txt 2> $stdErrC;
+  |& grep "TIME" \
+  |& tr '.' ',' \
+  |& awk '{ printf $2"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
+  #
   if [ -e "$FILEC" ]; then
     BYTES_CF=`ls -la $FILEC | awk '{ print $5 }'`;
     BPS=$(echo "scale=3; $BYTES_CF*8 / $BYTES" | bc);
@@ -66,9 +67,9 @@ function RUN_TEST() {
   fi
   #
   timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND \
-  | grep "TIME" \
-  | tr '.' ',' \
-  | awk -v dividendo="$dividendo" '{ printf $2/dividendo"\t"$4/1024/1024"\n" }' 1> d_time_mem.txt 2> $stdErrD;
+  |& grep "TIME" \
+  |& tr '.' ',' \
+  |& awk '{ printf $2"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
   # compare input file to decompressed file; they should have the same sequence
   diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
@@ -98,7 +99,7 @@ LOAD_CSV_DSTOSIZE;
 mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
 
 # Initialize variables
-timeOut=10;
+timeOut=1000;
 
 # if one or more sizes are choosen, select all genomes with those sizes
 for size in "${sizes[@]}"; do
@@ -143,6 +144,7 @@ done
 #
 # ------------------------------------------------------------------------------
 #
+run=1;
 for genome in "${GENOMES[@]}"; do
     # check if it is an ordered filename, if so order it before running tests
     if [[ $genome == *"_sortmf"* ]]; then
@@ -199,22 +201,12 @@ for genome in "${GENOMES[@]}"; do
     fi
 
     size=${dsToSize[$unorderedGenome]};
-
-    # bigger files => slower tests => time measured in minutes
-    dividendo=60; str_time="m";
-
-    # smaller files => faster tests => time measured in seconds
-    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then 
-      # num_runs_to_repeat=10;
-      dividendo=1; str_time="s"; 
-    fi
     
     output_file_ds="$resultsPath/bench-results-raw-ds${ds_id}-${size}.txt";
-    run=1;
     #
     # --- RUN GENOME TESTS ---------------------------------------------------------------------------
     #
-    printf "DS$ds_id - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME ($str_time)\tC_MEM (GB)\tD_TIME ($str_time)\tD_MEM (GB)\tDIFF\tRUN\n";
+    printf "DS$ds_id - $genome - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\n";
     #
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
         # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));
