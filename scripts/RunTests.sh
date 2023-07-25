@@ -74,10 +74,22 @@ function RUN_TEST() {
   # compare input file to decompressed file; they should have the same sequence
   diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
   #
-  C_TIME=`printf "%0.3f\n" $(cat c_time_mem.txt | awk '{ print $1 }')`;
-  C_MEME=`printf "%0.3f\n" $(cat c_time_mem.txt | awk '{ print $2 }')`;
-  D_TIME=`printf "%0.3f\n" $(cat d_time_mem.txt | awk '{ print $1 }')`;
-  D_MEME=`printf "%0.3f\n" $(cat d_time_mem.txt | awk '{ print $2 }')`;
+  if [[ -s "c_time_mem.txt" ]]; then # if file is not empty...
+    C_TIME=`printf "%0.3f\n" $(cat c_time_mem.txt | awk '{ print $1 }')`;
+    C_MEME=`printf "%0.3f\n" $(cat c_time_mem.txt | awk '{ print $2 }')`; 
+  else
+    C_TIME=-1;
+    C_MEME=-1;
+  fi
+  #
+  if [[ -s "d_time_mem.txt" ]]; then # if file is not empty...
+    D_TIME=`printf "%0.3f\n" $(cat d_time_mem.txt | awk '{ print $1 }')`;
+    D_MEME=`printf "%0.3f\n" $(cat d_time_mem.txt | awk '{ print $2 }')`;
+  else
+    D_TIME=-1;
+    D_MEME=-1;
+  fi
+  #
   VERIFY="0";
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
@@ -99,7 +111,7 @@ LOAD_CSV_DSTOSIZE;
 mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
 
 # Initialize variables
-timeOut=1000;
+timeOut=3600;
 
 # if one or more sizes are choosen, select all genomes with those sizes
 for size in "${sizes[@]}"; do

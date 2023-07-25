@@ -225,10 +225,10 @@ for clean_ds in ${clean_bench_dss[@]}; do
   header=$(head -n 1 "$clean_ds")
   IFS=' - ' read -r DSX genome size <<< "$header" # split the header into variables
 
-  str_time="m";
-  if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-    str_time="s";
-  fi
+  # str_time="m";
+  # if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+  #   str_time="s";
+  # fi
 
   gen_i=${DSX#DS};
   str_genome=${genome//_/ }
@@ -260,10 +260,10 @@ for clean_grp in ${clean_bench_grps[@]}; do
     suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"
     size="${suffix%%.*}";            # remove everything after the first dot
 
-    str_time="m";
-    if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-      str_time="s";
-    fi
+    # str_time="m";
+    # if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
+    #   str_time="s";
+    # fi
 
     csvFile=$clean_grp;
 

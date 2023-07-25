@@ -77,7 +77,7 @@ while [[ $# -gt 0 ]]; do
             resultsPath="../optimRes"
             shift
         ;;
-        --num-best-res|-nbr)
+        --num-best-res|-n)
             numBestRes="$2"
             shift
             shift
@@ -96,7 +96,7 @@ FILTER_INNACURATE_DATA;
 clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
 SPLIT_FILES_BY_DS;
 
-# if we are getting optimal JV3 tests...
+# if we are getting optimal JV3 tests, rewrite csvs to contain top N results
 if [[ $resultsPath == "../optimRes" ]]; then
 
   # filter each DS so that they contain the N best tests and commands
@@ -108,7 +108,7 @@ if [[ $resultsPath == "../optimRes" ]]; then
     sort -nk4,4 -nk5,5 $dsFile | head -n $((2+numBestRes)) > $dsFileTMP;
 
     # get N best commands
-    topNcmds="${dsFile/.csv/-top$numBestRes.sh}";
+    topNcmds="${dsFile/bench-results/bench-results-top$numBestRes.sh}";
     topNcmds="optimJV3cmds/$(basename $topNcmds)";
     tail -n +3 $dsFileTMP  | awk '{print substr($0, index($0, "../bin/JARVIS3"))}' > $topNcmds;
     
