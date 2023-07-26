@@ -87,7 +87,7 @@ function GET_PLOT_BOUNDS() {
     bytesCF_upperBound=$(echo "$bytesCF_Q3+0.2*$bytesCF_IQR" | bc);
 
     if (( $(echo "$bps_lowerBound < 0" | bc -l) )); then
-      bps_upperBound=-0.1;
+      bps_upperBound=-0.01;
     fi
 
     if (( $(echo "$bps_upperBound > 2.5" | bc -l) )); then
@@ -95,26 +95,30 @@ function GET_PLOT_BOUNDS() {
     fi
 
     if (( $(echo "$bytesCF_lowerBound < 0" | bc -l) )); then
-      bytesCF_lowerBound=-0.1;
+      bytesCF_lowerBound=-0.01;
     fi
 
-    if (( $(echo "$bps_IQR < 0.2" | bc -l) )); then
-      bps_lowerBound="*";
-      bps_upperBound="*";
+    if (( $(echo "$bps_IQR < 1" | bc -l) )); then
+      bps_lowerBound="$bps_Q1";
+      bps_upperBound="$bps_Q3";
     fi
 
     if (( $(echo "$bytesCF_IQR < 1" | bc -l) )); then
-      bytesCF_lowerBound="*";
-      bytesCF_upperBound="*";
+      bytesCF_lowerBound="$bytesCF_Q1";
+      bytesCF_upperBound="$bytesCF_Q3";
     fi
 
     cat tempX.txt;
-    # printf "bps IQR: $bps_IQR";
+    printf "bps Q1: $bps_Q1 \n";
+    printf "bps Q3: $bps_Q3 \n";
+    printf "bps IQR: $bps_IQR \n";
     printf "bps lower bound: $bps_lowerBound \n";
     printf "bps upper bound: $bps_upperBound \n";
 
     cat tempY.txt;
-    # printf "bytesCF IQR: $bytesCF_IQR";
+    printf "bytesCF Q1: $bytesCF_Q1 \n";
+    printf "bytesCF Q3: $bytesCF_Q3 \n";
+    printf "bytesCF IQR: $bytesCF_IQR \n";
     printf "bytesCF lower bound: $bytesCF_lowerBound \n";
     printf "bytesCF upper bound: $bytesCF_upperBound \n\n";
 
@@ -151,7 +155,7 @@ function PLOT() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Compression time ($str_time)"
+    set ylabel "Compression time (s)"
     set xlabel "Average number of bits per symbol"
     plot $plotnames
 EOF
@@ -192,7 +196,7 @@ function PLOT_LOG() {
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
     set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
     set grid
-    set ylabel "Compression time ($str_time)"
+    set ylabel "Compression time (s)"
     set xlabel "Average number of bits per symbol"
     plot $plotnames_log
 EOF
