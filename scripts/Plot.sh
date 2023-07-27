@@ -87,7 +87,7 @@ function GET_PLOT_BOUNDS() {
     bytesCF_upperBound=$(echo "$bytesCF_Q3+0.2*$bytesCF_IQR" | bc);
 
     if (( $(echo "$bps_lowerBound < 0" | bc -l) )); then
-      bps_upperBound=-0.01;
+      bps_lowerBound=-0.01;
     fi
 
     if (( $(echo "$bps_upperBound > 2.5" | bc -l) )); then
