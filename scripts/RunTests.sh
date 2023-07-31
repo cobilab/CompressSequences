@@ -8,9 +8,11 @@ binPath="../bin/";
 csv_dsToSize="dsToSize.csv";
 declare -A dsToSize;
 
-sizes=("xs" "s" "m" "l" "xl"); # to be able to filter SEQUENCES to run by size 
-ALL_SEQUENCES_IN_DIR=( $(ls -S | egrep ".seq$" | sed 's/\.seq$//' | tac) ) # ( "test" ) # manual alternative
-SEQUENCES=() # gens that have the required size will be added here
+sizes=("xs" "s" "m" "l" "xl"); # to be able to filter SEQUENCES_NAMES to run by size 
+
+sequencesPath="$HOME/sequences";
+ALL_SEQUENCES_IN_DIR=( $(ls $sequencesPath -S | egrep ".seq$" | sed 's/\.seq$//' | tac) ) # ( "test" ) # manual alternative
+SEQUENCES_NAMES=() # gens that have the required size will be added here
 #
 # ==============================================================================
 #
@@ -55,7 +57,6 @@ function RUN_TEST() {
   # %M: Maximum resident set size of the process during its lifetime, in Kbytes.
   timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $C_COMMAND \
   |& grep "TIME" \
-  |& tr '.' ',' \
   |& awk '{ printf $2"\t"$4/1024/1024"\n" }' > c_time_mem.txt;
   #
   if [ -e "$FILEC" ]; then
@@ -68,7 +69,6 @@ function RUN_TEST() {
   #
   timeout $timeOut /bin/time -f "TIME\t%e\tMEM\t%M" $D_COMMAND \
   |& grep "TIME" \
-  |& tr '.' ',' \
   |& awk '{ printf $2"\t"$4/1024/1024"\n" }' > d_time_mem.txt;
   #
   # compare input file to decompressed file; they should have the same sequence
@@ -99,6 +99,7 @@ function RUN_TEST() {
   if [ ! -s $stdErrC ]; then rm -fr $stdErrC; fi
   if [ ! -s $stdErrD ]; then rm -fr $stdErrD; fi
   #
+  rm -fr $FILEC $FILED;
   rm -fr c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
   ./CleanCandDfiles.sh;
   #
@@ -108,17 +109,17 @@ function RUN_TEST() {
 #
 LOAD_CSV_DSTOSIZE;
 
-mkdir -p $resultsPath naf_out mbgc_out paq8l_out;
+mkdir -p $resultsPath;
 
 # Initialize variables
 timeOut=3600;
 
-# if one or more sizes are choosen, select all SEQUENCES with those sizes
+# if one or more sizes are choosen, select all SEQUENCES_NAMES with those sizes
 for size in "${sizes[@]}"; do
   if [[ "$*" == *"--size $size"* || "$*" == *"-s $size"* ]]; then
     for seq in "${ALL_SEQUENCES_IN_DIR[@]}"; do
         if [[ "${dsToSize[$seq]}" == "$size" ]]; then
-            SEQUENCES+=("$seq");
+            SEQUENCES_NAMES+=("$seq");
         fi
     done
   fi
@@ -127,15 +128,15 @@ done
 # if one or more gens are choosen, add them to array if they aren't there yet
 for seq in "${ALL_SEQUENCES_IN_DIR[@]}"; do
   if [[ "$*" == *"--sequence $seq"* || "$*" == *"-s $seq"* ]]; then
-    if ! echo "${SEQUENCES[@]}" | grep -q -w "$seq"; then
-      SEQUENCES+=("$seq");
+    if ! echo "${SEQUENCES_NAMES[@]}" | grep -q -w "$seq"; then
+      SEQUENCES_NAMES+=("$seq");
     fi
   fi
 done
 
-# if nothing is choosen, all SEQUENCES will be selected
-if [ ${#SEQUENCES[@]} -eq 0 ]; then
-  SEQUENCES=("${ALL_SEQUENCES_IN_DIR[@]}");
+# if nothing is choosen, all SEQUENCES_NAMES will be selected
+if [ ${#SEQUENCES_NAMES[@]} -eq 0 ]; then
+  SEQUENCES_NAMES=("${ALL_SEQUENCES_IN_DIR[@]}");
 fi
 
 while [[ $# -gt 0 ]]; do
@@ -157,14 +158,15 @@ done
 # ------------------------------------------------------------------------------
 #
 run=1;
-for sequence in "${SEQUENCES[@]}"; do
-    size=${dsToSize[$sequence]};
-    
+for sequenceName in "${SEQUENCES_NAMES[@]}"; do
+    sequence="$sequencesPath/$sequenceName";
+    #
+    size=${dsToSize[$sequenceName]};
     output_file_ds="$resultsPath/bench-results-raw-ds${ds_id}-${size}.txt";
     #
     # --- RUN sequence TESTS ---------------------------------------------------------------------------
     #
-    printf "DS$ds_id - $sequence - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\n";
+    printf "DS$ds_id - $sequenceName - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\n";
     #
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
         # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));
@@ -190,28 +192,28 @@ for sequence in "${SEQUENCES[@]}"; do
         RUN_TEST "JARVIS1" "$sequence.seq" "$sequence.seq.jc" "$sequence.seq.jc.jd" "JARVIS -v -l 15 $sequence.seq" "JARVIS -v -d $sequence.seq.jc" "$run"; run=$((run+1));
         RUN_TEST "JARVIS1" "$sequence.seq" "$sequence.seq.jc" "$sequence.seq.jc.jd" "JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 $sequence.seq" "JARVIS -v -d $sequence.seq.jc" "$run"; run=$((run+1));
         #
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "ennaf --fasta --temp-dir naf_out/ $sequence.fa -o naf_out/$sequence.naf" "unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "ennaf --fasta --temp-dir naf_out/ --level 5 $sequence.fa -o naf_out/$sequence.naf" "unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "ennaf --fasta --temp-dir naf_out/ --level 10 $sequence.fa -o naf_out/$sequence.naf" "unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "ennaf --fasta --temp-dir naf_out/ --level 15 $sequence.fa -o naf_out/$sequence.naf" "unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "ennaf --fasta --temp-dir naf_out/ --level 20 $sequence.fa -o naf_out/$sequence.naf" "unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "ennaf --fasta --temp-dir naf_out/ --level 22 $sequence.fa -o naf_out/$sequence.naf" "unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "ennaf --fasta --temp-dir $sequencesPath $sequence.fa -o $sequence.naf" "unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "ennaf --fasta --temp-dir $sequencesPath --level 5 $sequence.fa -o $sequence.naf" "unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "ennaf --fasta --temp-dir $sequencesPath --level 10 $sequence.fa -o $sequence.naf" "unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "ennaf --fasta --temp-dir $sequencesPath --level 15 $sequence.fa -o $sequence.naf" "unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "ennaf --fasta --temp-dir $sequencesPath --level 20 $sequence.fa -o $sequence.naf" "unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "ennaf --fasta --temp-dir $sequencesPath --level 22 $sequence.fa -o $sequence.naf" "unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
         #
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "mbgc -c 0 -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "mbgc -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "mbgc -c 2 -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "mbgc -c 3 -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "mbgc -c 0 -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "mbgc -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "mbgc -c 2 -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "mbgc -c 3 -i $sequence.fa $sequence.mbgc" "mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
         #
-        RUN_TEST "AGC" "$sequence.fa" "$sequence.agc" "$genome_agc_out.fa" "agc create $sequence.fa -o $sequence.agc" "agc getcol $sequence.agc > $genome_agc_out.fa" "$run"; run=$((run+1));
+        RUN_TEST "AGC" "$sequence.fa" "$sequence.agc" "$sequence.agc.out" "agc create $sequence.fa -o $sequence.agc" "agc getcol $sequence.agc > $sequence.agc.out" "$run"; run=$((run+1));
         #
         # other paq tests are very slow;
-        RUN_TEST "PAQ8" "$sequence.seq" "$sequence.seq.paq8l" "paq8l_out/$sequence.seq" "paq8l -1 $sequence.seq" "paq8l -d $sequence.seq.paq8l paq8l_out" "$run"; run=$((run+1));
+        RUN_TEST "PAQ8" "$sequence.seq" "$sequence.seq.paq8l" "$sequence.seq.paq8l.out" "paq8l -1 $sequence.seq" "paq8l -d $sequence.seq.paq8l.out $sequencesPath" "$run"; run=$((run+1));
     else
         RUN_TEST "GeCo2" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo2 -v -tm 13:1:0:0:0.7/0:0:0 $sequence.seq" "${binPath}GeDe2 -v $sequence.seq.co" "$run"; run=$((run+1));
         RUN_TEST "GeCo2" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 13:500:1:20:0.9/1:20:0.9 $sequence.seq" "${binPath}GeDe2 -v $sequence.seq.co" "$run"; run=$((run+1));
         RUN_TEST "GeCo2" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 14:500:1:20:0.9/1:20:0.9 $sequence.seq" "${binPath}GeDe2 -v $sequence.seq.co" "$run"; run=$((run+1));
         RUN_TEST "GeCo2" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo2 -v -tm 3:1:0:0:0.7/0:0:0 -tm 17:1000:1:10:0.9/3:20:0.9 $sequence.seq" "${binPath}GeDe2 -v $sequence.seq.co" "$run"; run=$((run+1));
-        RUN_TEST "GeCo2" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo2 -v -tm -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9 $sequence.seq" "${binPath}GeDe2 -v $sequence.seq.co" "$run"; run=$((run+1));
+        RUN_TEST "GeCo2" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo2 -v -tm 12:1:0:0:0.7/0:0:0 -tm 17:1000:1:20:0.9/3:20:0.9 $sequence.seq" "${binPath}GeDe2 -v $sequence.seq.co" "$run"; run=$((run+1));
         #
         RUN_TEST "GeCo3" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo3 -v -tm 13:1:0:0:0.7/0:0:0 $sequence.seq" "${binPath}GeDe3 -v $sequence.seq.co" "$run"; run=$((run+1));
         RUN_TEST "GeCo3" "$sequence.seq" "$sequence.seq.co" "$sequence.seq.de" "${binPath}GeCo3 -v -lr 0.005 -hs 160 -tm 1:1:1:0:0.6/0:0:0 -tm 1:1:0:0:0.6/0:0:0 -tm 2:1:2:0:0.90/0:0:0 -tm 2:1:1:0:0.8/0:0:0 -tm 3:1:0:0:0.8/0:0:0 -tm 4:1:0:0:0.8/0:0:0 -tm 5:1:0:0:0.8/0:0:0 -tm 6:1:0:0:0.8/0:0:0 -tm 7:1:1:0:0.7/0:0:0 -tm 8:1:0:0:0.85/0:0:0 -tm 9:1:1:0:0.88/0:0:0 -tm 11:10:2:0:0.9/0:0:0 -tm 11:10:0:0:0.88/0:0:0 -tm 12:20:1:0:0.88/0:0:0 -tm 14:50:1:1:0.89/1:10:0.89 -tm 17:2000:1:10:0.88/2:50:0.88 -tm 20:1200:1:160:0.88/3:15:0.88 $sequence.seq" "${binPath}GeDe3 -v $sequence.seq.co" "$run"; run=$((run+1));
@@ -229,21 +231,21 @@ for sequence in "${SEQUENCES[@]}"; do
         RUN_TEST "JARVIS1" "$sequence.seq" "$sequence.seq.jc" "$sequence.seq.jc.jd" "${binPath}JARVIS -v -l 15 $sequence.seq" "${binPath}JARVIS -v -d $sequence.seq.jc" "$run"; run=$((run+1));
         RUN_TEST "JARVIS1" "$sequence.seq" "$sequence.seq.jc" "$sequence.seq.jc.jd" "${binPath}JARVIS -v -rm 2000:12:0.1:0.9:6:0.10:1 -cm 4:1:1:0.7/0:0:0:0 -z 6 $sequence.seq" "${binPath}JARVIS -v -d $sequence.seq.jc" "$run"; run=$((run+1));
         #
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "${binPath}ennaf --fasta --temp-dir naf_out/ $sequence.fa -o naf_out/$sequence.naf" "${binPath}unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "${binPath}ennaf --fasta --temp-dir naf_out/ --level 5 $sequence.fa -o naf_out/$sequence.naf" "${binPath}unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "${binPath}ennaf --fasta --temp-dir naf_out/ --level 10 $sequence.fa -o naf_out/$sequence.naf" "${binPath}unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "${binPath}ennaf --fasta --temp-dir naf_out/ --level 15 $sequence.fa -o naf_out/$sequence.naf" "${binPath}unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "${binPath}ennaf --fasta --temp-dir naf_out/ --level 20 $sequence.fa -o naf_out/$sequence.naf" "${binPath}unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
-        RUN_TEST "NAF" "$sequence.fa" "naf_out/$sequence.naf" "naf_out/$sequence.fa" "${binPath}ennaf --fasta --temp-dir naf_out/ --level 22 $sequence.fa -o naf_out/$sequence.naf" "${binPath}unnaf naf_out/$sequence.naf -o naf_out/$sequence.fa" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "${binPath}ennaf --fasta --temp-dir $sequencesPath $sequence.fa -o $sequence.naf" "${binPath}unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "${binPath}ennaf --fasta --temp-dir $sequencesPath --level 5 $sequence.fa -o $sequence.naf" "${binPath}unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "${binPath}ennaf --fasta --temp-dir $sequencesPath --level 10 $sequence.fa -o $sequence.naf" "${binPath}unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "${binPath}ennaf --fasta --temp-dir $sequencesPath --level 15 $sequence.fa -o $sequence.naf" "${binPath}unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "${binPath}ennaf --fasta --temp-dir $sequencesPath --level 20 $sequence.fa -o $sequence.naf" "${binPath}unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
+        RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "${binPath}ennaf --fasta --temp-dir $sequencesPath --level 22 $sequence.fa -o $sequence.naf" "${binPath}unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
         #
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "${binPath}mbgc -c 0 -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "${binPath}mbgc -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "${binPath}mbgc -c 2 -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
-        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "mbgc_out/$sequence.fa" "${binPath}mbgc -c 3 -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc mbgc_out" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "${binPath}mbgc -c 0 -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "${binPath}mbgc -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "${binPath}mbgc -c 2 -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "${binPath}mbgc -c 3 -i $sequence.fa $sequence.mbgc" "${binPath}mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
         #
-        RUN_TEST "AGC" "$sequence.fa" "$sequence.agc" "$genome_agc_out.fa" "${binPath}agc create $sequence.fa -o $sequence.agc" "${binPath}agc getcol $sequence.agc > $genome_agc_out.fa" "$run"; run=$((run+1));
+        RUN_TEST "AGC" "$sequence.fa" "$sequence.agc" "$sequence.agc.out" "${binPath}agc create $sequence.fa -o $sequence.agc" "${binPath}agc getcol $sequence.agc > $sequence.agc.out" "$run"; run=$((run+1));
         #
-        RUN_TEST "PAQ8" "$sequence.seq" "$sequence.seq.paq8l" "paq8l_out/$sequence.seq" "${binPath}paq8l -1 $sequence.seq" "${binPath}paq8l -d $sequence.seq.paq8l paq8l_out" "$run"; run=$((run+1));
+        RUN_TEST "PAQ8" "$sequence.seq" "$sequence.seq.paq8l" "$sequence.seq.paq8l.out" "${binPath}paq8l -1 $sequence.seq" "${binPath}paq8l -d $sequence.seq.paq8l.out $sequencesPath" "$run"; run=$((run+1));
     fi
     #
     RUN_TEST "JARVIS2_BIN" "$sequence.seq" "$sequence.seq.jc" "$sequence.seq.jc.jd" "${binPath}JARVIS2 -v -l 1 $sequence.seq" "${binPath}JARVIS2 -d $sequence.seq.jc" "$run"; run=$((run+1));
