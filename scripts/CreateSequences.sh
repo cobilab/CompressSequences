@@ -42,7 +42,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 
-OUT_FILE="alcorGen.mfa";
+OUT_FILE="alcorSeq.mfa";
 
 #read -p "Define the number of different sequences sizes to be considered: " SIZE_NUMBER
 
@@ -50,7 +50,7 @@ OUT_FILE="alcorGen.mfa";
 declare -a seed_arr=()
 declare -a size_arr=()
 
-rm -fr alcorGen*.*;
+rm -fr alcorSeq*.*;
 
 m=2
 while [  ${#seed_arr[@]}  -lt $SEED_RANGE ]

@@ -120,10 +120,18 @@ function INSTALL_WITHOUT_CONDA() {
     cp mbgc_dir/build/mbgc .
     rm -fr mbgc_dir
 }
+
+
 #
-mkdir -p ../bin
-cd ../bin
+# === MAIN ===========================================================================
 #
+
+scriptPath=$(pwd)
+
+binPath="../bin"
+mkdir -p $binPath
+cd $binPath
+
 if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
     INSTALL_WITH_CONDA;
 elif [[ "$*" == *"--install-with-both"* ||  "$*" == *"-iwb"* ]]; then
@@ -227,3 +235,5 @@ rm -fr paq8l.zip
 cd ..
 mv paq8l_dir/paq8l .
 rm -fr paq8l_dir
+
+cd $scriptPath

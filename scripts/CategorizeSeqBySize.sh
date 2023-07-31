@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-genomesPath=".";
+sequencesPath="~/sequences";
 #
 output_file="dsToSize.csv";
 #
@@ -9,7 +9,7 @@ sizes_bytes=(1048576 104857600 1073741824 10737418240 10737418240);
 #
 declare -A dsToSize;
 #
-seqFiles=( $(ls "$genomesPath" | egrep ".seq$") );
+seqFiles=( $(ls "$sequencesPath" | egrep ".seq$") );
 #
 # ==============================================================================
 #

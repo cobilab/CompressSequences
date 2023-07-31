@@ -1,6 +1,7 @@
 #!/bin/bash
 
-genomesPath="." # "../genomes"
+sequencesPath="~/sequences";
+mkdir -p $sequencesPath;
 
 urls=(
     # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102205/TaeRenan_refseq_v2.1.fa" # 13.50GB
@@ -33,16 +34,16 @@ urls=(
     # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102174/Spheniscus_demersus.cds.v1.fa" # 21.87MB
     # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102200/phyml_tree.fa" # 2.36MB
 
-    # "https://raw.githubusercontent.com/rongjiewang/DMcompress/master/test.fasta" # 710.0KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102012/RL0949_chloroplast.fa" # 157.91KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101111/RL0048_chloroplast.fa" # 154.2KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102011/RL0948_chloroplast.fa" # 153.45KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102130/RL1067_chloroplast.fa" # 150.17KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101120/RL0057_chloroplast.fa" # 135.7KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102150/RL1087_chloroplast.fa" # 134.88KB
-    # "https://raw.githubusercontent.com/plotly/datasets/master/Dash_Bio/Genetic/COVID_sequence.fasta" # 29.7KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102253/Aldabrachelys_gigantea_mitochondrial_genome.fasta" # 16.55KB
-    # "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102194/mt_genome_CM029732.fa" # 15.06KB
+    "https://raw.githubusercontent.com/rongjiewang/DMcompress/master/test.fasta" # 710.0KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102012/RL0949_chloroplast.fa" # 157.91KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101111/RL0048_chloroplast.fa" # 154.2KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102011/RL0948_chloroplast.fa" # 153.45KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102130/RL1067_chloroplast.fa" # 150.17KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/101001_102000/101120/RL0057_chloroplast.fa" # 135.7KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102150/RL1087_chloroplast.fa" # 134.88KB
+    "https://raw.githubusercontent.com/plotly/datasets/master/Dash_Bio/Genetic/COVID_sequence.fasta" # 29.7KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102253/Aldabrachelys_gigantea_mitochondrial_genome.fasta" # 16.55KB
+    "https://ftp.cngb.org/pub/gigadb/pub/10.5524/102001_103000/102194/mt_genome_CM029732.fa" # 15.06KB
 )
 
 #
@@ -52,10 +53,10 @@ printf "downloading...\n"
 for url in "${urls[@]}"; do
     # gets filename by spliting in "/" and getting the last element
     rawFile=$(echo $url | rev | cut -d'/' -f1 | rev | sed 's/\.fa\|\.fna\|\.fasta/_raw.fa/')
-    genFile="${rawFile//_raw/}"
+    dwFile="${rawFile//_raw/}"
 
-    if [[ ! -f "$genomesPath/$genFile" ]]; then 
-        wget -c $url -O "$genomesPath/$rawFile"
+    if [[ ! -f "$sequencesPath/$dwFile" ]]; then 
+        wget -c $url -O "$sequencesPath/$rawFile"
 
     else 
         # no need to download a file that already exists
@@ -64,17 +65,9 @@ for url in "${urls[@]}"; do
 done
 
 #
-# === If no new file has been downloaded exit program ===========================================================================
-#
-#rawFiles=( $(ls $genomesPath | egrep "_raw.fa") )
-#if [ ${#rawFiles[@]} -eq 0 ]; then 
-#    echo "all files have been previously downloaded, so the program will end here"; 
-#    exit; 
-#fi
-
-#
 # === Skip *_raw.fa that are multifasta by renaming them as *_raw.mfa and updating array ===========================================================================
 #
+rawFiles=( $(ls $sequencesPath | egrep "_raw.fa") )
 for rawFile in ${rawFiles[@]}; do
     if [ $(grep -c ">" $rawFile) -gt 1 ]; then
 
@@ -83,27 +76,8 @@ for rawFile in ${rawFiles[@]}; do
         mv $rawFile $mfRawFile
     fi
 done
-
 # update array to exclude raw multifasta files
-rawFiles=( $(ls $genomesPath | egrep "_raw.fa") )
-
-#
-# === Unzip .gz files ===========================================================================
-#
-gzFiles=( $(ls "$genomesPath" | egrep ".gz$") )
-printf "\nunzipping .gz files...\n"
-for gzFile in "${gzFiles[@]}"; do
-    unzippedFile="${gzFile%.gz}"
-
-    if [[ -f "$genomesPath/$unzippedFile" ]]; then 
-        echo "$gzFile has been previously unzipped" 
-
-    else 
-        gunzip "$gzFile"
-        rm -fr "$gzFile"
-        echo "$gzFile --unzipped-as--> $unzippedFile"
-    fi
-done
+rawFiles=( $(ls $sequencesPath | egrep "_raw.fa") )
 
 #
 # === Preprocess _raw.fa files onto clean .fa and .seq files ===========================================================================
@@ -112,7 +86,7 @@ printf "\n*_raw.fa ---cleaning...---> *.fa\n" # preprocesses each fasta file int
 for rawFile in "${rawFiles[@]}"; do 
     cleanFaFile=${rawFile/_raw.fa/.fa};
 
-    if [[ ! -f $genomesPath/$cleanFaFile ]]; then
+    if [[ ! -f $sequencesPath/$cleanFaFile ]]; then
         ../bin/gto_fasta_to_seq < $rawFile | tr 'agct' 'AGCT' | tr -d -c "AGCT" | ../bin/gto_fasta_from_seq -n x -l 80 > $cleanFaFile
         echo "$cleanFaFile created with success"
     else
@@ -123,11 +97,11 @@ for rawFile in "${rawFiles[@]}"; do
 done 
 
 printf "\n*.fa ------> *.seq\n" # preprocesses each fasta file into its respective clean files
-cleanFiles=( $(ls $genomesPath | egrep ".fa") )
+cleanFiles=( $(ls $sequencesPath | egrep ".fa") )
 for cleanFile in "${cleanFiles[@]}"; do 
-    seqFile=$(echo $cleanFile | sed 's/.fa/.seq/g'); # replaces .fa with .seq
-    if [[ ! -f $genomesPath/$seqFile ]]; then   
-        cat "$genomesPath/$cleanFile" | grep -v ">" | tr 'agct' 'AGCT' | tr -d -c "ACGT" > "$genomesPath/$seqFile" # removes lines with comments and non-nucleotide chars
+    seqFile=$(echo $cleanFile | sed 's/.fa/.seq/g');
+    if [[ ! -f $sequencesPath/$seqFile ]]; then   
+        cat "$sequencesPath/$cleanFile" | grep -v ">" | tr 'agct' 'AGCT' | tr -d -c "ACGT" > "$sequencesPath/$seqFile" # removes lines with comments and non-nucleotide chars
         echo "$seqFile created with success"
     else
         echo "$seqFile has been previously created"

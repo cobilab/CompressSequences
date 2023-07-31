@@ -204,20 +204,6 @@ EOF
 #
 # === MAIN ===========================================================================
 #
-# parse command-line arguments
-while [[ $# -gt 0 ]]; do
-  key="$1"
-  case $key in
-    --optim|-o)
-      resultsPath="../optimRes"
-      shift
-      ;;
-    *) 
-      # ignore any other arguments
-      shift
-      ;;
-  esac
-done
 
 LOAD_CSV_DSTOSIZE;
 
