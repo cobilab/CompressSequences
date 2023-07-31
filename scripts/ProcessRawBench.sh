@@ -33,7 +33,7 @@ function FILTER_INNACURATE_DATA() {
         cleanFile="$resultsPath/bench-results$cleanGrp.csv"
         
         if [ -f "$rawFile" ]; then
-            awk '{for(i=1; i<=NF; i++) if ($i == -1) next}; 1' "$rawFile" > "$cleanFile";
+             awk '{flag=0; for(i=1; i<=NF; i++) if ($i == -1) {flag=1; next}; if (flag==0) print $0}' "$rawFile" > "$cleanFile";
         fi
     done
 }
