@@ -1,6 +1,10 @@
 #!/bin/bash
 
 resultsPath="../results";
+cmds="cmds";
+mkdir -p $cmds;
+
+filterRes=false;
 
 sizes=("xs" "s" "m" "l" "xl");
 
@@ -29,7 +33,7 @@ function FILTER_INNACURATE_DATA() {
         cleanFile="$resultsPath/bench-results$cleanGrp.csv"
         
         if [ -f "$rawFile" ]; then
-             awk '{flag=0; for(i=1; i<=NF; i++) if ($i == -1) {flag=1; next}; if (flag==0) print $0}' "$rawFile" > "$cleanFile";
+             awk '!/No such file or directory/ {flag=0; for(i=1; i<=NF; i++) if ($i == -1) {flag=1; next}; if (flag==0) print $0}' "$rawFile" > "$cleanFile";
         fi
     done
 }
@@ -60,10 +64,26 @@ function SPLIT_FILES_BY_DS() {
         done < "$input_file"
     done
 }
-
 #
 # === MAIN ===========================================================================
 #
+
+# parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        --filter|-f)
+            filterRes=true;
+            numBestRes="$2";
+            shift;
+            shift;
+        ;;
+        *) 
+            # ignore any other arguments
+            shift
+        ;;
+    esac
+done
 
 # bench-results-raw-$size.txt ----> bench-results-grp-$size.csv
 FILTER_INNACURATE_DATA;
@@ -71,4 +91,3 @@ FILTER_INNACURATE_DATA;
 # bench-results-grp-$size.csv ----> bench-results-DS1-$size.csv, bench-results-DS2-$size.csv...
 clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
 SPLIT_FILES_BY_DS;
-

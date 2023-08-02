@@ -155,6 +155,7 @@ run=1;
 for sequenceName in "${SEQUENCES_NAMES[@]}"; do
     sequence="$sequencesPath/$sequenceName";
     #
+    ds_id=$(($(grep -n -w "$sequenceName" dsToSize.csv | cut -d ":" -f 1)-1));
     size=${dsToSize[$sequenceName]};
     output_file_ds="$resultsPath/bench-results-raw-ds${ds_id}-${size}.txt";
     #
