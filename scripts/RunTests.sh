@@ -10,7 +10,7 @@ declare -A dsToSize;
 
 sizes=("xs" "s" "m" "l" "xl"); # to be able to filter SEQUENCES_NAMES to run by size 
 
-sequencesPath="$HOME/sequences";
+  sequencesPath="$HOME/sequences";
 ALL_SEQUENCES_IN_DIR=( $(ls $sequencesPath -S | egrep ".seq$" | sed 's/\.seq$//' | tac) ) # ( "test" ) # manual alternative
 SEQUENCES_NAMES=() # gens that have the required size will be added here
 #
@@ -37,9 +37,6 @@ function RUN_TEST() {
   C_COMMAND="$5";
   D_COMMAND="$6";
   nrun="$7";
-  #
-  stdErrC="stderrC_ds${ds_id}_$size.txt";
-  stdErrD="stderrD_ds${ds_id}_$size.txt";
   #
   # some compressors need extra preprocessing
   if [[ $NAME == MFC* || $NAME == DMcompress* ]]; then 
@@ -94,10 +91,7 @@ function RUN_TEST() {
   CMP_SIZE=`ls -la cmp.txt | awk '{ print $5}'`
   if [[ "$CMP_SIZE" != "0" ]]; then CMP_SIZE="1"; fi
   #
-  printf "$NAME\t$BYTES\t$BYTES_CF\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\n";
-  #
-  if [ ! -s $stdErrC ]; then rm -fr $stdErrC; fi
-  if [ ! -s $stdErrD ]; then rm -fr $stdErrD; fi
+  printf "$NAME\t$BYTES\t$BYTES_CF\t$BPS\t$C_TIME\t$C_MEME\t$D_TIME\t$D_MEME\t$CMP_SIZE\t$nrun\t$C_COMMAND\n";
   #
   rm -fr $FILEC $FILED;
   rm -fr c_tmp_report.txt d_tmp_report.txt c_time_mem.txt d_time_mem.txt
@@ -166,7 +160,7 @@ for sequenceName in "${SEQUENCES_NAMES[@]}"; do
     #
     # --- RUN sequence TESTS ---------------------------------------------------------------------------
     #
-    printf "DS$ds_id - $sequenceName - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\n";
+    printf "DS$ds_id - $sequenceName - $size \nPROGRAM\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\tC_COMMAND\n";
     #
     if [[ "$*" == *"--installed-with-conda"* ||  "$*" == *"-iwc"* ]]; then
         # RUN_TEST "compressor_name" "original_file" "compressed_file" "decompressed_file" "c_command" "d_command" "$run"; run=$((run+1));

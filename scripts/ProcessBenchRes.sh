@@ -71,3 +71,4 @@ FILTER_INNACURATE_DATA;
 # bench-results-grp-$size.csv ----> bench-results-DS1-$size.csv, bench-results-DS2-$size.csv...
 clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
 SPLIT_FILES_BY_DS;
+
