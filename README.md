@@ -1,9 +1,9 @@
 
-## <b>How compressible are genome sequences?</b> ##
+## <b>How compressible are genetic sequences?</b> ##
 
 <br>
 
-<p align="justify">This repository provides information-reproducibility on how compressible different genome sequences are using different data compressors.</p>
+<p align="justify">This repository provides information-reproducibility on how compressible different sequences are using different data compressors.</p>
 
 ### Data compression tools ###
 
