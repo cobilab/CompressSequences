@@ -5,6 +5,7 @@ results/*
 plots/*
 sequences_raw/*
 sequences/*
+DS*.*
 
 # Except these
 !scripts/*.sh
