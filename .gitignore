@@ -3,6 +3,8 @@ tools/*
 scripts/*
 results/*
 plots/*
+sequences_raw/*
+sequences/*
 
 # Except these
 !scripts/*.sh
