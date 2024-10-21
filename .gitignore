@@ -4,7 +4,9 @@ scripts/*
 results/*
 plots/*
 sequences_raw/*
+cassava_raw/*
 sequences/*
+DS*.*
 
 # Except these
 !scripts/*.sh
