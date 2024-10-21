@@ -4,6 +4,7 @@ scripts/*
 results/*
 plots/*
 sequences_raw/*
+cassava_raw/*
 sequences/*
 DS*.*
 
