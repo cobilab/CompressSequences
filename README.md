@@ -45,7 +45,7 @@ Alternatively:
 <pre>
 #
 ./InstallTools.sh      # install listed compressors, GTO, and AlcoR
-./DownloadFASTA.sh     # downloads FASTA files by NBCI id
+./DownloadFASTA.sh     # downloads FASTA files
 ./GetAlcoRFASTA.sh     # simulates and stores 2 synthetic FASTA sequences
 ./FASTA2seq.sh         # cleans FASTA files and stores raw sequence files
 ./DownloadDNAcorpus.sh # download raw sequences from a balanced sequence corpus
