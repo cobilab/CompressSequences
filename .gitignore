@@ -1,7 +1,8 @@
 # Ignore these
+tools/*
 scripts/*
 results/*
-optimRes/*
+plots/*
 
 # Except these
 !scripts/*.sh
