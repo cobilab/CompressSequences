@@ -39,7 +39,7 @@ function INSTALL_WITHOUT_CONDA() {
     #
     # AlcoR ------------------------------------------------------------------------
     #
-    # sudo apt-get install cmake git
+    rm -fr alcor
     git clone https://github.com/cobilab/alcor.git
     cd alcor/src/
     cmake .
@@ -60,6 +60,7 @@ function INSTALL_WITHOUT_CONDA() {
     #
     # JARVIS1 ----------------------------------------------------------------------
     #
+    rm -fr jarvis
     git clone https://github.com/pratas/jarvis.git
     cd jarvis/src/
     make
@@ -69,6 +70,7 @@ function INSTALL_WITHOUT_CONDA() {
     #
     # GeCo3 ------------------------------------------------------------------------
     #
+    rm -fr geco3
     git clone https://github.com/cobilab/geco3.git
     cd geco3/src/
     make
@@ -79,6 +81,7 @@ function INSTALL_WITHOUT_CONDA() {
     #
     # GeCo2 ------------------------------------------------------------------------
     #
+    rm -fr geco2
     git clone https://github.com/pratas/geco2.git
     cd geco2/src/
     cmake .
@@ -100,6 +103,7 @@ function INSTALL_WITHOUT_CONDA() {
     #
     # AGC ------------------------------------------------------------------------
     #
+    rm -fr agc
     git clone https://github.com/refresh-bio/agc
     cd agc && make
     cd ..
@@ -109,6 +113,7 @@ function INSTALL_WITHOUT_CONDA() {
     #
     # MBGC ------------------------------------------------------------------------
     #
+    rm -fr mbgc
     git clone https://github.com/kowallus/mbgc.git
     cd mbgc
     mkdir -p build
@@ -127,10 +132,10 @@ function INSTALL_WITHOUT_CONDA() {
 #
 
 scriptPath=$(pwd)
-
-binPath="../bin"
-mkdir -p $binPath
-cd $binPath
+configJson="../config.json"
+toolsPath="$(grep 'toolsPath' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )"
+mkdir -p $toolsPath
+cd $toolsPath
 
 if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
     INSTALL_WITH_CONDA;
@@ -196,6 +201,7 @@ rm -fr nncp-2021-06-01/ nncp-2021-06-01.tar.gz
 #
 # CMIX ------------------------------------------------------------------------
 #
+rm -fr cmix
 git clone https://github.com/byronknoll/cmix.git
 mv cmix cmix_dir
 cd cmix_dir
@@ -235,5 +241,5 @@ rm -fr paq8l.zip
 cd ..
 mv paq8l_dir/paq8l .
 rm -fr paq8l_dir
-
+#
 cd $scriptPath

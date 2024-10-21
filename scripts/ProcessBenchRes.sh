@@ -1,93 +1,75 @@
 #!/bin/bash
-
-resultsPath="../results";
-cmds="cmds";
-mkdir -p $cmds;
-
-filterRes=false;
-
-sizes=("xs" "s" "m" "l" "xl");
-
+#
+configJson="../config.json"
+ds_sizesBase2="$(grep 'DS_sizesBase2' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
+ds_sizesBase10="$(grep 'DS_sizesBase10' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
 #
 # === FUNCTIONS ===========================================================================
 #
-function FILTER_INNACURATE_DATA() {
-    rawGrps=("-raw");
-    cleanGrps=("");
-    #
-    for size in ${sizes[@]}; do
-        rawGrps+=("-raw-$size");
-        cleanGrps+=("-grp-$size");
-    done
-    
-    # new results may have size grps different from previous grps, so old results are removed
-    rm -fr $resultsPath/*.csv
-    rm -fr $resultsPath/split*
-    
-    # remove tests that failed to compress the sequence
-    for i in ${!rawGrps[@]}; do
-        rawGrp="${rawGrps[$i]}"
-        rawFile="$resultsPath/bench-results$rawGrp.txt"
-        
-        cleanGrp="${cleanGrps[$i]}"
-        cleanFile="$resultsPath/bench-results$cleanGrp.csv"
-        
-        if [ -f "$rawFile" ]; then
-             awk '!/No such file or directory/ {flag=0; for(i=1; i<=NF; i++) if ($i == -1) {flag=1; next}; if (flag==0) print $0}' "$rawFile" > "$cleanFile";
-        fi
-    done
+function SHOW_HELP() {
+ echo " -------------------------------------------------------";
+ echo "                                                        ";
+ echo " OptimJV3 - optimize JARVIS3 CM and RM parameters       ";
+ echo "                                                        ";
+ echo " Program options ---------------------------------------";
+ echo "                                                        ";
+ echo " -h|--help.....................................Show this";
+ echo " -v|--view-ds|--view-datasets....View sequences and size"; 
+ echo "                                                 of each";
+ echo "                                                        ";
+ echo " -------------------------------------------------------";
 }
 #
-function SPLIT_FILES_BY_DS() {
-    # read the input file
-    file_prefix="$resultsPath/bench-results-"
-    
-    # remove datasets before recreating them
-    rm -fr ${file_prefix}DS*-*.csv
-    
-    ds_i=0;
-    for input_file in ${clean_bench_grps[@]}; do
-        while IFS= read -r line; do
-            # check if the line contains a dataset name
-            if [[ $line == DS* ]]; then
-                # create a new output file for the dataset
-                DSN=$(echo "$line" | cut -d" " -f1)
-                size=$(echo "$line" | cut -d" " -f5)
-                
-                output_file="${file_prefix}$DSN-$size.csv"
-                
-                echo "$line" > "$output_file"
-            else
-                # append the line to the current dataset's file
-                echo "$line" >> "$output_file"
-            fi
-        done < "$input_file"
-    done
-}
+# === PARSING ===========================================================================
 #
-# === MAIN ===========================================================================
-#
-
-# parse command-line arguments
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
-        --filter|-f)
-            filterRes=true;
-            numBestRes="$2";
+        -h|--help)
+            SHOW_HELP;
+            exit;
             shift;
+            ;;
+        -v|--view-ds|--view-datasets)
+            cat $ds_sizesBase2; echo; cat $ds_sizesBase10;
+            exit;
             shift;
-        ;;
+            ;;
         *) 
-            # ignore any other arguments
-            shift
-        ;;
+            echo "Invalid option: $1"
+            exit 1;
+            ;;
     esac
 done
+#
+# === MAIN ===========================================================================
+#
+#
+resultsPath="../results"
+#
+groups=( $(ls "$resultsPath" | grep "DS.*\.txt" | sed -n 's/.*-grp\([0-9]\+\)\.txt/grp\1/p' | sort | uniq -c | awk '{print $2}') )
+for grp in ${groups[@]}; do
+    #
+    # build grp .txt files
+    results=( $(find "$resultsPath" -maxdepth 1 -type f -name "*DS*$grp.txt" | sort -V) )
+    output="$resultsPath/bench-results-raw-${grp}.txt"
+    echo "$grp" > $output
+    awk 'NR==2' "${results[0]}" >> $output
+    for res in ${results[@]}; do
+        awk 'NR>2' $res >> $output
+    done
+    #
+    # sort results from each sequence and from group of sequences
+    results=( $(find "$resultsPath" -maxdepth 1 -type f -name "*$grp.txt" | sort -V) )
+    for result in ${results[@]}; do
+        result="$resultsPath/$result"
+        output="${result//.txt/.tsv}"
+        output="${output//-raw/}"
+        #
+        ( head -n2 $result
+        #
+        # \nPROGRAM\tVALIDITY\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\tC_COMMAND\n" > "$output_file_ds";
+        awk -F'\t' 'NR>2 {if ($4!=-1 && $5!=-1 && $6!=-1 && $7!=-1 && $8!=-1 && $9!=-1 ) print $0}' "$result" | sort -k2n -k4n -k6n ) > "$output"
+    done
+done
 
-# bench-results-raw-$size.txt ----> bench-results-grp-$size.csv
-FILTER_INNACURATE_DATA;
-
-# bench-results-grp-$size.csv ----> bench-results-DS1-$size.csv, bench-results-DS2-$size.csv...
-clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
-SPLIT_FILES_BY_DS;

@@ -1,12 +1,8 @@
 #!/bin/bash
 #
-resultsPath="../results";
-#
-sizes=("xs" "s" "m" "l" "xl");
-#
-csv_dsToSize="dsToSize.csv";
-declare -A dsToSize;
-
+configJson="../config.json"
+ds_sizesBase2="$(grep 'DS_sizesBase2' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
+ds_sizesBase10="$(grep 'DS_sizesBase10' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
 #
 # ==============================================================================
 #
@@ -20,39 +16,30 @@ function CHECK_INPUT () {
   fi
 }
 #
-function LOAD_CSV_DSTOSIZE() {
-  while IFS=, read -r ds bytes size; do
-    # Skip the header line
-    if [[ "$ds" != "ds" ]]; then
-      dsToSize[$ds]=$size;
-    fi
-  done < $csv_dsToSize;
-}
-#
 function SPLIT_FILE_BY_COMPRESSOR() {
   # recreate grp folder
-  rm -fr $plots_folder;
-  mkdir -p $plots_folder;
+  rm -fr $plotsSubFolder;
+  mkdir -p $plotsSubFolder;
 
-  CHECK_INPUT "$bench_res_csv";
+  CHECK_INPUT "$tsvFile";
   # create names.txt inside each ds folder; it contains all compressor names
-  cat $bench_res_csv | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > "$compressor_names";
+  cat $tsvFile | awk '{ print $1} ' | sort -V | uniq | grep -vE "DS\*|PROGRAM" > "$compressor_names";
   CHECK_INPUT "$compressor_names";
 
   # splits ds into subdatasets by compressor and store them in folder
   c_i=1;
   plotnames="";
   plotnames_log="";
-  mapfile -t INT_DATA < "$compressor_names";
-  for dint in "${INT_DATA[@]}"; do
-    if [[ $dint != PROGRAM && $dint != DS* ]]; then
-      compressor_csv="$compressor_csv_prefix$c_i.csv";
-      grep $dint $bench_res_csv > "$compressor_csv";
+  mapfile -t compressors < "$compressor_names";
+  for compressor in "${compressors[@]}"; do
+    if [[ $compressor != PROGRAM && $compressor != DS* ]]; then
+      compressor_tsv="$compressor_tsv_prefix$c_i.tsv";
+      grep $compressor $tsvFile > "$compressor_tsv";
       
-      tmp="'$compressor_csv' u 4:5 w points ls $c_i title '$dint', ";
+      tmp="'$compressor_tsv' u 5:6 w points ls $c_i title '$compressor', ";
       plotnames="$plotnames $tmp";
       
-      tmp_log="'$compressor_csv' u 4:(pseudo_log(5)) w points ls $c_i title '$dint', ";
+      tmp_log="'$compressor_tsv' u 5:(pseudo_log(6)) w points ls $c_i title '$compressor', ";
       plotnames_log="$plotnames_log $tmp_log";
       
       ((++c_i));
@@ -65,37 +52,37 @@ function SPLIT_FILE_BY_COMPRESSOR() {
 #
 function GET_PLOT_BOUNDS() {
     # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($4 ~ /^[0-9.]+$/) print $4}' $csvFile) > tempX.txt
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $tsvFile) > tempX.txt
     bps_Q1=$(awk 'NR==2{print $2}' "tempX.txt");
     bps_Q3=$(awk 'NR==2{print $5}' "tempX.txt");
 
     # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
-    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $csvFile) > tempY.txt
-    bytesCF_Q1=$(awk 'NR==2{print $2}' "tempY.txt");
-    bytesCF_Q3=$(awk 'NR==2{print $5}' "tempY.txt");
+    Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($6 ~ /^[0-9.]+$/) print $6}' $tsvFile) > tempY.txt
+    timeS_Q1=$(awk 'NR==2{print $2}' "tempY.txt");
+    timeS_Q3=$(awk 'NR==2{print $5}' "tempY.txt");
 
     # IQR (Inter Quartile Range) = Q3 - Q1
     bps_IQR=$(echo "$bps_Q3-$bps_Q1" | bc);
-    bytesCF_IQR=$(echo "$bytesCF_Q3-$bytesCF_Q1" | bc);
+    timeS_IQR=$(echo "$timeS_Q3-$timeS_Q1" | bc);
 
-    # lower bound = Q1 – 0.2*IQR
-    bps_lowerBound=$(echo "$bps_Q1-0.2*$bps_IQR" | bc);
-    bytesCF_lowerBound=$(echo "$bytesCF_Q1-0.2*$bytesCF_IQR" | bc);
+    # lower bound = Q1 – 1.5*IQR
+    bps_lowerBound=$(echo "$bps_Q1-1.5*$bps_IQR" | bc);
+    timeS_lowerBound=$(echo "$timeS_Q1-1.5*$timeS_IQR" | bc);
 
-    # upper bound = Q3 + 0.2*IQR
-    bps_upperBound=$(echo "$bps_Q3+0.2*$bps_IQR" | bc);
-    bytesCF_upperBound=$(echo "$bytesCF_Q3+0.2*$bytesCF_IQR" | bc);
+    # upper bound = Q3 + 1.5*IQR
+    bps_upperBound=$(echo "$bps_Q3+1.5*$bps_IQR" | bc);
+    timeS_upperBound=$(echo "$timeS_Q3+1.5*$timeS_IQR" | bc);
 
     if (( $(echo "$bps_lowerBound < 0" | bc -l) )); then
       bps_lowerBound=-0.01;
     fi
 
-    if (( $(echo "$bps_upperBound > 2.5" | bc -l) )); then
-      bps_upperBound=2.5;
+    if (( $(echo "$bps_upperBound > 2.05" | bc -l) )); then
+      bps_upperBound=2.05;
     fi
 
-    if (( $(echo "$bytesCF_lowerBound < 0" | bc -l) )); then
-      bytesCF_lowerBound=-0.01;
+    if (( $(echo "$timeS_lowerBound < 0" | bc -l) )); then
+      timeS_lowerBound=-0.01;
     fi
 
     if (( $(echo "$bps_IQR < 1" | bc -l) )); then
@@ -103,9 +90,9 @@ function GET_PLOT_BOUNDS() {
       bps_upperBound="$bps_Q3";
     fi
 
-    if (( $(echo "$bytesCF_IQR < 1" | bc -l) )); then
-      bytesCF_lowerBound="$bytesCF_Q1";
-      bytesCF_upperBound="$bytesCF_Q3";
+    if (( $(echo "$timeS_IQR < 1" | bc -l) )); then
+      timeS_lowerBound="$timeS_Q1";
+      timeS_upperBound="$timeS_Q3";
     fi
 
     cat tempX.txt;
@@ -116,19 +103,19 @@ function GET_PLOT_BOUNDS() {
     printf "bps upper bound: $bps_upperBound \n";
 
     cat tempY.txt;
-    printf "bytesCF Q1: $bytesCF_Q1 \n";
-    printf "bytesCF Q3: $bytesCF_Q3 \n";
-    printf "bytesCF IQR: $bytesCF_IQR \n";
-    printf "bytesCF lower bound: $bytesCF_lowerBound \n";
-    printf "bytesCF upper bound: $bytesCF_upperBound \n\n";
+    printf "bytesCF Q1: $timeS_Q1 \n";
+    printf "bytesCF Q3: $timeS_Q3 \n";
+    printf "bytesCF IQR: $timeS_IQR \n";
+    printf "bytesCF lower bound: $timeS_lowerBound \n";
+    printf "bytesCF upper bound: $timeS_upperBound \n\n";
 
     # rm -fr tempX.txt tempY.txt;
 }
 #
 function PLOT() {
-  gnuplot << EOF
+  gnuplot -d << EOF
     reset
-    set title "$plot_title"
+    set title noenhanced "${plot_title}"
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$plot_file"
     set style line 101 lc rgb '#000000' lt 1 lw 2 
@@ -137,8 +124,8 @@ function PLOT() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [$bytesCF_lowerBound:$bytesCF_upperBound]
-    set xrange [$bps_lowerBound:$bps_upperBound]
+    set xrange [$bps_upperBound:$bps_lowerBound]
+    set yrange [0.000:20]
     set xtics auto
     set ytics auto
     set key top right
@@ -153,7 +140,8 @@ function PLOT() {
     set style line 8 lc rgb '#99004C'  pt 8 ps 0.6  # circle
     set style line 9 lc rgb '#CC6600'  pt 9 ps 0.6  # circle
     set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
-    set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
+    set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle  
+    set style line 12 lc rgb '#00CCCC' pt 11 ps 0.6  # circle  
     set grid
     set ylabel "Compression time (s)"
     set xlabel "Average number of bits per symbol"
@@ -168,7 +156,7 @@ function PLOT_LOG() {
     # define a function to adjust zero or near-zero values
     pseudo_log(x) = (x <= 0) ? -10 : log10(x)
 
-    set title "$plot_title_log"
+    set title noenhanced "$plot_title_log"
     set logscale xy 2
     set terminal pdfcairo enhanced color font 'Verdade,12'
     set output "$plot_file_log"
@@ -178,8 +166,8 @@ function PLOT_LOG() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set yrange [1e-10:$bytesCF_upperBound]
-    set xrange [$bps_lowerBound:$bps_upperBound]
+    set xrange [$bps_upperBound:$bps_lowerBound]
+    set yrange [0.000:20]
     set xtics auto
     set ytics auto 
     set key top right
@@ -202,74 +190,43 @@ function PLOT_LOG() {
 EOF
 }
 #
-# === MAIN ===========================================================================
+# ==================================================================================================
 #
-
-LOAD_CSV_DSTOSIZE;
-
+resultsPath="../results";
+plotsPath="../plots"
+groups=( $(ls "$resultsPath" | grep "DS.*\.txt" | sed -n 's/.*-grp\([0-9]\+\)\.txt/grp\1/p' | sort | uniq -c | awk '{print $2}') )
 #
-# === MAIN: PLOT EACH DS ===========================================================================
+# === MAIN: PLOT EACH TSV FILE ===========================================================================
 #
-clean_bench_dss=( $(find "$resultsPath" -maxdepth 1 -type f -name "*bench-results-DS*-*.csv" | sort -t ' ' -k2n) );
-for clean_ds in ${clean_bench_dss[@]}; do
-  header=$(head -n 1 "$clean_ds")
-  IFS=' - ' read -r DSX genome size <<< "$header" # split the header into variables
-
+tsvFiles=( $(find "$resultsPath" -maxdepth 1 -type f -name "*.tsv" | sort -V) );
+for tsvFile in ${tsvFiles[@]}; do
+  if [[ $tsvFile == *DS* ]]; then 
+    header=$(head -n 1 "$tsvFile")
+    IFS=' - ' read -r dsx sequence size <<< "$header" # split the header into variables
+    dsxOrGrp="$dsx"
+  else
+    dsxOrGrp=$(head -n 1 "$tsvFile")
+    sequence=$dsxOrGrp
+  fi
+  #
   # str_time="m";
   # if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
   #   str_time="s";
   # fi
-
-  gen_i=${DSX#DS};
-  str_genome=${genome//_/ }
-
-  csvFile=$clean_ds;
-
-  plots_folder="$resultsPath/plot_ds${gen_i}_${size}";
-  bench_res_csv="$resultsPath/bench-results-DS${gen_i}-${size}.csv";
-  compressor_names="$plots_folder/names_ds$gen_i.txt";
-  compressor_csv_prefix="$plots_folder/bench-results-DS$gen_i-c";
-
-  plot_file="$resultsPath/plot_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size.pdf";
-  plot_file_log="$resultsPath/plot_ds${gen_i}_${size}/bench-plot-ds$gen_i-$size-log.pdf";
-
-  plot_title="Compression efficiency of $str_genome";
-  plot_title_log="Compression efficiency of $str_genome (log scale)";
-
+  #
+  plotsSubFolder="$plotsPath/plots-${dsxOrGrp}";
+  mkdir -p $plotsSubFolder
+  compressor_names="$plotsSubFolder/compressors.txt";
+  compressor_tsv_prefix="$plotsSubFolder/bench-results-$dsxOrGrp-c";
+  #
+  plot_file="$plotsSubFolder/bench-plot.pdf";
+  plot_file_log="$plotsSubFolder/bench-plot-$dsxOrGrp-log.pdf";
+  #
+  plot_title="Compression efficiency of $sequence";
+  plot_title_log="Compression efficiency of $sequence (log scale)";
+  #
   SPLIT_FILE_BY_COMPRESSOR;
   GET_PLOT_BOUNDS;
   PLOT;
   PLOT_LOG;
-done
-
-#
-# === MAIN: PLOT EACH GRP OF DSs BY SIZE ===========================================================================
-#
-clean_bench_grps=( $(find "$resultsPath" -maxdepth 1 -type f -name "*-grp-*" | sort -t '-' -k2,2 -k4,4 -r) );
-for clean_grp in ${clean_bench_grps[@]}; do
-    suffix="${clean_grp##*-grp-}";   # remove everything before the last occurrence of "-grp-"
-    size="${suffix%%.*}";            # remove everything after the first dot
-
-    # str_time="m";
-    # if [ "$size" = "xs" ] || [ "$size" = "s" ]; then # smaller files => faster tests => time measured in seconds
-    #   str_time="s";
-    # fi
-
-    csvFile=$clean_grp;
-
-    plots_folder="$resultsPath/plot_grp_$size";
-    bench_res_csv="$resultsPath/bench-results-grp-$size.csv";
-    compressor_names="$plots_folder/names_grp_$size.txt";
-    compressor_csv_prefix="$plots_folder/bench-results-grp-$size-c";
-
-    plot_file="$resultsPath/plot_grp_$size/bench-plot-grp-$size.pdf";
-    plot_file_log="$resultsPath/plot_grp_$size/bench-plot-grp-$size-log.pdf";
-
-    plot_title="Compression efficiency of sequences from group $size";
-    plot_title_log="Compression efficiency of sequences from group $size (log scale)";
-
-    SPLIT_FILE_BY_COMPRESSOR;
-    GET_PLOT_BOUNDS;
-    PLOT;
-    PLOT_LOG;
 done
