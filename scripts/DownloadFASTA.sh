@@ -17,8 +17,7 @@ function SHOW_HELP() {
 # ===========================================================================
 #
 defaultUrls=(
-
-    "https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz" # complete human genome (~3GB)
+    # "https://s3-us-west-2.amazonaws.com/human-pangenomics/T2T/CHM13/assemblies/analysis_set/chm13v2.0.fa.gz" # complete human genome (~3GB)
 
     "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=NC_058373.1&rettype=fasta&retmode=text" # Felis catus isolate Fca126 chromosome B3, F.catus_Fca126_mat1.0, whole genome shotgun sequence (144MB)
 
@@ -53,7 +52,7 @@ while [[ $# -gt 0 ]]; do
         shift 2; 
         ;;
     -id)
-        urls+=("$2")
+        urls+=("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=$2&rettype=fasta&retmode=text")
         shift 2; 
         ;;
     *) 
@@ -75,11 +74,14 @@ mkdir -p $rawSequencesPath;
 printf "downloading ${#urls[@]} sequence files...\n"
 for url in "${urls[@]}"; do
     #
-    id=$(echo "$url" | awk -F'&id' '{print $2}' | awk -F'&' '{print $1}' | tr -d '\\=')
-    rawFile="$(echo "${id}_raw" | tr '.' '_').fa"
+    if [[ "$url" == *"eutils.ncbi.nlm.nih.gov"* ]]; then 
+        rawFile="$(echo "$url" | awk -F'&id' '{print $2}' | awk -F'&' '{print $1}' | tr -d '\\=' | tr '.' '_').fa"
+    else
+        rawFile="$(echo $url | rev | cut -d'/' -f1 | rev | sed 's/-/_/g' | sed 's/\.fa\|\.fna\|\.fasta/_raw.fa/')"
+    fi
     #
     if [[ ! -f "$rawSequencesPath/$rawFile" ]]; then 
-        echo -e "\033[32mdownloading $origFile file... \033[0m"
+        echo -e "\033[32mdownloading $rawFile file... \033[0m"
         curl $url -o "$rawSequencesPath/$rawFile"
     else
         # no need to download a file that already exists
