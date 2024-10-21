@@ -18,7 +18,7 @@
 | GeCo2           |<a href="https://github.com/cobilab/geco2">code</a>  | <a href="https://link.springer.com/chapter/10.1007/978-3-030-23873-5_17">article</a>|
 | GeCo3           |<a href="https://github.com/cobilab/geco3">code</a>  | <a href="https://doi.org/10.1093/gigascience/giaa119">article</a>|
 | JARVIS2         |<a href="https://github.com/cobioders/jarvis2">code</a>  | <a href="https://ieeexplore.ieee.org/document/10125337/">article</a> |
-| JARVIS3         |private  | under review |
+| JARVIS3         |<a href="https://github.com/cobioders/jarvis3">code</a>  | under review |
 | lzma 5.2.5      |<a href="https://tukaani.org/xz/">code</a>  | <a href="https://tukaani.org/xz/">article</a>|
 | MemRGC      |<a href="https://github.com/yuansliu/memRGC">code</a>  | <a href="https://doi.org/10.1093/bioinformatics/btaa572">article</a>|
 | MFCompress      |<a href="http://sweet.ua.pt/ap/software/mfcompress/MFCompress-linux64-1.01.tgz">code</a>  | <a href="https://doi.org/10.1093/bioinformatics/btt594">article</a>|
