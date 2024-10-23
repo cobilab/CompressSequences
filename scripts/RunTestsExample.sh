@@ -3,10 +3,15 @@
 resultsPath="../results";
 mkdir -p $resultsPath;
 #
-#./RunTests.sh -ds 1 > ../results/bench-results-raw-ds25-grp1.txt 2>&1 &
-./RunTests.sh -grp 1 > ../results/bench-results-raw-grp1.txt 2>&1 &
-# ./RunTests.sh --size s > ../results/bench-results-raw-s.txt 2>&1 &
-# ./RunTests.sh --size m > ../results/bench-results-raw-m.txt 2>&1 &
-# ./RunTests.sh --size l > ../results/bench-results-raw-l.txt 2>&1
-# 
-# ./RunTests.sh --genome chm13v2.0 > ../results/bench-results-raw-ds25-l.txt 2>&1 &
+configJson="../config.json"
+sequencesPath="$(grep 'sequencesPath' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
+sequences=( $sequencesPath/*.seq )
+#
+nthreads=2
+for i in $(seq 1 $nthreads ${#sequences[@]}); do 
+    for j in $(seq 0 $((nthreads-1))); do
+        dsid=$((i+j))
+        (( $dsid <= "${#sequences[@]}" )) && ./Run.sh -ds $i 1> out$i 2> err$i &
+    done
+    wait 
+done
