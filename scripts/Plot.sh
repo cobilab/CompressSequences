@@ -53,31 +53,41 @@ function SPLIT_FILE_BY_COMPRESSOR() {
 function GET_PLOT_BOUNDS() {
     # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
     Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($5 ~ /^[0-9.]+$/) print $5}' $tsvFile) > tempX.txt
+    bps_min=$(awk 'NR==2{print $1}' "tempX.txt");
     bps_Q1=$(awk 'NR==2{print $2}' "tempX.txt");
     bps_Q3=$(awk 'NR==2{print $5}' "tempX.txt");
+    bps_max=$(awk 'NR==2{print $NF}' "tempX.txt");
 
     # row structure: Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
     Rscript -e 'summary(as.numeric(readLines("stdin")))' < <(awk '{if ($6 ~ /^[0-9.]+$/) print $6}' $tsvFile) > tempY.txt
+    timeS_min=$(awk 'NR==2{print $1}' "tempY.txt");
     timeS_Q1=$(awk 'NR==2{print $2}' "tempY.txt");
     timeS_Q3=$(awk 'NR==2{print $5}' "tempY.txt");
+    timeS_max=$(awk 'NR==2{print $NF}' "tempY.txt");
 
     # IQR (Inter Quartile Range) = Q3 - Q1
     bps_IQR=$(echo "$bps_Q3-$bps_Q1" | bc);
     timeS_IQR=$(echo "$timeS_Q3-$timeS_Q1" | bc);
 
-    # lower bound = Q1 – 1.5*IQR
-    bps_lowerBound=$(echo "$bps_Q1-1.5*$bps_IQR" | bc);
-    timeS_lowerBound=$(echo "$timeS_Q1-1.5*$timeS_IQR" | bc);
+    # # lower bound = Q1 – 0.025*IQR
+    # bps_lowerBound=$(echo "$bps_Q1-0.025*$bps_IQR" | bc);
+    # timeS_lowerBound=$(echo "$timeS_Q1-0.025*$timeS_IQR" | bc);
 
-    # upper bound = Q3 + 1.5*IQR
-    bps_upperBound=$(echo "$bps_Q3+1.5*$bps_IQR" | bc);
-    timeS_upperBound=$(echo "$timeS_Q3+1.5*$timeS_IQR" | bc);
+    # # upper bound = Q3 + 0.025*IQR
+    # bps_upperBound=$(echo "$bps_Q3+0.025*$bps_IQR" | bc);
+    # timeS_upperBound=$(echo "$timeS_Q3+0.025*$timeS_IQR" | bc);
+
+    bps_lowerBound=$(echo "$bps_min" | bc);
+    bps_upperBound=$(echo "$bps_max" | bc);
+    timeS_lowerBound=$(echo "$timeS_min" | bc);
+    timeS_upperBound=$(echo "$timeS_max" | bc);
 
     if (( $(echo "$bps_lowerBound < 0" | bc -l) )); then
       bps_lowerBound=-0.01;
     fi
-
-    if (( $(echo "$bps_upperBound > 2.05" | bc -l) )); then
+    echo "BPS UPPER BOUND"
+    if (( $(echo "$bps_upperBound > 2" | bc -l) )); then
+      echo "YAY"
       bps_upperBound=2.05;
     fi
 
@@ -103,11 +113,11 @@ function GET_PLOT_BOUNDS() {
     printf "bps upper bound: $bps_upperBound \n";
 
     cat tempY.txt;
-    printf "bytesCF Q1: $timeS_Q1 \n";
-    printf "bytesCF Q3: $timeS_Q3 \n";
-    printf "bytesCF IQR: $timeS_IQR \n";
-    printf "bytesCF lower bound: $timeS_lowerBound \n";
-    printf "bytesCF upper bound: $timeS_upperBound \n\n";
+    printf "ctime (s) Q1: $timeS_Q1 \n";
+    printf "ctime (s) Q3: $timeS_Q3 \n";
+    printf "ctime (s) IQR: $timeS_IQR \n";
+    printf "ctime (s) lower bound: $timeS_lowerBound \n";
+    printf "ctime (s) upper bound: $timeS_upperBound \n\n";
 
     # rm -fr tempX.txt tempY.txt;
 }
@@ -124,8 +134,8 @@ function PLOT() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set xrange [$bps_upperBound:$bps_lowerBound]
-    set yrange [0.000:20]
+    set xrange [$bps_min:$bps_max]
+    set yrange [$timeS_min:$timeS_max]
     set xtics auto
     set ytics auto
     set key top right

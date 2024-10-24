@@ -205,8 +205,7 @@ rm -fr cmix
 git clone https://github.com/byronknoll/cmix.git
 mv cmix cmix_dir
 cd cmix_dir
-# sudo apt update # asks manual password
-# sudo apt install clang
+sudo apt install clang-17 # install clang++-17 requirement
 make 
 cd ..
 cp cmix_dir/cmix .

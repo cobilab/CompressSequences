@@ -87,15 +87,15 @@ function RUN_TEST() {
   C_TIME=`printf "%0.3f\n" $(cat $c_time_mem | grep TIME | awk '{ print $2 }')`; 
   C_MEME=`printf "%0.3f\n" $(cat $c_time_mem | grep TIME | awk '{ print $4/1024/1024 }')`;
   #
-  d_time_mem="${sequenceName}_d_time_mem.txt";
-  timeout $timeOut /bin/time -o $d_time_mem -f "TIME\t%e\tMEM\t%M" $D_COMMAND
-  # echo "time (s) and mem (GB)"; cat $d_time_mem
-  #
-  # compare input file to decompressed file; they should have the same sequence
-  diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
-  #
-  D_TIME=`printf "%0.3f\n" $(cat $d_time_mem | grep TIME | awk '{ print $2 }')`; 
-  D_MEME=`printf "%0.3f\n" $(cat $d_time_mem | grep TIME | awk '{ print $4/1024/1024 }')`;
+  # d_time_mem="${sequenceName}_d_time_mem.txt";
+  # timeout $timeOut /bin/time -o $d_time_mem -f "TIME\t%e\tMEM\t%M" $D_COMMAND
+  # # echo "time (s) and mem (GB)"; cat $d_time_mem
+  # #
+  # # compare input file to decompressed file; they should have the same sequence
+  # diff <(tail -n +2 $IN_FILE | tr -d '\n') <(tail -n +2 $FILED | tr -d '\n') > cmp.txt;
+  # #
+  # D_TIME=`printf "%0.3f\n" $(cat $d_time_mem | grep TIME | awk '{ print $2 }')`; 
+  # D_MEME=`printf "%0.3f\n" $(cat $d_time_mem | grep TIME | awk '{ print $4/1024/1024 }')`;
   #
   # invalid BYTES_CF and BPS results are marked with -1
   if [ -e "$FILEC" ]; then
@@ -285,10 +285,10 @@ for sequenceName in "${SEQUENCES[@]}"; do
         RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "$toolsPath/ennaf --fasta --temp-dir $sequencesPath --level 20 $sequence.fa -o $sequence.naf" "$toolsPath/unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
         RUN_TEST "NAF" "$sequence.fa" "$sequence.naf" "$sequence.naf.out" "$toolsPath/ennaf --fasta --temp-dir $sequencesPath --level 22 $sequence.fa -o $sequence.naf" "$toolsPath/unnaf $sequence.naf -o $sequence.fa.out" "$run"; run=$((run+1));
         #
-        # RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -c 0 -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
-        # RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
-        # RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -c 2 -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
-        # RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -c 3 -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -c 0 -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -c 2 -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
+        RUN_TEST "MBGC" "$sequence.fa" "$sequence.mbgc" "$sequence.mbgc.out" "$toolsPath/mbgc -c 3 -i $sequence.fa $sequence.mbgc" "$toolsPath/mbgc -d $sequence.mbgc $sequencesPath" "$run"; run=$((run+1));
         # #
         # RUN_TEST "AGC" "$sequence.fa" "$sequence.agc" "$sequence.agc.out" "$toolsPath/agc create $sequence.fa -o $sequence.agc" "$toolsPath/agc getcol $sequence.agc > $sequence.agc.out" "$run"; run=$((run+1));
         #
@@ -353,7 +353,7 @@ for sequenceName in "${SEQUENCES[@]}"; do
     #
     RUN_TEST "MEMRGC" "$sequence.fa" "$sequence.memrgc" "$genome_memrgc_out.fa" "$toolsPath/memrgc e -m file -r $sequence.fa -t $sequence.fa -o $sequence.memrgc" "$toolsPath/memrgc d -m file -r $sequence.fa -t $sequence.memrgc -o $genome_memrgc_out.fa" "$run"; run=$((run+1));
     #
-    # RUN_TEST "CMIX" "$sequence.fa" "$sequence.cmix" "$genome_cmix_out.fa" "$toolsPath/cmix -n $sequence.fa $sequence.cmix" "$toolsPath/cmix -d -r $sequence.fa -t $sequence.cmix -o $genome_cmix_out.fa" "$run"; run=$((run+1));
+    RUN_TEST "CMIX" "$sequence.fa" "$sequence.cmix" "$genome_cmix_out.fa" "$toolsPath/cmix -n $sequence.fa $sequence.cmix" "$toolsPath/cmix -d -r $sequence.fa -t $sequence.cmix -o $genome_cmix_out.fa" "$run"; run=$((run+1));
     #
     # ==============================================================================
     #
