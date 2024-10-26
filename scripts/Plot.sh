@@ -18,7 +18,7 @@ function CHECK_INPUT () {
 #
 function SPLIT_FILE_BY_COMPRESSOR() {
   # recreate grp folder
-  rm -fr $plotsSubFolder;
+  # rm -fr $plotsSubFolder;
   mkdir -p $plotsSubFolder;
 
   CHECK_INPUT "$tsvFile";
@@ -32,14 +32,14 @@ function SPLIT_FILE_BY_COMPRESSOR() {
   plotnames_log="";
   mapfile -t compressors < "$compressor_names";
   for compressor in "${compressors[@]}"; do
-    if [[ $compressor != PROGRAM && $compressor != DS* ]]; then
+    if [[ $compressor != PROGRAM && $compressor != DS* && $compressor != grp* ]]; then
       compressor_tsv="$compressor_tsv_prefix$c_i.tsv";
       grep $compressor $tsvFile > "$compressor_tsv";
       
-      tmp="'$compressor_tsv' u 5:6 w points ls $c_i title '$compressor', ";
+      tmp="'$compressor_tsv' u 5:6 w points ls ${compressor/-/_} title '$compressor', ";
       plotnames="$plotnames $tmp";
       
-      tmp_log="'$compressor_tsv' u 5:(pseudo_log(6)) w points ls $c_i title '$compressor', ";
+      tmp_log="'$compressor_tsv' u 5:(pseudo_log(6)) w points ls ${compressor/-/_} title '$compressor', ";
       plotnames_log="$plotnames_log $tmp_log";
       
       ((++c_i));
@@ -85,9 +85,7 @@ function GET_PLOT_BOUNDS() {
     if (( $(echo "$bps_lowerBound < 0" | bc -l) )); then
       bps_lowerBound=-0.01;
     fi
-    echo "BPS UPPER BOUND"
     if (( $(echo "$bps_upperBound > 2" | bc -l) )); then
-      echo "YAY"
       bps_upperBound=2.05;
     fi
 
@@ -119,8 +117,27 @@ function GET_PLOT_BOUNDS() {
     printf "ctime (s) lower bound: $timeS_lowerBound \n";
     printf "ctime (s) upper bound: $timeS_upperBound \n\n";
 
-    # rm -fr tempX.txt tempY.txt;
+    rm -fr tempX.txt tempY.txt;
+
+    [[ ! -n "$bps_lb" ]] && bps_lb="*" # $bps_lowerBound
+    [[ ! -n "$bps_ub" ]] && (( $(echo "$bps_max>=2"|bc) )) && bps_ub="2.05"
+    [[ ! -n "$bps_ub" ]] && (( $(echo "$bps_max<2"|bc) )) && bps_ub="$bps_max"
+    [[ ! -n "$tlb_s" ]] && tlb_s="0" # $timeS_lowerBound
+    [[ ! -n "$tub_s" ]] && tub_s="$timeS_upperBound"
 }
+#
+# BSC-m03
+# BZIP2
+# CMIX
+# DMcompress
+# GeCo2
+# GeCo3
+# JARVIS2_BIN
+# JARVIS3_BIN
+# LZMA
+# MFC
+# NAF
+# PAQ8
 #
 function PLOT() {
   gnuplot -d << EOF
@@ -134,27 +151,41 @@ function PLOT() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set xrange [$bps_min:$bps_max]
-    set yrange [$timeS_min:$timeS_max]
+    set xrange [$bps_lb:$bps_ub]
+    set yrange [$tlb_s:$tub_s]
     set xtics auto
     set ytics auto
     set key top right
-    set style line 1 lc rgb '#990099'  pt 1 ps 0.6  # circle
-    set style line 2 lc rgb '#004C99'  pt 2 ps 0.6  # circle
-    set style line 3 lc rgb '#CCCC00'  pt 3 ps 0.6  # circle
-    #set style line 4 lc rgb '#CC0000' lt 2 dashtype '---' lw 4 pt 5 ps 0.4 # --- red
-    set style line 4 lc rgb 'red'  pt 7 ps 0.6  # circle 
-    set style line 5 lc rgb '#009900'  pt 5 ps 0.6  # circle
-    set style line 6 lc rgb '#990000'  pt 6 ps 0.6  # circle
-    set style line 7 lc rgb '#009999'  pt 4 ps 0.6  # circle
-    set style line 8 lc rgb '#99004C'  pt 8 ps 0.6  # circle
-    set style line 9 lc rgb '#CC6600'  pt 9 ps 0.6  # circle
-    set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
-    set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle  
-    set style line 12 lc rgb '#00CCCC' pt 11 ps 0.6  # circle  
+    #
+    BSC_m03 = 1
+    BZIP2=2
+    CMIX=3
+    DMcompress=4
+    GeCo2=5
+    GeCo3=6
+    JARVIS2_BIN=7
+    JARVIS3_BIN=8
+    LZMA=9
+    MFC=10
+    NAF=11
+    PAQ8=12
+    #
+    set style line BSC_m03 lc rgb '#990099'  pt 1 ps 0.6  # circle
+    set style line BZIP2 lc rgb '#004C99'  pt 2 ps 0.6  # circle
+    set style line CMIX lc rgb '#CCCC00'  pt 3 ps 0.6  # circle
+    set style line DMcompress lc rgb 'red'  pt 7 ps 0.6  # circle 
+    set style line GeCo2 lc rgb '#009900'  pt 5 ps 0.6  # circle
+    set style line GeCo3 lc rgb '#990000'  pt 6 ps 0.6  # circle
+    set style line JARVIS2_BIN lc rgb '#009999'  pt 4 ps 0.6  # circle
+    set style line JARVIS3_BIN lc rgb '#99004C'  pt 8 ps 0.6  # circle
+    set style line LZMA lc rgb '#CC6600'  pt 9 ps 0.6  # circle
+    set style line MFC lc rgb '#322152' pt 10 ps 0.6  # circle    
+    set style line NAF lc rgb '#425152' pt 11 ps 0.6  # circle  
+    set style line PAQ8 lc rgb '#00CCCC' pt 11 ps 0.6  # circle  
+    #
     set grid
     set ylabel "Compression time (s)"
-    set xlabel "Average number of bits per symbol"
+    set xlabel "BPS"
     plot $plotnames
 EOF
 }
@@ -176,26 +207,40 @@ function PLOT_LOG() {
     set key outside right top vertical Right noreverse noenhanced autotitle nobox
     set style histogram clustered gap 1 title textcolor lt -1
     set xtics border in scale 0,0 nomirror #rotate by -60  autojustify
-    set xrange [$bps_upperBound:$bps_lowerBound]
-    set yrange [0.000:20]
+    set xrange [$bps_lb:$bps_ub]
+    set yrange [$tlb_s:$tub_s]
     set xtics auto
     set ytics auto 
     set key top right
-    set style line 1 lc rgb '#990099'  pt 1 ps 0.6  # circle
-    set style line 2 lc rgb '#004C99'  pt 2 ps 0.6  # circle
-    set style line 3 lc rgb '#CCCC00'  pt 3 ps 0.6  # circle
-    #set style line 4 lc rgb '#CC0000' lt 2 dashtype '---' lw 4 pt 5 ps 0.4 # --- red
-    set style line 4 lc rgb 'red'  pt 7 ps 0.6  # circle 
-    set style line 5 lc rgb '#009900'  pt 5 ps 0.6  # circle
-    set style line 6 lc rgb '#990000'  pt 6 ps 0.6  # circle
-    set style line 7 lc rgb '#009999'  pt 4 ps 0.6  # circle
-    set style line 8 lc rgb '#99004C'  pt 8 ps 0.6  # circle
-    set style line 9 lc rgb '#CC6600'  pt 9 ps 0.6  # circle
-    set style line 10 lc rgb '#322152' pt 10 ps 0.6  # circle    
-    set style line 11 lc rgb '#425152' pt 11 ps 0.6  # circle    
+    #
+    BSC_m03 = 1
+    BZIP2=2
+    CMIX=3
+    DMcompress=4
+    GeCo2=5
+    GeCo3=6
+    JARVIS2_BIN=7
+    JARVIS3_BIN=8
+    LZMA=9
+    MFC=10
+    NAF=11
+    PAQ8=12
+    #
+    set style line BSC_m03 lc rgb '#990099'  pt 1 ps 0.6  # circle
+    set style line BZIP2 lc rgb '#004C99'  pt 2 ps 0.6  # circle
+    set style line CMIX lc rgb '#CCCC00'  pt 3 ps 0.6  # circle
+    set style line DMcompress lc rgb 'red'  pt 7 ps 0.6  # circle 
+    set style line GeCo2 lc rgb '#009900'  pt 5 ps 0.6  # circle
+    set style line GeCo3 lc rgb '#990000'  pt 6 ps 0.6  # circle
+    set style line JARVIS2_BIN lc rgb '#009999'  pt 4 ps 0.6  # circle
+    set style line JARVIS3_BIN lc rgb '#99004C'  pt 8 ps 0.6  # circle
+    set style line LZMA lc rgb '#CC6600'  pt 9 ps 0.6  # circle
+    set style line MFC lc rgb '#322152' pt 10 ps 0.6  # circle    
+    set style line NAF lc rgb '#425152' pt 11 ps 0.6  # circle  
+    set style line PAQ8 lc rgb '#00CCCC' pt 11 ps 0.6  # circle   
     set grid
     set ylabel "Compression time (s)"
-    set xlabel "Average number of bits per symbol"
+    set xlabel "BPS"
     plot $plotnames_log
 EOF
 }
@@ -206,9 +251,52 @@ resultsPath="../results";
 plotsPath="../plots"
 groups=( $(ls "$resultsPath" | grep "DS.*\.txt" | sed -n 's/.*-grp\([0-9]\+\)\.txt/grp\1/p' | sort | uniq -c | awk '{print $2}') )
 #
+while [[ $# -gt 0 ]]; do
+  key="$1"
+  case $key in
+    -g|-grp|--group)
+        data=$(echo "$2" | tr -d "grpGRP")
+        tsvFile="bench-results-grp$data.tsv"
+        tsvFiles+=( $(find "$resultsPath" -maxdepth 1 -type f -name "$tsvFile" | sort -V) );
+        shift 2;
+        ;; 
+    -s|--sequence)
+        data=$(echo "$2" | tr -d "dsDS")
+        tsvFile="bench-results-DS$data-*.tsv"
+        tsvFiles+=( $(find "$resultsPath" -maxdepth 1 -type f -name "$tsvFile" | sort -V) );
+        shift 2;
+        ;; 
+    -br|--b-range)
+        bps_lb="$(echo $2 | cut -d':' -f1)";
+        bps_ub="$(echo $2 | cut -d':' -f2)";
+        shift 2;
+        ;;
+    -trs|--trange-s)
+        tlb_s="$(echo $2 | cut -d':' -f1)";
+        tub_s="$(echo $2 | cut -d':' -f2)";
+        shift 2;
+        ;;
+    -trm|--trange-m)
+        tlb_m="$(echo $2 | cut -d':' -f1)";
+        tub_m="$(echo $2 | cut -d':' -f2)";
+        shift 2;
+        ;;
+    -trh|--trange-h)
+        tlb_h="$(echo $2 | cut -d':' -f1)";
+        tub_h="$(echo $2 | cut -d':' -f2)";
+        shift 2;
+        ;;
+    *) 
+        echo "Invalid option: $1"
+        exit 1;
+        ;;
+    esac
+done
+#
 # === MAIN: PLOT EACH TSV FILE ===========================================================================
 #
-tsvFiles=( $(find "$resultsPath" -maxdepth 1 -type f -name "*.tsv" | sort -V) );
+defaultTsvFiles=( $(find "$resultsPath" -maxdepth 1 -type f -name "*.tsv" | sort -V) );
+[ ${#tsvFiles[@]} -eq 0 ] && tsvFiles=( "${defaultTsvFiles[@]}" )
 for tsvFile in ${tsvFiles[@]}; do
   if [[ $tsvFile == *DS* ]]; then 
     header=$(head -n 1 "$tsvFile")
@@ -232,8 +320,8 @@ for tsvFile in ${tsvFiles[@]}; do
   plot_file="$plotsSubFolder/bench-plot.pdf";
   plot_file_log="$plotsSubFolder/bench-plot-$dsxOrGrp-log.pdf";
   #
-  plot_title="Compression efficiency of $sequence";
-  plot_title_log="Compression efficiency of $sequence (log scale)";
+  plot_title="${sequence/_/.}";
+  plot_title_log="${sequence/_/.} (log scale)";
   #
   SPLIT_FILE_BY_COMPRESSOR;
   GET_PLOT_BOUNDS;

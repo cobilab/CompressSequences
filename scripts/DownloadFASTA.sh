@@ -110,7 +110,7 @@ for url in "${urls[@]}"; do
         md5sumVal1=$(md5sum $inflatedRawFile|awk '{print $1}')
         md5sumFile="$tmpDir/md5sum.txt"
         md5sumVal2=$(cat $md5sumFile | grep $gcaId | awk '{print $1}')
-        [[ "$md5sumVal1" == "$md5sumVal2" ]] && echo -e "\033[32m$gcaId successfully extracted" || echo "$gcaId improperly inflated"
+        [[ "$md5sumVal1" == "$md5sumVal2" ]] && echo -e "\033[32m$gcaId successfully extracted\033[0m" || echo "$gcaId improperly inflated"
         cp -r $inflatedRawFile "$rawSequencesPath/$rawFile"
         rm -fr $rawSequencesPath/ncbi_dataset.zip $tmpDir
     elif [[ ! -f "$rawSequencesPath/${rawFile/.gz/}" ]]; then 
