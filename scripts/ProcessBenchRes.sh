@@ -69,7 +69,7 @@ for grp in ${groups[@]}; do
         ( head -n2 $result
         #
         # \nPROGRAM\tVALIDITY\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\tC_COMMAND\n" > "$output_file_ds";
-        awk -F'\t' 'NR>2 {if ($4!=-1 && $5!=-1 && $6!=-1 && $7!=-1 && $8!=-1 && $9!=-1 ) print $0}' "$result" | sort -k2n -k4n -k6n ) > "$output"
+        awk -F'\t' 'NR>2 {if ($2==0 && $4!=-1 && $5!=-1 && $6!=-1 && $7!=-1) print $0}' "$result" | sort -k2n -k4n -k6n ) > "$output"
     done
 done
 
