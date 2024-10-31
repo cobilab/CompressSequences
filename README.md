@@ -53,7 +53,7 @@ Alternatively:
 ./GetDSinfo.sh         # map sequences into their ids, sorted by size; view sequences info
 #
 ./RunTestsExample.sh   # run bench
-./ProcessRawBench.sh   # sort results by BPS and time
+./ProcessBenchRes.sh   # sort results by BPS and time
 ./Plot.sh              # plot sorted results
 </pre>
 
@@ -67,6 +67,6 @@ Alternatively:
 ./GetDSinfo.sh                                      # map sequences into their ids, sorted by size; view sequences info
 #
 ./RunTestsExample.sh                                # run bench
-./ProcessRawBench.sh                                # sort results by BPS and time
+./ProcessBenchRes.sh                                # sort results by BPS and time
 ./Plot.sh                                           # plot sorted results
 </pre>
