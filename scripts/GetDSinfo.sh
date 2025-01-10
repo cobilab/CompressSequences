@@ -1,5 +1,19 @@
 #!/bin/bash
 #
+function SHOW_HELP() {
+  echo " -------------------------------------------------------";
+  echo "                                                        ";
+  echo " CompressSequences - benchmark                          ";
+  echo "                                                        ";
+  echo " Program options ---------------------------------------";
+  echo "                                                        ";
+  echo " -h|--help.....................................Show this";
+  echo " -v|--view-ds|--view-datasets....View sequences and size"; 
+  echo "                                                 of each";
+  echo "                                                        ";
+  echo " -------------------------------------------------------";
+}
+#
 # === DEFAULT VALUES ===========================================================================
 #
 configJson="../config.json"
@@ -55,6 +69,9 @@ sizes=("grp1" "grp2" "grp3" "grp4" "grp5");
 while [[ $# -gt 0 ]]; do
     key="$1"
     case $key in
+        -h|--help)
+            SHOW_HELP;
+            shift;
         --view-datasets|--view-ds|-v)
             cat $DS_sizesBase2; echo; cat $DS_sizesBase10;
             exit;

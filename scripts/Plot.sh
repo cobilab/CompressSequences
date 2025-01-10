@@ -6,6 +6,29 @@ ds_sizesBase10="$(grep 'DS_sizesBase10' $configJson | awk -F':' '{print $2}' | t
 #
 # ==============================================================================
 #
+function SHOW_HELP() {
+  echo " -------------------------------------------------------";
+  echo "                                                        ";
+  echo " CompressSequences - benchmark                          ";
+  echo "                                                        ";
+  echo " Program options ---------------------------------------";
+  echo "                                                        ";
+  echo "-h|--help......................................Show this";
+  echo "-iwc|--install-with-conda........Install only with conda";
+  echo "-iwb|--install-with-both..Install with and without conda";
+  echo "-g|-grp|--group....................Select sequence group";
+  echo "-s|--sequence............................Select sequence";
+  echo "-br|--b-range..................Define x-axis (BPS) range";
+  echo "-trs|--trange-s...Define y-axis (compression time) range";
+  echo "                                              in seconds";
+  echo "-trm|--trange-m...Define y-axis (compression time) range";
+  echo "                                              in minutes";
+  echo "-trh|--trange-h...Define y-axis (compression time) range";
+  echo "                                                in hours";
+  echo "                                                        ";
+  echo " -------------------------------------------------------";
+}
+#
 function CHECK_INPUT () {
   FILE=$1
   if [ -f "$FILE" ]; then
@@ -254,6 +277,10 @@ groups=( $(ls "$resultsPath" | grep "DS.*\.txt" | sed -n 's/.*-grp\([0-9]\+\)\.t
 while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
+    -h|--help)
+      SHOW_HELP;
+      shift;
+      ;;
     -g|-grp|--group)
         data=$(echo "$2" | tr -d "grpGRP")
         tsvFile="bench-results-grp$data.tsv"

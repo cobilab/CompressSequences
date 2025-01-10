@@ -3,12 +3,11 @@
 function SHOW_HELP() {
   echo " -------------------------------------------------------";
   echo "                                                        ";
-  echo " CompressSequences - JARIVS3 Optimization Benchmark     ";
-  echo " Download FASTA files script                            ";
+  echo " CompressSequences - benchmark                          ";
   echo "                                                        ";
   echo " Program options ---------------------------------------";
   echo "                                                        ";
-  echo " --help|-h.....................................Show this";
+  echo " -h|--help.....................................Show this";
   echo " -id........................Download sequence by NCBI id"; 
   echo "                                                        ";
   echo " -------------------------------------------------------";
@@ -54,7 +53,7 @@ defaultUrls=(
 while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
-    -h)
+    -h|--help)
         SHOW_HELP
         shift 2; 
         ;;

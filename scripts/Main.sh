@@ -1,5 +1,15 @@
 #!/bin/bash
 #
+while [[ $# -gt 0 ]]; do
+  key="$1"
+  case $key in
+    *) 
+        echo "This program does not have options"
+        exit 1;
+        ;;
+    esac
+done
+#
 ./InstallTools.sh      # install listed compressors, GTO, and AlcoR
 ./DownloadFASTA.sh     # downloads FASTA files
 ./GetCassava.sh        # gunzip cassava files

@@ -12,15 +12,18 @@ function SHOW_HELP() {
   echo "                                                        ";
   echo " Program options ---------------------------------------";
   echo "                                                        ";
-  echo " --help|-h.....................................Show this";
-  echo " --view-datasets|--view-ds|-v....View sequences and size"; 
+  echo " -h|--help.....................................Show this";
+  echo " -v|--view-ds|--view-datasets....View sequences and size"; 
   echo "                                                 of each";
-  echo "--sequence|--seq|-s..........Select sequence by its name";
-  echo "--sequence-group|--seq-grp|-sg.Select group of sequences";
+  echo "-s|--seq|--sequence..........Select sequence by its name";
+  echo "-sg|--seq-grp|--sequence-group.Select group of sequences";
   echo "                                           by their size";
-  echo "--dataset|-ds......Select sequence by its dataset number";
-  echo "--dataset-range|--dsrange|--drange|-dr............Select";
+  echo "-ds|--dataset......Select sequence by its dataset number";
+  echo "-dr|-dsrange|--dataset-range............Select";
   echo "                   sequences by range of dataset numbers";
+  echo "-g|--gen-num....................Define generation number";
+  echo "-to|--timeout.............................Define timeout";
+  echo "-t|--nthreads...................Define number of threads";
   echo "                                                        ";
   echo " -------------------------------------------------------";
 }

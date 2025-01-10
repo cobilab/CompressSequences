@@ -1,5 +1,20 @@
 #!/bin/bash
 #
+function SHOW_HELP() {
+  echo " -------------------------------------------------------";
+  echo "                                                        ";
+  echo " CompressSequences - benchmark                          ";
+  echo " Run Script                                             ";
+  echo "                                                        ";
+  echo " Program options ---------------------------------------";
+  echo "                                                        ";
+  echo "-h|--help......................................Show this";
+  echo "-iwc|--install-with-conda........Install only with conda";
+  echo "-iwb|--install-with-both..Install with and without conda";
+  echo "                                                        ";
+  echo " -------------------------------------------------------";
+}
+#
 function INSTALL_WITH_CONDA() {
     #
     # AlcoR ------------------------------------------------------------------------
@@ -130,16 +145,42 @@ function INSTALL_WITHOUT_CONDA() {
 #
 # === MAIN ===========================================================================
 #
-
 scriptPath=$(pwd)
 configJson="../config.json"
 toolsPath="$(grep 'toolsPath' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )"
 mkdir -p $toolsPath
 cd $toolsPath
-
-if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
+#
+useCondaInstall=false
+useWithoutCondaInstall=true
+#
+while [[ $# -gt 0 ]]; do
+  key="$1"
+  case $key in
+    -h|--help)
+      SHOW_HELP;
+      exit;
+      shift;
+      ;;
+    -iwc|--install-with-conda)
+      useCondaInstall=true
+      useWithoutCondaInstall=false
+      shift;
+      ;;
+    -iwb|--install-with-both)
+      useCondaInstall=true
+      shift; 
+      ;;
+    *) 
+      echo "Invalid option: $1"
+      exit 1;
+      ;;
+  esac
+done
+#
+if $useCondaInstall && ! $useWithoutCondaInstall; then
     INSTALL_WITH_CONDA;
-elif [[ "$*" == *"--install-with-both"* ||  "$*" == *"-iwb"* ]]; then
+elif [$useCondaInstall && $useWithoutCondaInstall; then
     INSTALL_WITH_CONDA;
     INSTALL_WITHOUT_CONDA;
 else
