@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 configJson="../config.json"
-ds_sizesBase2="$(grep 'DS_sizesBase2' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
-ds_sizesBase10="$(grep 'DS_sizesBase10' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
+DS_sizesBase2="$(grep 'DS_sizesBase2' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
+DS_sizesBase10="$(grep 'DS_sizesBase10' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
 #
 # === FUNCTIONS ===========================================================================
 #
@@ -47,29 +47,44 @@ done
 #
 resultsPath="../results"
 #
-groups=( $(ls "$resultsPath" | grep "DS.*\.txt" | sed -n 's/.*-grp\([0-9]\+\)\.txt/grp\1/p' | sort | uniq -c | awk '{print $2}') )
-for grp in ${groups[@]}; do
-    #
-    # build grp .txt files
-    results=( $(find "$resultsPath" -maxdepth 1 -type f -name "*DS*$grp.txt" | sort -V) )
-    output="$resultsPath/bench-results-raw-${grp}.txt"
-    echo "$grp" > $output
-    awk 'NR==2' "${results[0]}" >> $output
-    for res in ${results[@]}; do
-        awk 'NR>2' $res >> $output
-    done
-    #
-    # sort results from each sequence and from group of sequences
-    results=( $(find "$resultsPath" -maxdepth 1 -type f -name "*$grp.txt" | sort -V) )
-    for result in ${results[@]}; do
-        result="$resultsPath/$result"
-        output="${result//.txt/.tsv}"
-        output="${output//-raw/}"
-        #
-        ( head -n2 $result
-        #
-        # \nPROGRAM\tVALIDITY\tBYTES\tBYTES_CF\tBPS\tC_TIME (s)\tC_MEM (GB)\tD_TIME (s)\tD_MEM (GB)\tDIFF\tRUN\tC_COMMAND\n" > "$output_file_ds";
-        awk -F'\t' 'NR>2 {if ($2==0 && $4!=-1 && $5!=-1 && $6!=-1 && $7!=-1) print $0}' "$result" | sort -k2n -k4n -k6n ) > "$output"
-    done
-done
+datasetsArr=($(ls $resultsPath| grep 'DS[0-9]*' | sort -u|sort -V))
+#
+for dsFile in "${datasetsArr[@]}"; do
+    dsx=$(echo $dsFile|grep -o 'DS[0-9]*')
+    sequenceName=$(awk '/'$dsx'[[:space:]]/{print $2}' "$DS_sizesBase2")
+    size=$(awk '/'$sequenceName'[[:space:]]/ { print $NF }' "$DS_sizesBase2")
+    output="bench-results-$dsx-$sequenceName-$size.tsv"
 
+    allResFromDsx=( $( ls $resultsPath/*-$dsx-*.txt) )
+    (
+        head -n2 "$resultsPath/${allResFromDsx[0]}"
+        for resFile in "${allResFromDsx[@]}"; do
+            awk -F'\t' -v OFS="\t" 'NR>2 {
+                if ($2==0 && $4!=-1 && $5!=-1 && $6!=-1 && $7!=-1) { 
+                    if ($1 ~ /^BSC-m03/) $1="BSC_m03"
+                    if ($1 ~ /^JV3_e/) $1="JV3_GA"
+                    if ($1 ~ /^JV3_sampling/) $1="JV3_SG"
+                    if ($1 ~ /^JV3-randomSearch/) $1="JV3_RS"
+                    if ($1 ~ /^JV3_randomSearch/) $1="JV3_RS"
+                    if ($1 ~ /^JV3-localSearch/) $1="JV3_LS"
+                    if ($1 ~ /^JV3_localSearch/) $1="JV3_LS"
+                    print 
+                }
+            }' $resultsPath/$resFile
+        done | sort -k2n -k4n -k6n | awk -F'\t' -v OFS="\t" -v gaCounter=0 '
+            # Filter top 10 JV3_GA entries after sorting
+            $1 ~ /JV3_GA/ && gaCounter < 10 { gaCounter++; print }
+            $1 !~ /JV3_GA/ { print }'
+    ) > $resultsPath/$output
+done
+#
+grpsArr=($(ls $resultsPath/*.tsv |grep -o 'grp[0-9]*'|sort -V|uniq))
+for grp in ${grpsArr[@]}; do
+    datasetsArr=($(ls $resultsPath/*$grp*.tsv | grep 'DS[0-9]*' | sort -u|sort -V))
+    output="$resultsPath/bench-results-$grp.tsv"
+    ( echo "$grp"
+    awk 'NR==2' "${datasetsArr[0]}"
+    for dsFile in "${datasetsArr[@]}"; do
+        awk 'NR>2' $dsFile
+    done | sort -k2n -k5n -k6n ) > $output
+done

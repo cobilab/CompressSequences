@@ -1,8 +1,8 @@
 # Ignore these
 tools/*
 scripts/*
-results/*
-plots/*
+results*/*
+plots*/*
 sequences_raw/*
 cassava_raw/*
 sequences/*

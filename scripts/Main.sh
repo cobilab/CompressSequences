@@ -20,4 +20,7 @@ done
 #
 ./RunTestsExample.sh   # run bench
 ./ProcessBenchRes.sh   # sort results by BPS and time
-./Plot.sh              # plot sorted results
+./Plot.sh              # plot sorted results from bench, for each sequence and eache sequence group
+#
+./Plot.sh --mode NGA   # plot bench results with added results from random and local search, for each sequence and eache sequence group
+./Plot.sh --mode all   # plot bench results with added results from all implemented search algorithms, for each sequence and eache sequence group
