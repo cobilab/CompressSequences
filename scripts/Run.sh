@@ -18,20 +18,9 @@ function SHOW_HELP() {
   echo "-s|--seq|--sequence..........Select sequence by its name";
   echo "-sg|--sequence-grp|--seq-group.Select group of sequences";
   echo "                                           by their size";
-  echo "-ds|--dataset......Select sequence by its dataset number";
-  echo "-dr|-dsrange|--dataset-range............Select";
-  echo "-a|-ga|--genetic-algorithm...Define (folder) name of the";
-  echo "                                       genetic algorithm";
-  echo "-ds|--dataset......Select sequence by its dataset number";
-  echo "-dr|--drange|--dsrange|--dataset-range............Select";
+  echo "--dataset|-ds......Select sequence by its dataset number";
+  echo "--dataset-range|--dsrange|--drange|-dr............Select";
   echo "                   sequences by range of dataset numbers";
-  echo "-g|--gen-num....................Define generation number";
-  echo "-to|--timeout.............................Define timeout";
-  echo "-t|--nthreads...................Define number of threads";
-  echo "-g|--gen-num....................Define generation number";
-  echo "-to|--timeout.............................Define timeout";
-  echo "-t|--nthreads....Define number of threads to run JARVIS3"; 
-  echo "                                             in parallel";
   echo "                                                        ";
 }
 #

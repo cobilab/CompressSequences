@@ -308,14 +308,6 @@ mode="bench"
 while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
-    -h|--help)
-        SHOW_HELP;
-        exit;
-        ;;
-    -h|--help)
-      SHOW_HELP;
-      shift;
-      ;;
     -g|-grp|--group)
         data=$(echo "$2" | tr -d "grpGRP")
         tsvFile="bench-results-grp$data.tsv"

@@ -1,36 +1,5 @@
 #!/bin/bash
 #
-function SHOW_HELP() {
-  echo " -------------------------------------------------------";
-  echo "                                                        ";
-  echo " CompressSequences - benchmark                          ";
-  echo "                                                        ";
-  echo " Program options ---------------------------------------";
-  echo "                                                        ";
-  echo "-h|--help......................................Show this";
-  echo "-iwc|--install-with-conda........Install some tools with";
-  echo "                                                   conda";
-  echo "-iwb|--install-with-both..........Install all tools with";
-  echo "                                      conda and globally";
-  echo "                                                        ";
-  echo " -------------------------------------------------------";
-}
-#
-function SHOW_HELP() {
-  echo " -------------------------------------------------------";
-  echo "                                                        ";
-  echo " CompressSequences - benchmark                          ";
-  echo " Run Script                                             ";
-  echo "                                                        ";
-  echo " Program options ---------------------------------------";
-  echo "                                                        ";
-  echo "-h|--help......................................Show this";
-  echo "-iwc|--install-with-conda........Install only with conda";
-  echo "-iwb|--install-with-both..Install with and without conda";
-  echo "                                                        ";
-  echo " -------------------------------------------------------";
-}
-#
 function INSTALL_WITH_CONDA() {
     #
     # AlcoR ------------------------------------------------------------------------
@@ -161,35 +130,8 @@ configJson="../config.json"
 toolsPath="$(grep 'toolsPath' $configJson | awk -F':' '{print $2}' | tr -d '[:space:],"' )";
 mkdir -p $toolsPath
 cd $toolsPath
-#
-useCondaInstall=false
-useWithoutCondaInstall=true
-#
-while [[ $# -gt 0 ]]; do
-  key="$1"
-  case $key in
-    -h|--help)
-      SHOW_HELP;
-      exit;
-      shift;
-      ;;
-    -iwc|--install-with-conda)
-      useCondaInstall=true
-      useWithoutCondaInstall=false
-      shift;
-      ;;
-    -iwb|--install-with-both)
-      useCondaInstall=true
-      shift; 
-      ;;
-    *) 
-      echo "Invalid option: $1"
-      exit 1;
-      ;;
-  esac
-done
-#
-if $useCondaInstall && ! $useWithoutCondaInstall; then
+
+if [[ "$*" == *"--install-with-conda"* ||  "$*" == *"-iwc"* ]]; then
     INSTALL_WITH_CONDA;
 elif [$useCondaInstall && $useWithoutCondaInstall; then
     INSTALL_WITH_CONDA;
