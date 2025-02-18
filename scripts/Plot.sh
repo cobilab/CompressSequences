@@ -10,21 +10,25 @@ function SHOW_HELP() {
   echo " -------------------------------------------------------";
   echo "                                                        ";
   echo " CompressSequences - benchmark                          ";
+  echo " Plot Script                                            ";
   echo "                                                        ";
   echo " Program options ---------------------------------------";
   echo "                                                        ";
-  echo "-h|--help......................................Show this";
-  echo "-iwc|--install-with-conda........Install only with conda";
-  echo "-iwb|--install-with-both..Install with and without conda";
-  echo "-g|-grp|--group....................Select sequence group";
-  echo "-s|--sequence............................Select sequence";
-  echo "-br|--b-range..................Define x-axis (BPS) range";
-  echo "-trs|--trange-s...Define y-axis (compression time) range";
-  echo "                                              in seconds";
-  echo "-trm|--trange-m...Define y-axis (compression time) range";
-  echo "                                              in minutes";
-  echo "-trh|--trange-h...Define y-axis (compression time) range";
-  echo "                                                in hours";
+  echo " -s|--sequence...........................Select sequence"; 
+  echo "                                                 of each";
+  echo "--sequence|--seq|-s..........Select sequence by its name";
+  echo "--sequence-group|--seq-grp|-sg.Select group of sequences";
+  echo "                                           by their size";
+  echo "            1. Sequences with size lower than 1MB";
+  echo "            2. Sequences with size between 1MB and 100MB";
+  echo "            3. Sequences with size between 100MB and 1GB";
+  echo "            4. Sequences with size between 1GB and 3GB";
+  echo "            5. Sequences with size greater than 3GB";
+  echo "-br|--b-range..................Define x-axis (BPS range)";
+  echo "-trs|--trange-s...Define y-axis (time range, in seconds)";
+  echo "-trm|--trange-m...Define y-axis (time range, in minutes)";
+  echo "-trh|--trange-h.....Define y-axis (time range, in hours)";
+  echo "-m|--mode....Select data to plot ('bench', 'NGA', 'all')";
   echo "                                                        ";
   echo " -------------------------------------------------------";
 }
@@ -200,6 +204,7 @@ function PLOT() {
     JV3_LS=14
     JV3_GA=15
     JV3_SG=16
+    JV3_SG200=17
     #
     set style line BSC_m03 lc rgb '#990099' pt 1 ps 0.6
     set style line BZIP2 lc rgb '#004C99' pt 2 ps 0.6
@@ -215,8 +220,9 @@ function PLOT() {
     set style line PAQ8 lc rgb '#00CCCC' pt 12 ps 0.6   
     set style line JV3_RS lc rgb '#66004C' pt 13 ps 0.75   
     set style line JV3_LS lc rgb '#44004C' pt 14 ps 0.75   
-    set style line JV3_GA lc rgb '#22004C' pt 15 ps 0.75   
+    set style line JV3_GA lc rgb '#004CC4' pt 15 ps 0.75   
     set style line JV3_SG lc rgb '#00004C' pt 16 ps 0.75
+    set style line JV3_SG200 lc rgb '#990000' pt 16 ps 0.75
     #
     set grid
     set ylabel "Compression time (s)"
@@ -303,6 +309,10 @@ while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
     -h|--help)
+        SHOW_HELP;
+        exit;
+        ;;
+    -h|--help)
       SHOW_HELP;
       shift;
       ;;
@@ -340,9 +350,9 @@ while [[ $# -gt 0 ]]; do
         ;;
     # bench, NGA, all 
     -m|--mode)
-      mode="$2"
-      shift 2;
-      ;;
+        mode="$2"
+        shift 2;
+        ;;
     *) 
         echo "Invalid option: $1"
         exit 1;
