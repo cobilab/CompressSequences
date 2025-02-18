@@ -7,22 +7,27 @@
 function SHOW_HELP() {
   echo " -------------------------------------------------------";
   echo "                                                        ";
-  echo " OptimJV3 - optimize JARVIS3 CM and RM parameters       ";
+  echo " CompressSequences - benchmark                          ";
   echo " Run Script                                             ";
   echo "                                                        ";
   echo " Program options ---------------------------------------";
   echo "                                                        ";
-  echo " --help|-h.....................................Show this";
-  echo " --view-datasets|--view-ds|-v....View sequences and size"; 
-  echo "                                                 of each";
-  echo "--sequence|--seq|-s..........Select sequence by its name";
-  echo "--sequence-group|--seq-grp|-sg.Select group of sequences";
+  echo "-h|--help......................................Show this";
+  echo "-v|--view-ds|--view-datasets...View sequence names, size";
+  echo "           of each in bytes, MB, and GB, and their group";
+  echo "-s|--seq|--sequence..........Select sequence by its name";
+  echo "-sg|--sequence-grp|--seq-group.Select group of sequences";
   echo "                                           by their size";
-  echo "--dataset|-ds......Select sequence by its dataset number";
-  echo "--dataset-range|--dsrange|--drange|-dr............Select";
+  echo "-a|-ga|--genetic-algorithm...Define (folder) name of the";
+  echo "                                       genetic algorithm";
+  echo "-ds|--dataset......Select sequence by its dataset number";
+  echo "-dr|--drange|--dsrange|--dataset-range............Select";
   echo "                   sequences by range of dataset numbers";
+  echo "-g|--gen-num....................Define generation number";
+  echo "-to|--timeout.............................Define timeout";
+  echo "-t|--nthreads....Define number of threads to run JARVIS3"; 
+  echo "                                             in parallel";
   echo "                                                        ";
-  echo " -------------------------------------------------------";
 }
 #
 function CHECK_INPUT () {

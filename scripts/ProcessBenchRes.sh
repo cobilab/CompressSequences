@@ -10,6 +10,7 @@ function SHOW_HELP() {
  echo " -------------------------------------------------------";
  echo "                                                        ";
  echo " OptimJV3 - optimize JARVIS3 CM and RM parameters       ";
+ echo " Process Bench Script"
  echo "                                                        ";
  echo " Program options ---------------------------------------";
  echo "                                                        ";
@@ -48,6 +49,10 @@ done
 resultsPath="../results"
 #
 datasetsArr=($(ls $resultsPath| grep 'DS[0-9]*' | sort -u|sort -V))
+datasetsArr=(bench-results-raw-DS37-chm13v2.0-JV3_localSearch-grp5.txt 
+bench-results-raw-DS37-chm13v2.0-JV3_sampling2-grp5.txt 
+bench-results-raw-DS37-chm13v2.0-JV3_sampling2_200gens-grp5.txt 
+bench-results-raw-DS37-chm13v2.0-grp5.txt)
 #
 for dsFile in "${datasetsArr[@]}"; do
     dsx=$(echo $dsFile|grep -o 'DS[0-9]*')
@@ -63,7 +68,8 @@ for dsFile in "${datasetsArr[@]}"; do
                 if ($2==0 && $4!=-1 && $5!=-1 && $6!=-1 && $7!=-1) { 
                     if ($1 ~ /^BSC-m03/) $1="BSC_m03"
                     if ($1 ~ /^JV3_e/) $1="JV3_GA"
-                    if ($1 ~ /^JV3_sampling/) $1="JV3_SG"
+                    if ($1 ~ /^JV3_sampling/ && $1 !~ /200gens/) $1="JV3_SG"
+                    if ($1 ~ /^JV3_sampling2_200gens/) $1="JV3_SG200"
                     if ($1 ~ /^JV3-randomSearch/) $1="JV3_RS"
                     if ($1 ~ /^JV3_randomSearch/) $1="JV3_RS"
                     if ($1 ~ /^JV3-localSearch/) $1="JV3_LS"
