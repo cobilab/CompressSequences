@@ -205,6 +205,7 @@ function PLOT() {
     JV3_GA=15
     JV3_SG=16
     JV3_SG200=17
+    JV3_SG10MB=18
     #
     set style line BSC_m03 lc rgb '#990099' pt 1 ps 0.6
     set style line BZIP2 lc rgb '#004C99' pt 2 ps 0.6
@@ -223,6 +224,7 @@ function PLOT() {
     set style line JV3_GA lc rgb '#004CC4' pt 15 ps 0.75   
     set style line JV3_SG lc rgb '#00004C' pt 16 ps 0.75
     set style line JV3_SG200 lc rgb '#990000' pt 16 ps 0.75
+    set style line JV3_SG10MB lc rgb '#999900' pt 16 ps 0.75
     #
     set grid
     set ylabel "Compression time (s)"
